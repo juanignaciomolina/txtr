@@ -282,5 +282,7 @@
     <string name="url_copied_to_clipboard">URL copied to clipboard</string>
     <string name="message_copied_to_clipboard">Message copied to clipboard</string>
     <string name="image_transmission_failed">Image transmission failed</string>
+    <string name="account_settings_pin">PIN</string>
+    <string name="account_settings_example_pin">ABC1234</string>
 
 </resources>

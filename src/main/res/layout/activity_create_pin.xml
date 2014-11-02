@@ -27,7 +27,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/account_settings_jabber_id"
+                    android:text="@string/account_settings_pin"
                     android:textColor="@color/primarytext"
                     android:textSize="?attr/TextSizeBody" />
 
@@ -35,7 +35,7 @@
                     android:id="@+id/account_jid"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/account_settings_example_jabber_id"
+                    android:hint="@string/account_settings_example_pin"
                     android:inputType="textEmailAddress"
                     android:textColor="@color/primarytext"
                     android:textColorHint="@color/secondarytext"
@@ -47,7 +47,8 @@
                     android:layout_marginTop="8dp"
                     android:text="@string/account_settings_password"
                     android:textColor="@color/primarytext"
-                    android:textSize="?attr/TextSizeBody" />
+                    android:textSize="?attr/TextSizeBody"
+                    android:visibility="gone"/>
 
                 <EditText
                     android:id="@+id/account_password"
@@ -57,7 +58,8 @@
                     android:inputType="textPassword"
                     android:textColor="@color/primarytext"
                     android:textColorHint="@color/secondarytext"
-                    android:textSize="?attr/TextSizeBody" />
+                    android:textSize="?attr/TextSizeBody"
+                    android:visibility="gone"/>
 
                 <CheckBox
                     android:id="@+id/account_register_new"
@@ -66,7 +68,8 @@
                     android:layout_marginTop="8dp"
                     android:text="@string/register_account"
                     android:textColor="@color/primarytext"
-                    android:textSize="?attr/TextSizeBody" />
+                    android:textSize="?attr/TextSizeBody"
+                    android:visibility="gone"/>
 
                 <TextView
                     android:id="@+id/account_confirm_password_desc"
