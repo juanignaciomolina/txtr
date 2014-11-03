@@ -31,6 +31,15 @@
                     android:textColor="@color/primarytext"
                     android:textSize="?attr/TextSizeBody" />
 
+                <TextView
+                    android:id="@+id/account_pin"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/account_settings_example_pin"
+                    android:textColor="@color/primarytext"
+                    android:textColorHint="@color/secondarytext"
+                    android:textSize="?attr/TextSizeBody" />
+
                 <AutoCompleteTextView
                     android:id="@+id/account_jid"
                     android:layout_width="match_parent"

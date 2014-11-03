@@ -48,6 +48,7 @@ import eu.siacs.conversations.xmpp.pep.Avatar;
 public class CreatePinActivity extends XmppActivity {
 
 	private AutoCompleteTextView mAccountJid;
+    private TextView mPin;
 	private EditText mPassword;
 	private EditText mPasswordConfirm;
 	private CheckBox mRegisterNew;
@@ -125,15 +126,21 @@ public class CreatePinActivity extends XmppActivity {
         // onPostExecute displays the results of the AsyncTask.
         @Override
         protected void onPostExecute(String result) {
-            Toast.makeText(getBaseContext(), "Received!", Toast.LENGTH_LONG).show();
+            Toast.makeText(getBaseContext(), "JSON Received!", Toast.LENGTH_LONG).show();
             try {
                 JSONObject json = new JSONObject(result);
 
-                String pincode = json.getString("pincode");
+                String str = "";
 
-                mAccountJid.setText(pincode);
-                //etResponse.setText(str);
-                //etResponse.setText(json.toString(1));
+                /*JSONArray articles = json.getJSONArray("articleList");
+                str += "articles length = "+json.getJSONArray("articleList").length();
+                str += "\n--------\n";
+                str += "names: "+articles.getJSONObject(0).names();
+                str += "\n--------\n";
+                str += "url: "+articles.getJSONObject(0).getString("url");*/
+
+                //mPin.setText(str);
+                mPin.setText(json.toString(1));
 
             } catch (JSONException e) {
                 // TODO Auto-generated catch block
@@ -357,6 +364,7 @@ public class CreatePinActivity extends XmppActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_create_pin);
 		this.mAccountJid = (AutoCompleteTextView) findViewById(R.id.account_jid);
+        this.mPin = (TextView) findViewById(R.id.account_pin);
 		this.mAccountJid.addTextChangedListener(this.mTextWatcher);
 		this.mPassword = (EditText) findViewById(R.id.account_password);
 		this.mPassword.addTextChangedListener(this.mTextWatcher);
@@ -390,6 +398,7 @@ public class CreatePinActivity extends XmppActivity {
 				});
 
         // call AsynTask to perform network operation on separate thread
+        //new HttpAsyncTask().execute("http://hmkcode.appspot.com/rest/controller/get.json");
         new HttpAsyncTask().execute("http://api.droidko.com/?method=pinRequest&output=json");
 	}
 
