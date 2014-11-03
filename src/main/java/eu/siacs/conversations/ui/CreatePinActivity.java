@@ -131,7 +131,7 @@ public class CreatePinActivity extends XmppActivity {
         // onPostExecute displays the results of the AsyncTask.
         @Override
         protected void onPostExecute(String result) {
-            Toast.makeText(getBaseContext(), "JSON Received!", Toast.LENGTH_LONG).show();
+            Toast.makeText(getBaseContext(), "JSON Received!", Toast.LENGTH_SHORT).show();
             waitingForJSON = false;
             try {
                 jsonPin = new JSONObject(result);
@@ -160,10 +160,12 @@ public class CreatePinActivity extends XmppActivity {
     private void startJSONRequest (String url) {
         // call AsynTask to perform network operation on separate thread
         //new HttpAsyncTask().execute("http://hmkcode.appspot.com/rest/controller/get.json");
-        if (jsonPin == null && !waitingForJSON && isConnected())
-        {new HttpAsyncTask().execute(url);}
+        if (!waitingForJSON && isConnected()){
+                new HttpAsyncTask().execute(url);
+                waitingForJSON = true;
+            }
         else
-        {mPin.setText("No internet access, try again later");}
+            {mPin.setText("No internet access, try again later");}
     }
 
 	private OnClickListener mSaveButtonClickListener = new OnClickListener() {
@@ -171,7 +173,22 @@ public class CreatePinActivity extends XmppActivity {
 		@Override
 		public void onClick(View v) {
 
+            if (jsonPin != null) {
+                try {
+                    String pincode = jsonPin.getString("pincode");
+                    String pintoken = jsonPin.getString("token");
+                    String url =
+                            "http://api.droidko.com/?method=pinRegister&output=json"
+                            + "&pincode=" + pincode
+                            + "&pintoken=" + pintoken;
+                    startJSONRequest(url);
+                    Toast.makeText(getBaseContext(), url, Toast.LENGTH_LONG).show();
 
+                } catch (JSONException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
 
 			if (mAccount != null
 					&& mAccount.getStatus() == Account.STATUS_DISABLED) {
