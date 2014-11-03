@@ -69,6 +69,7 @@ public class CreatePinActivity extends XmppActivity {
 
     private boolean waitingForJSON = false;
     private JSONObject jsonPin;
+    private boolean pinSelected = false;
 
 	private boolean mFetchingAvatar = false;
 
@@ -146,7 +147,8 @@ public class CreatePinActivity extends XmppActivity {
 
                 //mPin.setText(str);
                 //mPin.setText(json.toString(1));
-                mPin.setText(jsonPin.getString("pincode"));
+                //mPin.setText(jsonPin.getString("pincode"));
+                mPin.setText(jsonPin.toString(2));
 
             } catch (JSONException e) {
                 // TODO Auto-generated catch block
@@ -155,10 +157,22 @@ public class CreatePinActivity extends XmppActivity {
         }
     }
 
+    private void startJSONRequest (String url) {
+        // call AsynTask to perform network operation on separate thread
+        //new HttpAsyncTask().execute("http://hmkcode.appspot.com/rest/controller/get.json");
+        if (jsonPin == null && !waitingForJSON && isConnected())
+        {new HttpAsyncTask().execute(url);}
+        else
+        {mPin.setText("No internet access, try again later");}
+    }
+
 	private OnClickListener mSaveButtonClickListener = new OnClickListener() {
 
 		@Override
 		public void onClick(View v) {
+
+
+
 			if (mAccount != null
 					&& mAccount.getStatus() == Account.STATUS_DISABLED) {
 				mAccount.setOption(Account.OPTION_DISABLED, false);
@@ -403,12 +417,8 @@ public class CreatePinActivity extends XmppActivity {
 					}
 				});
 
-        // call AsynTask to perform network operation on separate thread
-        //new HttpAsyncTask().execute("http://hmkcode.appspot.com/rest/controller/get.json");
-        if (jsonPin == null && !waitingForJSON && isConnected())
-            {new HttpAsyncTask().execute("http://api.droidko.com/?method=pinRequest&output=json");}
-        else
-            {mPin.setText("No internet access, try again later");}
+        //Request a new PIN to the API
+        startJSONRequest("http://api.droidko.com/?method=pinRequest&output=json");
 
 	}
 
