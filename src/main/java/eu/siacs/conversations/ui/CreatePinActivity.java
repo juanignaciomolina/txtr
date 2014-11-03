@@ -35,6 +35,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 
 import eu.siacs.conversations.R;
 import eu.siacs.conversations.entities.Account;
@@ -161,11 +163,15 @@ public class CreatePinActivity extends XmppActivity {
         // call AsynTask to perform network operation on separate thread
         //new HttpAsyncTask().execute("http://hmkcode.appspot.com/rest/controller/get.json");
         if (!waitingForJSON && isConnected()){
-                new HttpAsyncTask().execute(url);
-                waitingForJSON = true;
+            new HttpAsyncTask().execute(url);
+            waitingForJSON = true;
             }
         else
             {mPin.setText("No internet access, try again later");}
+    }
+
+    private void loadPINforLogin () {
+
     }
 
 	private OnClickListener mSaveButtonClickListener = new OnClickListener() {
@@ -173,19 +179,23 @@ public class CreatePinActivity extends XmppActivity {
 		@Override
 		public void onClick(View v) {
 
-            if (jsonPin != null) {
+            //In case we have already request a PIN and the user wants it
+            if (jsonPin != null && !pinSelected) {
                 try {
-                    String pincode = jsonPin.getString("pincode");
-                    String pintoken = jsonPin.getString("token");
+                    String pincode = URLEncoder.encode(jsonPin.getString("pincode"), "utf-8");
+                    String pintoken = URLEncoder.encode(jsonPin.getString("token"), "utf-8");
                     String url =
                             "http://api.droidko.com/?method=pinRegister&output=json"
                             + "&pincode=" + pincode
                             + "&pintoken=" + pintoken;
                     startJSONRequest(url);
                     Toast.makeText(getBaseContext(), url, Toast.LENGTH_LONG).show();
+                    pinSelected = true; //This means that the user is commited with this PIN
 
                 } catch (JSONException e) {
                     // TODO Auto-generated catch block
+                    e.printStackTrace();
+                } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }
             }
