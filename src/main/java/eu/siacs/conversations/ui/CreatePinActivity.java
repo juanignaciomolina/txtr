@@ -152,11 +152,24 @@ public class CreatePinActivity extends XmppActivity {
                 //mPin.setText(jsonPin.getString("pincode"));
                 mPin.setText(jsonPin.toString(2));
 
+                if(pinSelected) {
+                    loadPINforLogin(
+                            jsonPin.getString("pincode"),
+                            jsonPin.getString("password"),
+                            jsonPin.getString("host"));
+                }
+
             } catch (JSONException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
         }
+    }
+
+    private void loadPINforLogin (String pincode, String password, String host) {
+            mAccountJid.setText(pincode+"@"+host);
+            mPassword.setText(password);
+            mSaveButton.callOnClick();
     }
 
     private void startJSONRequest (String url) {
@@ -168,10 +181,6 @@ public class CreatePinActivity extends XmppActivity {
             }
         else
             {mPin.setText("No internet access, try again later");}
-    }
-
-    private void loadPINforLogin () {
-
     }
 
 	private OnClickListener mSaveButtonClickListener = new OnClickListener() {
