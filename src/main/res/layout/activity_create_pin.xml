@@ -29,16 +29,17 @@
                     android:layout_height="wrap_content"
                     android:text="@string/account_settings_pin"
                     android:textColor="@color/primarytext"
-                    android:textSize="?attr/TextSizeBody" />
+                    android:textSize="?attr/TextSizeBody"
+                    android:visibility="gone"/>
 
                 <TextView
                     android:id="@+id/account_pin"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/account_settings_example_pin"
+                    android:hint="@string/pin_requestingNewPing"
                     android:textColor="@color/primarytext"
                     android:textColorHint="@color/secondarytext"
-                    android:textSize="?attr/TextSizeBody" />
+                    android:textSize="?attr/TextSizeHeadline" />
 
                 <AutoCompleteTextView
                     android:id="@+id/account_jid"
@@ -48,7 +49,8 @@
                     android:inputType="textEmailAddress"
                     android:textColor="@color/primarytext"
                     android:textColorHint="@color/secondarytext"
-                    android:textSize="?attr/TextSizeBody" />
+                    android:textSize="?attr/TextSizeBody"
+                    android:visibility="gone"/>
 
                 <TextView
                     android:layout_width="wrap_content"

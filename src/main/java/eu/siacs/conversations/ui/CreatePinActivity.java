@@ -140,7 +140,8 @@ public class CreatePinActivity extends XmppActivity {
                 str += "url: "+articles.getJSONObject(0).getString("url");*/
 
                 //mPin.setText(str);
-                mPin.setText(json.toString(1));
+                //mPin.setText(json.toString(1));
+                mPin.setText(json.getString("pincode"));
 
             } catch (JSONException e) {
                 // TODO Auto-generated catch block

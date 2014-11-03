@@ -285,5 +285,6 @@
     <string name="account_settings_pin">PIN</string>
     <string name="account_settings_example_pin">ABC1234</string>
     <string name="new_pin">New PIN</string>
+    <string name="pin_requestingNewPing">Requesting new PIN...</string>
 
 </resources>
