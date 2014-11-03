@@ -1,21 +1,5 @@
 package eu.siacs.conversations.ui;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import eu.siacs.conversations.R;
-import eu.siacs.conversations.entities.Contact;
-import eu.siacs.conversations.entities.Conversation;
-import eu.siacs.conversations.entities.Message;
-import eu.siacs.conversations.services.XmppConnectionService.OnAccountUpdate;
-import eu.siacs.conversations.services.XmppConnectionService.OnConversationUpdate;
-import eu.siacs.conversations.services.XmppConnectionService.OnRosterUpdate;
-import eu.siacs.conversations.ui.adapter.ConversationAdapter;
-import eu.siacs.conversations.utils.ExceptionHelper;
-import android.net.Uri;
-import android.os.Bundle;
-import android.os.SystemClock;
-import android.provider.MediaStore;
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.app.AlertDialog;
@@ -23,8 +7,12 @@ import android.app.FragmentTransaction;
 import android.app.PendingIntent;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
-import android.content.IntentSender.SendIntentException;
 import android.content.Intent;
+import android.content.IntentSender.SendIntentException;
+import android.net.Uri;
+import android.os.Bundle;
+import android.os.SystemClock;
+import android.provider.MediaStore;
 import android.support.v4.widget.SlidingPaneLayout;
 import android.support.v4.widget.SlidingPaneLayout.PanelSlideListener;
 import android.view.KeyEvent;
@@ -39,6 +27,19 @@ import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.PopupMenu.OnMenuItemClickListener;
 import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import eu.siacs.conversations.R;
+import eu.siacs.conversations.entities.Contact;
+import eu.siacs.conversations.entities.Conversation;
+import eu.siacs.conversations.entities.Message;
+import eu.siacs.conversations.services.XmppConnectionService.OnAccountUpdate;
+import eu.siacs.conversations.services.XmppConnectionService.OnConversationUpdate;
+import eu.siacs.conversations.services.XmppConnectionService.OnRosterUpdate;
+import eu.siacs.conversations.ui.adapter.ConversationAdapter;
+import eu.siacs.conversations.utils.ExceptionHelper;
 
 public class ConversationActivity extends XmppActivity implements
 		OnAccountUpdate, OnConversationUpdate, OnRosterUpdate {
@@ -242,6 +243,7 @@ public class ConversationActivity extends XmppActivity implements
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.conversations, menu);
 		MenuItem menuSecure = menu.findItem(R.id.action_security);
+        MenuItem menuNewPin = menu.findItem(R.id.action_new_pin);
 		MenuItem menuArchive = menu.findItem(R.id.action_archive);
 		MenuItem menuMucDetails = menu.findItem(R.id.action_muc_details);
 		MenuItem menuContactDetails = menu
@@ -264,6 +266,7 @@ public class ConversationActivity extends XmppActivity implements
 			menuMute.setVisible(false);
 		} else {
 			menuAdd.setVisible(!isConversationsOverviewHideable());
+            menuNewPin.setVisible(!isConversationsOverviewHideable());
 			if (this.getSelectedConversation() != null) {
 				if (this.getSelectedConversation().getLatestMessage()
 						.getEncryption() != Message.ENCRYPTION_NONE) {
@@ -377,6 +380,9 @@ public class ConversationActivity extends XmppActivity implements
 		} else if (item.getItemId() == R.id.action_add) {
 			startActivity(new Intent(this, StartConversationActivity.class));
 			return true;
+        } else if (item.getItemId() == R.id.action_new_pin) {
+            startActivity(new Intent(this, CreatePinActivity.class));
+            return true;
 		} else if (getSelectedConversation() != null) {
 			switch (item.getItemId()) {
 			case R.id.action_attach_file:

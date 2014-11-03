@@ -2,10 +2,16 @@
 
     <item
         android:id="@+id/action_add"
-        android:icon="@drawable/ic_action_new"
+        android:icon="@drawable/ic_action_chat_white"
         android:orderInCategory="10"
         android:showAsAction="always"
         android:title="@string/action_add"/>
+    <item
+        android:id="@+id/action_new_pin"
+        android:icon="@drawable/ic_action_new"
+        android:orderInCategory="10"
+        android:showAsAction="always"
+        android:title="@string/new_pin"/>
     <item
         android:id="@+id/action_security"
         android:icon="@drawable/ic_action_not_secure"

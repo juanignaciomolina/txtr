@@ -284,5 +284,6 @@
     <string name="image_transmission_failed">Image transmission failed</string>
     <string name="account_settings_pin">PIN</string>
     <string name="account_settings_example_pin">ABC1234</string>
+    <string name="new_pin">New PIN</string>
 
 </resources>
