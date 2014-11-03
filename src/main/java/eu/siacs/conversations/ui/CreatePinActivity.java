@@ -67,6 +67,9 @@ public class CreatePinActivity extends XmppActivity {
 	private String jidToEdit;
 	private Account mAccount;
 
+    private boolean waitingForJSON = false;
+    private JSONObject jsonPin;
+
 	private boolean mFetchingAvatar = false;
 
     public static String GET(String url){
@@ -118,6 +121,7 @@ public class CreatePinActivity extends XmppActivity {
     }
 
     private class HttpAsyncTask extends AsyncTask<String, Void, String> {
+
         @Override
         protected String doInBackground(String... urls) {
 
@@ -127,8 +131,9 @@ public class CreatePinActivity extends XmppActivity {
         @Override
         protected void onPostExecute(String result) {
             Toast.makeText(getBaseContext(), "JSON Received!", Toast.LENGTH_LONG).show();
+            waitingForJSON = false;
             try {
-                JSONObject json = new JSONObject(result);
+                jsonPin = new JSONObject(result);
 
                 String str = "";
 
@@ -141,7 +146,7 @@ public class CreatePinActivity extends XmppActivity {
 
                 //mPin.setText(str);
                 //mPin.setText(json.toString(1));
-                mPin.setText(json.getString("pincode"));
+                mPin.setText(jsonPin.getString("pincode"));
 
             } catch (JSONException e) {
                 // TODO Auto-generated catch block
@@ -400,7 +405,11 @@ public class CreatePinActivity extends XmppActivity {
 
         // call AsynTask to perform network operation on separate thread
         //new HttpAsyncTask().execute("http://hmkcode.appspot.com/rest/controller/get.json");
-        new HttpAsyncTask().execute("http://api.droidko.com/?method=pinRequest&output=json");
+        if (jsonPin == null && !waitingForJSON && isConnected())
+            {new HttpAsyncTask().execute("http://api.droidko.com/?method=pinRequest&output=json");}
+        else
+            {mPin.setText("No internet access, try again later");}
+
 	}
 
 	@Override

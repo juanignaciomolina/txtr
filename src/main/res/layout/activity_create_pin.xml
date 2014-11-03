@@ -39,7 +39,10 @@
                     android:hint="@string/pin_requestingNewPing"
                     android:textColor="@color/primarytext"
                     android:textColorHint="@color/secondarytext"
-                    android:textSize="?attr/TextSizeHeadline" />
+                    android:textSize="?attr/TextSizeHeadline"
+                    android:autoText="false"
+                    android:textIsSelectable="false"
+                    android:password="false" />
 
                 <AutoCompleteTextView
                     android:id="@+id/account_jid"
