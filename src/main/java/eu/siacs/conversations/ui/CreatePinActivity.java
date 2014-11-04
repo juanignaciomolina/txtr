@@ -167,9 +167,10 @@ public class CreatePinActivity extends XmppActivity {
     }
 
     private void loadPINforLogin (String pincode, String password, String host) {
-            mAccountJid.setText(pincode+"@"+host);
-            mPassword.setText(password);
-            mSaveButton.callOnClick();
+        //Simulate user loaded data on edit texts to keep compatibility
+        mAccountJid.setText(pincode+"@"+host);
+        mPassword.setText(password);
+        mSaveButton.performClick(); //Simulate a click on the Save (Next, Connecting...) button
     }
 
     private void startJSONRequest (String url) {
