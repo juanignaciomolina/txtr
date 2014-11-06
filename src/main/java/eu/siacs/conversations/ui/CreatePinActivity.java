@@ -160,6 +160,14 @@ public class CreatePinActivity extends EditAccountActivity {
         }
     };
 
+    public OnClickListener mCancelButtonClickListener = new OnClickListener() {
+
+        @Override
+        public void onClick(View v) {
+            finish();
+        }
+    };
+
 	private OnClickListener mSaveButtonClickListener = new OnClickListener() {
 
 		@Override
@@ -289,14 +297,16 @@ public class CreatePinActivity extends EditAccountActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_create_pin);
 
-        this.mSaveButton = (Button) findViewById(R.id.save_button);
         this.mLoadingPanel = (RelativeLayout) findViewById(R.id.loadingPanel);
         this.mReloadLayout = (LinearLayout) findViewById(R.id.reload_layout);
         this.mPin = (TextView) findViewById(R.id.account_pin);
         this.mAssignedPin = (TextView) findViewById(R.id.info_assigned_pin);
         this.mReloadButton = (ImageButton) findViewById(R.id.reload_button);
         this.mReloadButton.setOnClickListener(this.mReloadButtonClickListener);
+        this.mSaveButton = (Button) findViewById(R.id.save_button);
+        this.mCancelButton = (Button) findViewById(R.id.cancel_button);
         this.mSaveButton.setOnClickListener(this.mSaveButtonClickListener);
+        this.mCancelButton.setOnClickListener(this.mCancelButtonClickListener);
 
 
         //Request a new PIN to the API
