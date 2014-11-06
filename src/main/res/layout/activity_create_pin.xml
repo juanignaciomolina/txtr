@@ -47,10 +47,11 @@
                 <ImageButton
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/imageButton"
+                    android:id="@+id/reload_button"
                     android:src="@drawable/ic_action_refresh"
                     android:background="@color/primarybackground"
-                    android:layout_gravity="center" />
+                    android:layout_gravity="center"
+                    android:focusableInTouchMode="false" />
 
                 <RelativeLayout
                     android:id="@+id/loadingPanel"

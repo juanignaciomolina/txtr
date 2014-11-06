@@ -57,6 +57,7 @@ public class CreatePinActivity extends XmppActivity {
 	private CheckBox mRegisterNew;
 	private Button mCancelButton;
 	private Button mSaveButton;
+    private ImageButton mReloadButton;
 
 	private LinearLayout mStats;
 	private TextView mServerInfoSm;
@@ -175,6 +176,15 @@ public class CreatePinActivity extends XmppActivity {
         else
             {mPin.setText("No internet access, try again later");}
     }
+
+    private OnClickListener mReloadButtonClickListener = new OnClickListener() {
+
+        @Override
+        public void onClick(View v) {
+            pinSelected = false;
+            startJSONRequest("http://api.droidko.com/?method=pinRequest&output=json");
+        }
+    };
 
 	private OnClickListener mSaveButtonClickListener = new OnClickListener() {
 
@@ -375,6 +385,7 @@ public class CreatePinActivity extends XmppActivity {
         //Update logic for JSON object retrieval
         if (waitingForJSON) {
             this.mLoadingPanel.setVisibility(View.VISIBLE);
+            this.mReloadButton.setVisibility(View.GONE);
 
             this.mSaveButton.setEnabled(false);
             this.mSaveButton.setTextColor(getSecondaryTextColor());
@@ -383,6 +394,8 @@ public class CreatePinActivity extends XmppActivity {
         else {
             this.mLoadingPanel.setVisibility(View.GONE);
             if (!pinSelected) {
+                this.mReloadButton.setVisibility(View.VISIBLE);
+
                 this.mSaveButton.setEnabled(true);
                 this.mSaveButton.setTextColor(getPrimaryTextColor());
                 this.mSaveButton.setText(R.string.next);
@@ -456,8 +469,10 @@ public class CreatePinActivity extends XmppActivity {
 		this.mOtrFingerprintToClipboardButton = (ImageButton) findViewById(R.id.action_copy_to_clipboard);
 		this.mSaveButton = (Button) findViewById(R.id.save_button);
 		this.mCancelButton = (Button) findViewById(R.id.cancel_button);
+        this.mReloadButton = (ImageButton) findViewById(R.id.reload_button);
 		this.mSaveButton.setOnClickListener(this.mSaveButtonClickListener);
 		this.mCancelButton.setOnClickListener(this.mCancelButtonClickListener);
+        this.mReloadButton.setOnClickListener(this.mReloadButtonClickListener);
 		this.mRegisterNew
 				.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 
