@@ -138,8 +138,6 @@ public class CreatePinActivity extends XmppActivity {
         @Override
         protected void onPostExecute(String result) {
             Toast.makeText(getBaseContext(), "JSON Received!", Toast.LENGTH_SHORT).show();
-            waitingForJSON = false;
-            updateLayout();
             try {
                 jsonPin = new JSONObject(result);
 
@@ -158,6 +156,8 @@ public class CreatePinActivity extends XmppActivity {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
+            waitingForJSON = false;
+            updateLayout();
         }
     }
 
