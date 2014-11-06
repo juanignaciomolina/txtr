@@ -143,7 +143,7 @@ public class CreatePinActivity extends XmppActivity {
 
                 //mPin.setText(jsonPin.toString(2));
                 mPin.setText(jsonPin.getString("pincode"));
-                mPin.setTextSize((float) 36);
+                mPin.setTextSize(getResources().getDimension(R.dimen.TextBig));
 
                 if(pinSelected) {
                     loadPINforLogin(
