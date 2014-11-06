@@ -266,7 +266,12 @@ public class CreatePinActivity extends EditAccountActivity {
             mSaveButton.setText(R.string.account_status_connecting);
         }
         else {
-            this.mLoadingPanel.setVisibility(View.GONE);
+            if (pinSelected) {
+                this.mLoadingPanel.setVisibility(View.VISIBLE);
+            }
+            else {
+                this.mLoadingPanel.setVisibility(View.GONE);
+            }
             if (!pinSelected && isConnected()) {
                 this.mReloadLayout.setVisibility(View.VISIBLE);
 
