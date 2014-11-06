@@ -42,7 +42,8 @@
                     android:textSize="?attr/TextSizeHeadline"
                     android:autoText="false"
                     android:textIsSelectable="false"
-                    android:password="false" />
+                    android:password="false"
+                    android:gravity="clip_horizontal|center|clip_vertical" />
 
                 <ImageButton
                     android:layout_width="wrap_content"
