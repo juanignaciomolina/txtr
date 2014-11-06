@@ -29,28 +29,28 @@ import eu.siacs.conversations.xmpp.pep.Avatar;
 
 public class EditAccountActivity extends XmppActivity {
 
-	private AutoCompleteTextView mAccountJid;
-	private EditText mPassword;
-	private EditText mPasswordConfirm;
-	private CheckBox mRegisterNew;
-	private Button mCancelButton;
-	private Button mSaveButton;
+	public AutoCompleteTextView mAccountJid;
+	public EditText mPassword;
+	public EditText mPasswordConfirm;
+	public CheckBox mRegisterNew;
+	public Button mCancelButton;
+	public Button mSaveButton;
 
-	private LinearLayout mStats;
-	private TextView mServerInfoSm;
-	private TextView mServerInfoCarbons;
-	private TextView mServerInfoPep;
-	private TextView mSessionEst;
-	private TextView mOtrFingerprint;
-	private RelativeLayout mOtrFingerprintBox;
-	private ImageButton mOtrFingerprintToClipboardButton;
+	public LinearLayout mStats;
+	public TextView mServerInfoSm;
+	public TextView mServerInfoCarbons;
+	public TextView mServerInfoPep;
+	public TextView mSessionEst;
+	public TextView mOtrFingerprint;
+	public RelativeLayout mOtrFingerprintBox;
+	public ImageButton mOtrFingerprintToClipboardButton;
 
-	private String jidToEdit;
-	private Account mAccount;
+	public String jidToEdit;
+	public Account mAccount;
 
-	private boolean mFetchingAvatar = false;
+	public boolean mFetchingAvatar = false;
 
-	private OnClickListener mSaveButtonClickListener = new OnClickListener() {
+	public OnClickListener mSaveButtonClickListener = new OnClickListener() {
 
 		@Override
 		public void onClick(View v) {
@@ -113,14 +113,14 @@ public class EditAccountActivity extends XmppActivity {
 
 		}
 	};
-	private OnClickListener mCancelButtonClickListener = new OnClickListener() {
+	public OnClickListener mCancelButtonClickListener = new OnClickListener() {
 
 		@Override
 		public void onClick(View v) {
 			finish();
 		}
 	};
-	private OnAccountUpdate mOnAccountUpdateListener = new OnAccountUpdate() {
+	public OnAccountUpdate mOnAccountUpdateListener = new OnAccountUpdate() {
 
 		@Override
 		public void onAccountUpdate() {
@@ -151,7 +151,7 @@ public class EditAccountActivity extends XmppActivity {
 			});
 		}
 	};
-	private UiCallback<Avatar> mAvatarFetchCallback = new UiCallback<Avatar>() {
+	public UiCallback<Avatar> mAvatarFetchCallback = new UiCallback<Avatar>() {
 
 		@Override
 		public void userInputRequried(PendingIntent pi, Avatar avatar) {
@@ -168,8 +168,8 @@ public class EditAccountActivity extends XmppActivity {
 			finishInitialSetup(avatar);
 		}
 	};
-	private KnownHostsAdapter mKnownHostsAdapter;
-	private TextWatcher mTextWatcher = new TextWatcher() {
+	public KnownHostsAdapter mKnownHostsAdapter;
+	public TextWatcher mTextWatcher = new TextWatcher() {
 
 		@Override
 		public void onTextChanged(CharSequence s, int start, int before,
@@ -340,7 +340,7 @@ public class EditAccountActivity extends XmppActivity {
 		updateSaveButton();
 	}
 
-	private void updateAccountInformation() {
+	public void updateAccountInformation() {
 		this.mAccountJid.setText(this.mAccount.getJid());
 		this.mPassword.setText(this.mAccount.getPassword());
 		if (this.mAccount.isOptionSet(Account.OPTION_REGISTER)) {
