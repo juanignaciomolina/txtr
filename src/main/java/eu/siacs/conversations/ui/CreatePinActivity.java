@@ -152,8 +152,10 @@ public class CreatePinActivity extends EditAccountActivity {
 
         @Override
         public void onClick(View v) {
-            pinSelected = false;
-            startJSONRequest("http://api.droidko.com/?method=pinRequest&output=json");
+            if (!waitingForJSON) {
+                pinSelected = false;
+                startJSONRequest("http://api.droidko.com/?method=pinRequest&output=json");
+            }
         }
     };
 
@@ -290,7 +292,7 @@ public class CreatePinActivity extends EditAccountActivity {
         this.mReloadButton = (ImageButton) findViewById(R.id.reload_button);
         this.mReloadButton.setOnClickListener(this.mReloadButtonClickListener);
 
-        this.updateLayout();
+
         //Request a new PIN to the API
         this.startJSONRequest("http://api.droidko.com/?method=pinRequest&output=json");
 
