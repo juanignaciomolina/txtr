@@ -137,7 +137,7 @@ public class CreatePinActivity extends XmppActivity {
         // onPostExecute displays the results of the AsyncTask.
         @Override
         protected void onPostExecute(String result) {
-            Toast.makeText(getBaseContext(), "JSON Received!", Toast.LENGTH_SHORT).show();
+            Log.d("HtppAsyncTask", "JSON Received");
             try {
                 jsonPin = new JSONObject(result);
 
@@ -171,6 +171,7 @@ public class CreatePinActivity extends XmppActivity {
     private void startJSONRequest (String url) {
         // call AsynTask to perform network operation on separate thread
         if (!waitingForJSON && isConnected()){
+            Log.d("startJSONRequest", url);
             new HttpAsyncTask().execute(url);
             waitingForJSON = true;
             this.updateLayout();
@@ -203,7 +204,6 @@ public class CreatePinActivity extends XmppActivity {
                             + "&pincode=" + pincode
                             + "&pintoken=" + pintoken;
                     startJSONRequest(url);
-                    Toast.makeText(getBaseContext(), url, Toast.LENGTH_LONG).show();
                     pinSelected = true; //This means that the user is commited with this PIN
 
                 } catch (JSONException e) {
