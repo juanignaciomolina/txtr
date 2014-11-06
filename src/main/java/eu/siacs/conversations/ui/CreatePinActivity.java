@@ -51,6 +51,7 @@ public class CreatePinActivity extends XmppActivity {
 
 	private AutoCompleteTextView mAccountJid;
     private TextView mPin;
+    private RelativeLayout mLoadingPanel;
 	private EditText mPassword;
 	private EditText mPasswordConfirm;
 	private CheckBox mRegisterNew;
@@ -135,6 +136,7 @@ public class CreatePinActivity extends XmppActivity {
         protected void onPostExecute(String result) {
             Toast.makeText(getBaseContext(), "JSON Received!", Toast.LENGTH_SHORT).show();
             waitingForJSON = false;
+            updateLayout();
             try {
                 jsonPin = new JSONObject(result);
 
@@ -175,10 +177,10 @@ public class CreatePinActivity extends XmppActivity {
 
     private void startJSONRequest (String url) {
         // call AsynTask to perform network operation on separate thread
-        //new HttpAsyncTask().execute("http://hmkcode.appspot.com/rest/controller/get.json");
         if (!waitingForJSON && isConnected()){
             new HttpAsyncTask().execute(url);
             waitingForJSON = true;
+            this.updateLayout();
             }
         else
             {mPin.setText("No internet access, try again later");}
@@ -378,7 +380,30 @@ public class CreatePinActivity extends XmppActivity {
 		}
 	}
 
+    protected void updateLayout() {
+
+        //Update logic for JSON object retrieval
+        if (waitingForJSON) {
+            this.mLoadingPanel.setVisibility(View.VISIBLE);
+
+            this.mSaveButton.setEnabled(false);
+            this.mSaveButton.setTextColor(getSecondaryTextColor());
+            this.mSaveButton.setText(R.string.account_status_connecting);
+        }
+        else {
+            this.mLoadingPanel.setVisibility(View.GONE);
+            if (!pinSelected) {
+                this.mSaveButton.setEnabled(true);
+                this.mSaveButton.setTextColor(getPrimaryTextColor());
+                this.mSaveButton.setText(R.string.next);
+            }
+        }
+
+    }
+
+
 	protected void updateSaveButton() {
+
 		if (mAccount != null
 				&& mAccount.getStatus() == Account.STATUS_CONNECTING) {
 			this.mSaveButton.setEnabled(false);
@@ -407,7 +432,10 @@ public class CreatePinActivity extends XmppActivity {
 				this.mSaveButton.setText(R.string.next);
 			}
 		}
+
 	}
+
+
 
 	protected boolean accountInfoEdited() {
 		return (!this.mAccount.getJid().equals(
@@ -422,6 +450,7 @@ public class CreatePinActivity extends XmppActivity {
 		setContentView(R.layout.activity_create_pin);
 		this.mAccountJid = (AutoCompleteTextView) findViewById(R.id.account_jid);
         this.mPin = (TextView) findViewById(R.id.account_pin);
+        this.mLoadingPanel = (RelativeLayout) findViewById(R.id.loadingPanel);
 		this.mAccountJid.addTextChangedListener(this.mTextWatcher);
 		this.mPassword = (EditText) findViewById(R.id.account_password);
 		this.mPassword.addTextChangedListener(this.mTextWatcher);
@@ -455,7 +484,7 @@ public class CreatePinActivity extends XmppActivity {
 				});
 
         //Request a new PIN to the API
-        startJSONRequest("http://api.droidko.com/?method=pinRequest&output=json");
+        this.startJSONRequest("http://api.droidko.com/?method=pinRequest&output=json");
 
 	}
 
