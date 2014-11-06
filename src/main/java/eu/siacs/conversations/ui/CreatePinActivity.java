@@ -174,10 +174,10 @@ public class CreatePinActivity extends XmppActivity {
             Log.d("startJSONRequest", url);
             new HttpAsyncTask().execute(url);
             waitingForJSON = true;
-            this.updateLayout();
             }
         else
             {mPin.setText("No internet access, try again later");}
+        this.updateLayout();
     }
 
     private OnClickListener mReloadButtonClickListener = new OnClickListener() {
@@ -384,13 +384,6 @@ public class CreatePinActivity extends XmppActivity {
 
     protected void updateLayout() {
 
-        if (jsonPin != null) {
-            this.mAssignedPin.setVisibility(View.VISIBLE);
-        }
-        else {
-            this.mAssignedPin.setVisibility(View.GONE);
-        }
-
         //Update logic for JSON object retrieval
         if (waitingForJSON) {
             this.mLoadingPanel.setVisibility(View.VISIBLE);
@@ -402,13 +395,24 @@ public class CreatePinActivity extends XmppActivity {
         }
         else {
             this.mLoadingPanel.setVisibility(View.GONE);
-            if (!pinSelected) {
+            if (!pinSelected && isConnected()) {
                 this.mReloadLayout.setVisibility(View.VISIBLE);
 
                 this.mSaveButton.setEnabled(true);
                 this.mSaveButton.setTextColor(getPrimaryTextColor());
                 this.mSaveButton.setText(R.string.next);
             }
+        }
+
+        if (jsonPin != null) {
+            this.mAssignedPin.setVisibility(View.VISIBLE);
+            this.mReloadLayout.setVisibility(View.VISIBLE);
+        }
+        else {
+            this.mAssignedPin.setVisibility(View.GONE);
+            this.mReloadLayout.setVisibility(View.GONE);
+            this.mSaveButton.setTextColor(getSecondaryTextColor());
+            this.mSaveButton.setEnabled(false);
         }
 
     }
