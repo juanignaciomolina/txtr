@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -37,10 +38,10 @@ public class CreatePinActivity extends EditAccountActivity {
     private TextView mAssignedPin;
     private RelativeLayout mLoadingPanel;
     private ImageButton mReloadButton;
+    private Button mSaveButton;
+    private Button mCancelButton;
 
     private LinearLayout mReloadLayout;
-
-	private Account mAccount;
 
     private boolean waitingForJSON = false;
     private JSONObject jsonPin;
@@ -131,7 +132,7 @@ public class CreatePinActivity extends EditAccountActivity {
 
     private void loadPINforLogin (String pincode, String password, String host) {
         //Simulate user loaded data on edit texts to keep compatibility
-        mAccountJid.setText(pincode+"@"+host);
+        super.mAccountJid.setText(pincode+"@"+host);
         mPassword.setText(password);
         mSaveButton.performClick(); //Simulate a click on the Save (Next, Connecting...) button
     }
@@ -163,6 +164,8 @@ public class CreatePinActivity extends EditAccountActivity {
 
 		@Override
 		public void onClick(View v) {
+
+            Log.d("TXTR","Next button clicked");
 
             //In case we have already request a PIN and the user wants it
             if (jsonPin != null && !pinSelected) {
@@ -246,23 +249,24 @@ public class CreatePinActivity extends EditAccountActivity {
 
     protected void updateLayout() {
 
+
         //Update logic for JSON object retrieval
         if (waitingForJSON) {
             this.mLoadingPanel.setVisibility(View.VISIBLE);
             this.mReloadLayout.setVisibility(View.GONE);
 
-            super.mSaveButton.setEnabled(false);
-            super.mSaveButton.setTextColor(getSecondaryTextColor());
-            super.mSaveButton.setText(R.string.account_status_connecting);
+            mSaveButton.setEnabled(false);
+            mSaveButton.setTextColor(getSecondaryTextColor());
+            mSaveButton.setText(R.string.account_status_connecting);
         }
         else {
             this.mLoadingPanel.setVisibility(View.GONE);
             if (!pinSelected && isConnected()) {
                 this.mReloadLayout.setVisibility(View.VISIBLE);
 
-                super.mSaveButton.setEnabled(true);
-                super.mSaveButton.setTextColor(getPrimaryTextColor());
-                super.mSaveButton.setText(R.string.next);
+                mSaveButton.setEnabled(true);
+                mSaveButton.setTextColor(getPrimaryTextColor());
+                mSaveButton.setText(R.string.next);
             }
         }
 
@@ -273,8 +277,8 @@ public class CreatePinActivity extends EditAccountActivity {
         else {
             this.mAssignedPin.setVisibility(View.GONE);
             this.mReloadLayout.setVisibility(View.GONE);
-            super.mSaveButton.setTextColor(getSecondaryTextColor());
-            super.mSaveButton.setEnabled(false);
+            mSaveButton.setTextColor(getSecondaryTextColor());
+            mSaveButton.setEnabled(false);
         }
 
     }
@@ -285,12 +289,14 @@ public class CreatePinActivity extends EditAccountActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_create_pin);
 
+        this.mSaveButton = (Button) findViewById(R.id.save_button);
         this.mLoadingPanel = (RelativeLayout) findViewById(R.id.loadingPanel);
         this.mReloadLayout = (LinearLayout) findViewById(R.id.reload_layout);
         this.mPin = (TextView) findViewById(R.id.account_pin);
         this.mAssignedPin = (TextView) findViewById(R.id.info_assigned_pin);
         this.mReloadButton = (ImageButton) findViewById(R.id.reload_button);
         this.mReloadButton.setOnClickListener(this.mReloadButtonClickListener);
+        this.mSaveButton.setOnClickListener(this.mSaveButtonClickListener);
 
 
         //Request a new PIN to the API
@@ -312,8 +318,7 @@ public class CreatePinActivity extends EditAccountActivity {
 	protected void onBackendConnected() {
         super.onBackendConnected();
 
-		super.updateSaveButton();
-        this.updateLayout();
+        updateLayout();
 	}
 
 }
