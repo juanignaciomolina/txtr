@@ -173,8 +173,6 @@ public class CreatePinActivity extends EditAccountActivity {
 		@Override
 		public void onClick(View v) {
 
-            Log.d("TXTR","Next button clicked");
-
             //In case we have already request a PIN and the user wants it
             if (jsonPin != null && !pinSelected) {
                 try {
