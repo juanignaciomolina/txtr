@@ -67,6 +67,7 @@ public class CreatePinActivity extends XmppActivity {
 	private TextView mSessionEst;
 	private TextView mOtrFingerprint;
 	private RelativeLayout mOtrFingerprintBox;
+    private LinearLayout mReloadLayout;
 	private ImageButton mOtrFingerprintToClipboardButton;
 
 	private String jidToEdit;
@@ -393,7 +394,7 @@ public class CreatePinActivity extends XmppActivity {
         //Update logic for JSON object retrieval
         if (waitingForJSON) {
             this.mLoadingPanel.setVisibility(View.VISIBLE);
-            this.mReloadButton.setVisibility(View.GONE);
+            this.mReloadLayout.setVisibility(View.GONE);
 
             this.mSaveButton.setEnabled(false);
             this.mSaveButton.setTextColor(getSecondaryTextColor());
@@ -402,7 +403,7 @@ public class CreatePinActivity extends XmppActivity {
         else {
             this.mLoadingPanel.setVisibility(View.GONE);
             if (!pinSelected) {
-                this.mReloadButton.setVisibility(View.VISIBLE);
+                this.mReloadLayout.setVisibility(View.VISIBLE);
 
                 this.mSaveButton.setEnabled(true);
                 this.mSaveButton.setTextColor(getPrimaryTextColor());
@@ -469,6 +470,7 @@ public class CreatePinActivity extends XmppActivity {
 		this.mPasswordConfirm = (EditText) findViewById(R.id.account_password_confirm);
 		this.mRegisterNew = (CheckBox) findViewById(R.id.account_register_new);
 		this.mStats = (LinearLayout) findViewById(R.id.stats);
+        this.mReloadLayout = (LinearLayout) findViewById(R.id.reload_layout);
 		this.mSessionEst = (TextView) findViewById(R.id.session_est);
 		this.mServerInfoCarbons = (TextView) findViewById(R.id.server_info_carbons);
 		this.mServerInfoSm = (TextView) findViewById(R.id.server_info_sm);

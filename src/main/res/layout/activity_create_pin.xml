@@ -60,14 +60,35 @@
                     android:gravity="clip_horizontal|center|clip_vertical"
                     android:layout_gravity="center" />
 
-                <ImageButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/reload_button"
-                    android:src="@drawable/ic_action_refresh"
-                    android:background="@color/primarybackground"
-                    android:layout_gravity="center"
-                    android:focusableInTouchMode="false" />
+                <LinearLayout
+                    android:id="@+id/reload_layout"
+                    android:orientation="horizontal"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent">
+
+                    <TextView
+                        android:id="@+id/info_tryanother"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:hint="Wanna try another PIN?"
+                        android:textColor="@color/primarytext"
+                        android:textColorHint="@color/secondarytext"
+                        android:textSize="?attr/TextSizeHeadline"
+                        android:autoText="false"
+                        android:textIsSelectable="false"
+                        android:password="false"
+                        android:gravity="clip_horizontal|center|clip_vertical"
+                        android:layout_gravity="center" />
+
+                    <ImageButton
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/reload_button"
+                        android:src="@drawable/ic_action_refresh"
+                        android:background="@color/primarybackground"
+                        android:layout_gravity="center"
+                        android:focusableInTouchMode="false" />
+                </LinearLayout>
 
                 <RelativeLayout
                     android:id="@+id/loadingPanel"
