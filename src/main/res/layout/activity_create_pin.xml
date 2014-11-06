@@ -33,8 +33,22 @@
                     android:visibility="gone"/>
 
                 <TextView
+                    android:id="@+id/info_assigned_pin"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:hint="Your new PIN is"
+                    android:textColor="@color/primarytext"
+                    android:textColorHint="@color/secondarytext"
+                    android:textSize="?attr/TextSizeHeadline"
+                    android:autoText="false"
+                    android:textIsSelectable="false"
+                    android:password="false"
+                    android:gravity="clip_horizontal|center|clip_vertical"
+                    android:layout_gravity="center" />
+
+                <TextView
                     android:id="@+id/account_pin"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:hint="@string/pin_requestingNewPing"
                     android:textColor="@color/primarytext"
@@ -43,7 +57,8 @@
                     android:autoText="false"
                     android:textIsSelectable="false"
                     android:password="false"
-                    android:gravity="clip_horizontal|center|clip_vertical" />
+                    android:gravity="clip_horizontal|center|clip_vertical"
+                    android:layout_gravity="center" />
 
                 <ImageButton
                     android:layout_width="wrap_content"

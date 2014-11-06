@@ -51,6 +51,7 @@ public class CreatePinActivity extends XmppActivity {
 
 	private AutoCompleteTextView mAccountJid;
     private TextView mPin;
+    private TextView mAssignedPin;
     private RelativeLayout mLoadingPanel;
 	private EditText mPassword;
 	private EditText mPasswordConfirm;
@@ -382,6 +383,13 @@ public class CreatePinActivity extends XmppActivity {
 
     protected void updateLayout() {
 
+        if (jsonPin != null) {
+            this.mAssignedPin.setVisibility(View.VISIBLE);
+        }
+        else {
+            this.mAssignedPin.setVisibility(View.GONE);
+        }
+
         //Update logic for JSON object retrieval
         if (waitingForJSON) {
             this.mLoadingPanel.setVisibility(View.VISIBLE);
@@ -453,6 +461,7 @@ public class CreatePinActivity extends XmppActivity {
 		setContentView(R.layout.activity_create_pin);
 		this.mAccountJid = (AutoCompleteTextView) findViewById(R.id.account_jid);
         this.mPin = (TextView) findViewById(R.id.account_pin);
+        this.mAssignedPin = (TextView) findViewById(R.id.info_assigned_pin);
         this.mLoadingPanel = (RelativeLayout) findViewById(R.id.loadingPanel);
 		this.mAccountJid.addTextChangedListener(this.mTextWatcher);
 		this.mPassword = (EditText) findViewById(R.id.account_password);
