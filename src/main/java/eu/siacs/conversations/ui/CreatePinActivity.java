@@ -105,7 +105,7 @@ public class CreatePinActivity extends EditAccountActivity {
         // onPostExecute displays the results of the AsyncTask.
         @Override
         protected void onPostExecute(String result) {
-            Log.d("HtppAsyncTask", "JSON Received");
+            Log.d("TXTR API", "HtppAsyncTask: JSON Received");
             try {
                 jsonPin = new JSONObject(result);
 
@@ -139,7 +139,7 @@ public class CreatePinActivity extends EditAccountActivity {
     private void startJSONRequest (String url) {
         // call AsynTask to perform network operation on separate thread
         if (!waitingForJSON && isConnected()){
-            Log.d("startJSONRequest", url);
+            Log.d("TXTR API", "startJSONRequest: " + url);
             new HttpAsyncTask().execute(url);
             waitingForJSON = true;
             }
