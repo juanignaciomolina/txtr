@@ -140,19 +140,9 @@ public class CreatePinActivity extends XmppActivity {
             try {
                 jsonPin = new JSONObject(result);
 
-                String str = "";
-
-                /*JSONArray articles = json.getJSONArray("articleList");
-                str += "articles length = "+json.getJSONArray("articleList").length();
-                str += "\n--------\n";
-                str += "names: "+articles.getJSONObject(0).names();
-                str += "\n--------\n";
-                str += "url: "+articles.getJSONObject(0).getString("url");*/
-
-                //mPin.setText(str);
-                //mPin.setText(json.toString(1));
-                //mPin.setText(jsonPin.getString("pincode"));
-                mPin.setText(jsonPin.toString(2));
+                //mPin.setText(jsonPin.toString(2));
+                mPin.setText(jsonPin.getString("pincode"));
+                mPin.setTextSize((float) 36);
 
                 if(pinSelected) {
                     loadPINforLogin(
@@ -528,6 +518,7 @@ public class CreatePinActivity extends XmppActivity {
 		}
 		this.mAccountJid.setAdapter(this.mKnownHostsAdapter);
 		updateSaveButton();
+        this.updateLayout();
 	}
 
 	private void updateAccountInformation() {
