@@ -47,7 +47,12 @@ public class CreatePinActivity extends EditAccountActivity {
     private boolean waitingForJSON = false;
     private JSONObject jsonPin;
     private boolean pinSelected = false;
-    private boolean internetAccess = true;
+
+    //SavedInstanceState keys
+    static final String STATE_WAITINGFORJSON = "waitingForJson";
+    static final String STATE_JSONPIN_PINCODE = "jsonPincode";
+    static final String STATE_JSONPIN_TOKEN = "jsonToken";
+    static final String STATE_PINSELECTED = "pinSelected";
 
 
     public static String GET(String url){
@@ -340,6 +345,7 @@ public class CreatePinActivity extends EditAccountActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
+
 		setContentView(R.layout.activity_create_pin);
 
         this.mLoadingPanel = (RelativeLayout) findViewById(R.id.loadingPanel);
@@ -355,11 +361,49 @@ public class CreatePinActivity extends EditAccountActivity {
         this.mSaveButton.setOnClickListener(this.mSaveButtonClickListener);
         this.mCancelButton.setOnClickListener(this.mCancelButtonClickListener);
 
-
-        //Request a new PIN to the API
-        this.startJSONRequest("http://api.droidko.com/?method=pinRequest&output=json");
+        if (savedInstanceState != null) {
+            //Restore values of the previous instance (ie: before rotating the screen)
+            this.waitingForJSON = false;
+            this.pinSelected = savedInstanceState.getBoolean(STATE_PINSELECTED);
+            this.waitingForJSON = savedInstanceState.getBoolean(STATE_WAITINGFORJSON);
+            this.jsonPin = new JSONObject();
+            try {
+                this.jsonPin.put("pincode", savedInstanceState.getString(STATE_JSONPIN_PINCODE));
+                this.jsonPin.put("token", savedInstanceState.getString(STATE_JSONPIN_TOKEN));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            this.mPin.setText(savedInstanceState.getString(STATE_JSONPIN_PINCODE));
+            this.mPin.setTextSize(getResources().getDimension(R.dimen.TextBig));
+            this.updateLayout();
+        }
+        else {
+            //Request a new PIN to the API
+            this.startJSONRequest("http://api.droidko.com/?method=pinRequest&output=json");
+        }
 
 	}
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        // Save the user's current activity state
+        savedInstanceState.putBoolean(STATE_PINSELECTED, pinSelected);
+        savedInstanceState.putBoolean(STATE_WAITINGFORJSON, waitingForJSON);
+
+        try {
+            savedInstanceState.putString(STATE_JSONPIN_PINCODE, URLEncoder.encode(jsonPin.getString("pincode"), "utf-8"));
+            savedInstanceState.putString(STATE_JSONPIN_TOKEN, URLEncoder.encode(jsonPin.getString("token"), "utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        // Always call the superclass so it can save the view hierarchy state
+        super.onSaveInstanceState(savedInstanceState);
+    }
+
+
 
 	@Override
 	protected void onStart() {
