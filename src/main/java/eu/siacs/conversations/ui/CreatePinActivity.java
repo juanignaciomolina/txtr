@@ -164,8 +164,12 @@ public class CreatePinActivity extends EditAccountActivity {
         @Override
         public void onClick(View v) {
             if (!waitingForJSON) {
-                pinSelected = false;
-                startJSONRequest("http://api.droidko.com/?method=pinRequest&output=json");
+                if (!pinSelected) {
+                    startJSONRequest("http://api.droidko.com/?method=pinRequest&output=json");
+                }
+                else {
+                    mSaveButton.performClick();
+                }
             }
         }
     };
@@ -184,7 +188,7 @@ public class CreatePinActivity extends EditAccountActivity {
 		public void onClick(View v) {
 
             //In case we have already request a PIN and the user wants it
-            if (jsonPin != null && !pinSelected) {
+            if (jsonPin != null || pinSelected) {
                 try {
                     String pincode = URLEncoder.encode(jsonPin.getString("pincode"), "utf-8");
                     String pintoken = URLEncoder.encode(jsonPin.getString("token"), "utf-8");
@@ -192,8 +196,8 @@ public class CreatePinActivity extends EditAccountActivity {
                             "http://api.droidko.com/?method=pinRegister&output=json"
                             + "&pincode=" + pincode
                             + "&pintoken=" + pintoken;
-                    startJSONRequest(url);
                     pinSelected = true; //This means that the user is commited with this PIN
+                    startJSONRequest(url);
 
                 } catch (JSONException e) {
                     // TODO Auto-generated catch block
@@ -305,7 +309,14 @@ public class CreatePinActivity extends EditAccountActivity {
         //Check for connection availability to display accurate message
         if (!isConnected()) {
             mNoInternet.setVisibility(View.VISIBLE);
-            mPin.setVisibility(View.GONE);
+            if (pinSelected) {
+                mPin.setVisibility(View.VISIBLE);
+                mPin.setTextColor(getSecondaryTextColor());
+            }
+            else {
+                mPin.setVisibility(View.GONE);
+                mPin.setTextColor(getPrimaryTextColor());
+            }
             mLoadingPanel.setVisibility(View.GONE);
             mAssignedPin.setVisibility(View.GONE);
             mReloadLayout.setVisibility(View.VISIBLE);
@@ -320,6 +331,7 @@ public class CreatePinActivity extends EditAccountActivity {
             mPin.setVisibility(View.VISIBLE);
             mTryAnother.setText(R.string.createPin_tryanotherpin);
             mTryAnother.setTextColor(getSecondaryTextColor());
+            mPin.setTextColor(getPrimaryTextColor());
         }
 
     }
