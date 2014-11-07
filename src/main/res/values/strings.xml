@@ -286,5 +286,8 @@
     <string name="account_settings_example_pin">ABC1234</string>
     <string name="new_pin">New PIN</string>
     <string name="pin_requestingNewPing">Requesting new PIN...</string>
+    <string name="createPin_no_internet">No internet access</string>
+    <string name="createPin_tryanotherpin">Wanna try another PIN?</string>
+    <string name="createPin_tryagainnow">Try again now?</string>
 
 </resources>

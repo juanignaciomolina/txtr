@@ -36,16 +36,18 @@ public class CreatePinActivity extends EditAccountActivity {
 
     private TextView mPin;
     private TextView mAssignedPin;
+    private TextView mNoInternet;
+    private TextView mTryAnother;
     private RelativeLayout mLoadingPanel;
+    private LinearLayout mReloadLayout;
     private ImageButton mReloadButton;
     private Button mSaveButton;
     private Button mCancelButton;
 
-    private LinearLayout mReloadLayout;
-
     private boolean waitingForJSON = false;
     private JSONObject jsonPin;
     private boolean pinSelected = false;
+    private boolean internetAccess = true;
 
 
     public static String GET(String url){
@@ -151,7 +153,8 @@ public class CreatePinActivity extends EditAccountActivity {
             waitingForJSON = true;
             }
         else {
-            mPin.setText("No internet access, try again later");
+            Log.d("TXTR API", "startJSONRequest: No internet access");
+            waitingForJSON = false;
         }
         this.updateLayout();
     }
@@ -299,6 +302,26 @@ public class CreatePinActivity extends EditAccountActivity {
             mSaveButton.setEnabled(false);
         }
 
+        //Check for connection availability to display accurate message
+        if (!isConnected()) {
+            mNoInternet.setVisibility(View.VISIBLE);
+            mPin.setVisibility(View.GONE);
+            mLoadingPanel.setVisibility(View.GONE);
+            mAssignedPin.setVisibility(View.GONE);
+            mReloadLayout.setVisibility(View.VISIBLE);
+            mTryAnother.setText(R.string.createPin_tryagainnow);
+            mTryAnother.setTextColor(getSecondaryTextColor());
+            mSaveButton.setEnabled(false);
+            mSaveButton.setTextColor(getSecondaryTextColor());
+            mSaveButton.setText(R.string.next);
+        }
+        else {
+            mNoInternet.setVisibility(View.GONE);
+            mPin.setVisibility(View.VISIBLE);
+            mTryAnother.setText(R.string.createPin_tryanotherpin);
+            mTryAnother.setTextColor(getSecondaryTextColor());
+        }
+
     }
 
 	@Override
@@ -311,6 +334,8 @@ public class CreatePinActivity extends EditAccountActivity {
         this.mReloadLayout = (LinearLayout) findViewById(R.id.reload_layout);
         this.mPin = (TextView) findViewById(R.id.account_pin);
         this.mAssignedPin = (TextView) findViewById(R.id.info_assigned_pin);
+        this.mNoInternet = (TextView) findViewById(R.id.account_no_internet);
+        this.mTryAnother = (TextView) findViewById(R.id.info_tryanother);
         this.mReloadButton = (ImageButton) findViewById(R.id.reload_button);
         this.mReloadButton.setOnClickListener(this.mReloadButtonClickListener);
         this.mSaveButton = (Button) findViewById(R.id.save_button);

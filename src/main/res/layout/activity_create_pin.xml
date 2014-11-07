@@ -47,6 +47,21 @@
                     android:layout_gravity="center" />
 
                 <TextView
+                    android:id="@+id/account_no_internet"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/createPin_no_internet"
+                    android:textColor="@color/primarytext"
+                    android:textColorHint="@color/secondarytext"
+                    android:textSize="?attr/TextSizeHeadline"
+                    android:autoText="false"
+                    android:textIsSelectable="false"
+                    android:password="false"
+                    android:gravity="clip_horizontal|center|clip_vertical"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="8dp"/>
+
+                <TextView
                     android:id="@+id/account_pin"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -70,7 +85,7 @@
                         android:id="@+id/info_tryanother"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:hint="Wanna try another PIN?"
+                        android:hint="@string/createPin_tryanotherpin"
                         android:textColor="@color/primarytext"
                         android:textColorHint="@color/secondarytext"
                         android:textSize="?attr/TextSizeHeadline"
