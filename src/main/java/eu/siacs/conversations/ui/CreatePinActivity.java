@@ -47,6 +47,8 @@ public class CreatePinActivity extends EditAccountActivity {
     private boolean waitingForJSON = false;
     private JSONObject jsonPin;
     private boolean pinSelected = false;
+    private int nAttempts = 0;
+    static final int MAX_ATTEMPTS = 3;
 
     //SavedInstanceState keys
     static final String STATE_WAITINGFORJSON = "waitingForJson";
@@ -121,6 +123,7 @@ public class CreatePinActivity extends EditAccountActivity {
                 if (jsonPin.has("state") && jsonPin.getInt("state") == 1) { //State 1: OK
                     mPin.setText(jsonPin.getString("pincode"));
                     mPin.setTextSize(getResources().getDimension(R.dimen.TextBig));
+                    nAttempts = 0; //Reset attempts
 
                     if(pinSelected) {
                         loadPINforLogin(
@@ -128,6 +131,10 @@ public class CreatePinActivity extends EditAccountActivity {
                                 jsonPin.getString("password"),
                                 jsonPin.getString("host"));
                     }
+                }
+                else if (nAttempts < MAX_ATTEMPTS) { //Check that the same PIN is not being tried too many times
+                    nAttempts++;
+                    mSaveButton.performClick();
                 }
                 else {
                     mPin.setText("Couldn't get a PIN, try again later");
@@ -365,7 +372,6 @@ public class CreatePinActivity extends EditAccountActivity {
             //Restore values of the previous instance (ie: before rotating the screen)
             this.waitingForJSON = false;
             this.pinSelected = savedInstanceState.getBoolean(STATE_PINSELECTED);
-            this.waitingForJSON = savedInstanceState.getBoolean(STATE_WAITINGFORJSON);
             this.jsonPin = new JSONObject();
             try {
                 this.jsonPin.put("pincode", savedInstanceState.getString(STATE_JSONPIN_PINCODE));
@@ -376,6 +382,7 @@ public class CreatePinActivity extends EditAccountActivity {
             this.mPin.setText(savedInstanceState.getString(STATE_JSONPIN_PINCODE));
             this.mPin.setTextSize(getResources().getDimension(R.dimen.TextBig));
             this.updateLayout();
+            if (pinSelected) this.mSaveButton.performClick();
         }
         else {
             //Request a new PIN to the API
