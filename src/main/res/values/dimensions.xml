@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="TextBig">20sp</dimen>
+    <dimen name="TextMedium">16sp</dimen>
 </resources>

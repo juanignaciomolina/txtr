@@ -110,15 +110,21 @@ public class CreatePinActivity extends EditAccountActivity {
             try {
                 jsonPin = new JSONObject(result);
 
-                //mPin.setText(jsonPin.toString(2));
-                mPin.setText(jsonPin.getString("pincode"));
-                mPin.setTextSize(getResources().getDimension(R.dimen.TextBig));
+                //mPin.setText(jsonPin.toString(2)); Show the whole object with this to debug
+                if (jsonPin.has("state") && jsonPin.getInt("state") == 1) { //State 1: OK
+                    mPin.setText(jsonPin.getString("pincode"));
+                    mPin.setTextSize(getResources().getDimension(R.dimen.TextBig));
 
-                if(pinSelected) {
-                    loadPINforLogin(
-                            jsonPin.getString("pincode"),
-                            jsonPin.getString("password"),
-                            jsonPin.getString("host"));
+                    if(pinSelected) {
+                        loadPINforLogin(
+                                jsonPin.getString("pincode"),
+                                jsonPin.getString("password"),
+                                jsonPin.getString("host"));
+                    }
+                }
+                else {
+                    mPin.setText("Couldn't get a PIN, try again later");
+                    mPin.setTextSize(getResources().getDimension(R.dimen.TextMedium));
                 }
 
             } catch (JSONException e) {
@@ -144,8 +150,9 @@ public class CreatePinActivity extends EditAccountActivity {
             new HttpAsyncTask().execute(url);
             waitingForJSON = true;
             }
-        else
-            {mPin.setText("No internet access, try again later");}
+        else {
+            mPin.setText("No internet access, try again later");
+        }
         this.updateLayout();
     }
 
