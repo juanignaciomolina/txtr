@@ -44,22 +44,23 @@
                     android:textIsSelectable="false"
                     android:password="false"
                     android:gravity="clip_horizontal|center|clip_vertical"
-                    android:layout_gravity="center" />
+                    android:layout_gravity="center"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/account_no_internet"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:hint="@string/createPin_no_internet"
-                    android:textColor="@color/primarytext"
-                    android:textColorHint="@color/secondarytext"
-                    android:textSize="?attr/TextSizeHeadline"
+                    android:text="@string/createPin_no_internet"
+                    android:textColor="@color/red"
                     android:autoText="false"
-                    android:textIsSelectable="false"
+                    android:textIsSelectable="true"
                     android:password="false"
                     android:gravity="clip_horizontal|center|clip_vertical"
                     android:layout_gravity="center"
-                    android:layout_marginBottom="8dp"/>
+                    android:layout_marginBottom="8dp"
+                    android:textStyle="bold"
+                    android:textSize="?attr/TextSizeHeadline" />
 
                 <TextView
                     android:id="@+id/account_pin"

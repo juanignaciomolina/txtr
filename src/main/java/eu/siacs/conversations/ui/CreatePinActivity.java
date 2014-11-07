@@ -282,13 +282,13 @@ public class CreatePinActivity extends EditAccountActivity {
         else {
             if (pinSelected) {
                 this.mLoadingPanel.setVisibility(View.VISIBLE);
+                this.mReloadLayout.setVisibility(View.GONE);
             }
             else {
                 this.mLoadingPanel.setVisibility(View.GONE);
+                this.mReloadButton.setVisibility(View.VISIBLE);
             }
             if (!pinSelected && isConnected()) {
-                this.mReloadLayout.setVisibility(View.VISIBLE);
-
                 mSaveButton.setEnabled(true);
                 mSaveButton.setTextColor(getPrimaryTextColor());
                 mSaveButton.setText(R.string.next);
@@ -297,7 +297,7 @@ public class CreatePinActivity extends EditAccountActivity {
 
         if (jsonPin != null) {
             this.mAssignedPin.setVisibility(View.VISIBLE);
-            this.mReloadLayout.setVisibility(View.VISIBLE);
+            if (!pinSelected) this.mReloadLayout.setVisibility(View.VISIBLE);
         }
         else {
             this.mAssignedPin.setVisibility(View.GONE);
