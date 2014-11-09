@@ -26,14 +26,14 @@ public class ApiAsyncTask extends Fragment {
      * Callback interface through which the fragment will report the
      * task's progress and results back to the Activity.
      */
-    static interface TaskCallbacks {
+    public static interface TaskCallbacks {
         void onPreExecute();
         //void onProgressUpdate(int percent);
         //void onCancelled();
         void onPostExecute();
     }
 
-    private String mHttpResult;
+    public String mHttpResult;
     private TaskCallbacks mCallbacks;
     private HttpAsyncTask mTask;
 
@@ -60,9 +60,8 @@ public class ApiAsyncTask extends Fragment {
         // Retain this fragment across configuration changes.
         setRetainInstance(true);
 
-        // Create and execute the background task.
-        mTask = new HttpAsyncTask();
-        mTask.execute();
+        // Create a new Async Task
+        //mTask = new HttpAsyncTask();
     }
 
     /**
@@ -114,6 +113,12 @@ public class ApiAsyncTask extends Fragment {
 
     }
 
+    public void startTask (String url) {
+        Log.d("TXTR API", "ApiAsyncTask -> startTask: " + url);
+        mTask = new HttpAsyncTask();
+        mTask.execute(url);
+    }
+
 
     /**
      * A dummy task that performs some (dumb) background work and
@@ -145,8 +150,9 @@ public class ApiAsyncTask extends Fragment {
         @Override
         protected void onPostExecute(String result) {
             if (mCallbacks != null) {
-                Log.d("TXTR API", "ApiAsyncTask: String Received");
+                Log.d("TXTR API", "ApiAsyncTask -> onPostExecute: String Received");
                 mHttpResult = result;
+                mCallbacks.onPostExecute();
             }
         }
     }

@@ -1,9 +1,9 @@
 package eu.siacs.conversations.ui;
 
 import android.app.Activity;
+import android.app.FragmentManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -14,25 +14,18 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
 import eu.siacs.conversations.R;
 import eu.siacs.conversations.entities.Account;
+import eu.siacs.conversations.http.ApiAsyncTask;
 import eu.siacs.conversations.utils.Validator;
 
-public class CreatePinActivity extends EditAccountActivity {
+public class CreatePinActivity extends EditAccountActivity implements ApiAsyncTask.TaskCallbacks {
 
     private TextView mPin;
     private TextView mAssignedPin;
@@ -50,51 +43,14 @@ public class CreatePinActivity extends EditAccountActivity {
     private int nAttempts = 0;
     static final int MAX_ATTEMPTS = 3;
 
+    private static final String TAG_TASK_FRAGMENT = "task_api_createpin";
+    private ApiAsyncTask mTaskFragment;
+
     //SavedInstanceState keys
     static final String STATE_WAITINGFORJSON = "waitingForJson";
     static final String STATE_JSONPIN_PINCODE = "jsonPincode";
     static final String STATE_JSONPIN_TOKEN = "jsonToken";
     static final String STATE_PINSELECTED = "pinSelected";
-
-
-    public static String GET(String url){
-        InputStream inputStream = null;
-        String result = "";
-        try {
-
-            // create HttpClient
-            HttpClient httpclient = new DefaultHttpClient();
-
-            // make GET request to the given URL
-            HttpResponse httpResponse = httpclient.execute(new HttpGet(url));
-
-            // receive response as inputStream
-            inputStream = httpResponse.getEntity().getContent();
-
-            // convert inputstream to string
-            if(inputStream != null)
-                result = convertInputStreamToString(inputStream);
-            else
-                result = "Did not work!";
-
-        } catch (Exception e) {
-            Log.d("InputStream", e.getLocalizedMessage());
-        }
-
-        return result;
-    }
-
-    private static String convertInputStreamToString(InputStream inputStream) throws IOException {
-        BufferedReader bufferedReader = new BufferedReader( new InputStreamReader(inputStream));
-        String line = "";
-        String result = "";
-        while((line = bufferedReader.readLine()) != null)
-            result += line;
-
-        inputStream.close();
-        return result;
-
-    }
 
     public boolean isConnected(){
         ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Activity.CONNECTIVITY_SERVICE);
@@ -103,51 +59,6 @@ public class CreatePinActivity extends EditAccountActivity {
             return true;
         else
             return false;
-    }
-
-    private class HttpAsyncTask extends AsyncTask<String, Void, String> {
-
-        @Override
-        protected String doInBackground(String... urls) {
-
-            return GET(urls[0]);
-        }
-        // onPostExecute displays the results of the AsyncTask.
-        @Override
-        protected void onPostExecute(String result) {
-            Log.d("TXTR API", "HtppAsyncTask: JSON Received");
-            try {
-                jsonPin = new JSONObject(result);
-
-                //mPin.setText(jsonPin.toString(2)); Show the whole object with this to debug
-                if (jsonPin.has("state") && jsonPin.getInt("state") == 1) { //State 1: OK
-                    mPin.setText(jsonPin.getString("pincode"));
-                    mPin.setTextSize(getResources().getDimension(R.dimen.TextBig));
-                    nAttempts = 0; //Reset attempts
-
-                    if(pinSelected) {
-                        loadPINforLogin(
-                                jsonPin.getString("pincode"),
-                                jsonPin.getString("password"),
-                                jsonPin.getString("host"));
-                    }
-                }
-                else if (nAttempts < MAX_ATTEMPTS) { //Check that the same PIN is not being tried too many times
-                    nAttempts++;
-                    mSaveButton.performClick();
-                }
-                else {
-                    mPin.setText("Couldn't get a PIN, try again later");
-                    mPin.setTextSize(getResources().getDimension(R.dimen.TextMedium));
-                }
-
-            } catch (JSONException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-            waitingForJSON = false;
-            updateLayout();
-        }
     }
 
     private void loadPINforLogin (String pincode, String password, String host) {
@@ -160,12 +71,12 @@ public class CreatePinActivity extends EditAccountActivity {
     private void startJSONRequest (String url) {
         // call AsynTask to perform network operation on separate thread
         if (!waitingForJSON && isConnected()){
-            Log.d("TXTR API", "startJSONRequest: " + url);
-            new HttpAsyncTask().execute(url);
+            Log.d("TXTR", "startJSONRequest: " + url);
+            mTaskFragment.startTask(url);
             waitingForJSON = true;
             }
         else {
-            Log.d("TXTR API", "startJSONRequest: No internet access");
+            Log.d("TXTR", "startJSONRequest: No internet access");
             waitingForJSON = false;
         }
         this.updateLayout();
@@ -368,6 +279,16 @@ public class CreatePinActivity extends EditAccountActivity {
         this.mSaveButton.setOnClickListener(this.mSaveButtonClickListener);
         this.mCancelButton.setOnClickListener(this.mCancelButtonClickListener);
 
+        FragmentManager fm = getFragmentManager();
+        mTaskFragment = (ApiAsyncTask) fm.findFragmentByTag(TAG_TASK_FRAGMENT);
+
+        // If the Fragment is non-null, then it is currently being
+        // retained across a configuration change.
+        if (mTaskFragment == null) {
+            mTaskFragment = new ApiAsyncTask();
+            fm.beginTransaction().add(mTaskFragment, TAG_TASK_FRAGMENT).commit();
+        }
+
         if (savedInstanceState != null) {
             //Restore values of the previous instance (ie: before rotating the screen)
             this.waitingForJSON = false;
@@ -408,6 +329,47 @@ public class CreatePinActivity extends EditAccountActivity {
 
         // Always call the superclass so it can save the view hierarchy state
         super.onSaveInstanceState(savedInstanceState);
+    }
+
+    //**Overrides for the ApiAsyncTask interface**//
+    @Override
+    public void onPreExecute() { }
+
+    @Override
+    public void onPostExecute() {
+        Log.d("TXTR", "onPostExecute: Something received");
+        try {
+            jsonPin = new JSONObject(mTaskFragment.mHttpResult);
+            Log.d("TXTR", "onPostExecute: Converted to JSON");
+
+            //mPin.setText(jsonPin.toString(2)); Show the whole object with this to debug
+            if (jsonPin.has("state") && jsonPin.getInt("state") == 1) { //State 1: OK
+                mPin.setText(jsonPin.getString("pincode"));
+                mPin.setTextSize(getResources().getDimension(R.dimen.TextBig));
+                nAttempts = 0; //Reset attempts
+
+                if(pinSelected) {
+                    loadPINforLogin(
+                            jsonPin.getString("pincode"),
+                            jsonPin.getString("password"),
+                            jsonPin.getString("host"));
+                }
+            }
+            else if (nAttempts < MAX_ATTEMPTS) { //Check that the same PIN is not being tried too many times
+                nAttempts++;
+                mSaveButton.performClick();
+            }
+            else {
+                mPin.setText("Couldn't get a PIN, try again later");
+                mPin.setTextSize(getResources().getDimension(R.dimen.TextMedium));
+            }
+
+        } catch (JSONException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        waitingForJSON = false;
+        updateLayout();
     }
 
 
