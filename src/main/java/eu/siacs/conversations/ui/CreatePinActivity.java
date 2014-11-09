@@ -2,6 +2,8 @@ package eu.siacs.conversations.ui;
 
 import android.app.Activity;
 import android.app.FragmentManager;
+import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -21,8 +23,8 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
 import eu.siacs.conversations.R;
-import eu.siacs.conversations.entities.Account;
 import eu.siacs.conversations.api.ApiAsyncTask;
+import eu.siacs.conversations.entities.Account;
 import eu.siacs.conversations.utils.Validator;
 
 public class CreatePinActivity extends EditAccountActivity implements ApiAsyncTask.TaskCallbacks {
@@ -71,6 +73,16 @@ public class CreatePinActivity extends EditAccountActivity implements ApiAsyncTa
     private void startJSONRequest (String url) {
         // call AsynTask to perform network operation on separate thread
         if (!waitingForJSON && isConnected()){
+            if (pinSelected) {
+                //Lock the screen on it's current orientation to prevent UI errors with EditAccountActivity log in
+                int currentOrientation = getResources().getConfiguration().orientation;
+                if (currentOrientation == Configuration.ORIENTATION_LANDSCAPE) {
+                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
+                }
+                else {
+                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
+                }
+            }
             Log.d("TXTR", "startJSONRequest: " + url);
             mTaskFragment.startTask(url);
             waitingForJSON = true;
