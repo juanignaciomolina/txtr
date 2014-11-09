@@ -33,6 +33,7 @@ public class CreatePinActivity extends EditAccountActivity implements ApiAsyncTa
     private TextView mAssignedPin;
     private TextView mNoInternet;
     private TextView mTryAnother;
+    private TextView mRequestingPin;
     private RelativeLayout mLoadingPanel;
     private LinearLayout mReloadLayout;
     private ImageButton mReloadButton;
@@ -209,7 +210,6 @@ public class CreatePinActivity extends EditAccountActivity implements ApiAsyncTa
         if (waitingForJSON) {
             this.mLoadingPanel.setVisibility(View.VISIBLE);
             this.mReloadLayout.setVisibility(View.GONE);
-
             mSaveButton.setEnabled(false);
             mSaveButton.setTextColor(getSecondaryTextColor());
             mSaveButton.setText(R.string.account_status_connecting);
@@ -232,10 +232,13 @@ public class CreatePinActivity extends EditAccountActivity implements ApiAsyncTa
 
         if (jsonPin != null) {
             this.mAssignedPin.setVisibility(View.VISIBLE);
+            this.mPin.setVisibility(View.VISIBLE);
+            this.mRequestingPin.setVisibility(View.GONE);
             if (!pinSelected) this.mReloadLayout.setVisibility(View.VISIBLE);
         }
         else {
             this.mAssignedPin.setVisibility(View.GONE);
+            this.mPin.setVisibility(View.GONE);
             this.mReloadLayout.setVisibility(View.GONE);
             mSaveButton.setTextColor(getSecondaryTextColor());
             mSaveButton.setEnabled(false);
@@ -244,7 +247,8 @@ public class CreatePinActivity extends EditAccountActivity implements ApiAsyncTa
         //Check for connection availability to display accurate message
         if (!isConnected()) {
             mNoInternet.setVisibility(View.VISIBLE);
-            if (pinSelected) {
+            mRequestingPin.setVisibility(View.GONE);
+            if (jsonPin != null && pinSelected) {
                 mPin.setVisibility(View.VISIBLE);
                 mPin.setTextColor(getSecondaryTextColor());
             }
@@ -263,7 +267,7 @@ public class CreatePinActivity extends EditAccountActivity implements ApiAsyncTa
         }
         else {
             mNoInternet.setVisibility(View.GONE);
-            mPin.setVisibility(View.VISIBLE);
+            if ( jsonPin != null) mPin.setVisibility(View.VISIBLE);
             mTryAnother.setText(R.string.createPin_tryanotherpin);
             mTryAnother.setTextColor(getSecondaryTextColor());
             mPin.setTextColor(getPrimaryTextColor());
@@ -281,6 +285,7 @@ public class CreatePinActivity extends EditAccountActivity implements ApiAsyncTa
         this.mLoadingPanel = (RelativeLayout) findViewById(R.id.loadingPanel);
         this.mReloadLayout = (LinearLayout) findViewById(R.id.reload_layout);
         this.mPin = (TextView) findViewById(R.id.account_pin);
+        this.mRequestingPin = (TextView) findViewById(R.id.account_request_pin);
         this.mAssignedPin = (TextView) findViewById(R.id.info_assigned_pin);
         this.mNoInternet = (TextView) findViewById(R.id.account_no_internet);
         this.mTryAnother = (TextView) findViewById(R.id.info_tryanother);
@@ -305,17 +310,20 @@ public class CreatePinActivity extends EditAccountActivity implements ApiAsyncTa
             //Restore values of the previous instance (ie: before rotating the screen)
             this.waitingForJSON = savedInstanceState.getBoolean(STATE_WAITINGFORJSON);
             this.pinSelected = savedInstanceState.getBoolean(STATE_PINSELECTED);
-            this.jsonPin = new JSONObject();
-            try {
-                this.jsonPin.put("pincode", savedInstanceState.getString(STATE_JSONPIN_PINCODE));
-                this.jsonPin.put("token", savedInstanceState.getString(STATE_JSONPIN_TOKEN));
-            } catch (JSONException e) {
-                e.printStackTrace();
+            if (    savedInstanceState.containsKey(STATE_JSONPIN_PINCODE)
+                    && savedInstanceState.containsKey(STATE_JSONPIN_TOKEN)
+                    ) {
+                this.jsonPin = new JSONObject();
+                try {
+                    this.jsonPin.put("pincode", savedInstanceState.getString(STATE_JSONPIN_PINCODE));
+                    this.jsonPin.put("token", savedInstanceState.getString(STATE_JSONPIN_TOKEN));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                this.mPin.setText(savedInstanceState.getString(STATE_JSONPIN_PINCODE));
+                this.mPin.setTextSize(getResources().getDimension(R.dimen.TextBig));
+                this.updateLayout();
             }
-            this.mPin.setText(savedInstanceState.getString(STATE_JSONPIN_PINCODE));
-            this.mPin.setTextSize(getResources().getDimension(R.dimen.TextBig));
-            this.updateLayout();
-            //if (pinSelected) this.mSaveButton.performClick();
         }
         else {
             //Request a new PIN to the API
