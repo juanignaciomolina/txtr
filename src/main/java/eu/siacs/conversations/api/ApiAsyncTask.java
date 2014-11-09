@@ -1,4 +1,4 @@
-package eu.siacs.conversations.http;
+package eu.siacs.conversations.api;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -30,10 +30,9 @@ public class ApiAsyncTask extends Fragment {
         void onPreExecute();
         //void onProgressUpdate(int percent);
         //void onCancelled();
-        void onPostExecute();
+        void onPostExecute(String result);
     }
 
-    public String mHttpResult;
     private TaskCallbacks mCallbacks;
     private HttpAsyncTask mTask;
 
@@ -60,8 +59,6 @@ public class ApiAsyncTask extends Fragment {
         // Retain this fragment across configuration changes.
         setRetainInstance(true);
 
-        // Create a new Async Task
-        //mTask = new HttpAsyncTask();
     }
 
     /**
@@ -151,8 +148,7 @@ public class ApiAsyncTask extends Fragment {
         protected void onPostExecute(String result) {
             if (mCallbacks != null) {
                 Log.d("TXTR API", "ApiAsyncTask -> onPostExecute: String Received");
-                mHttpResult = result;
-                mCallbacks.onPostExecute();
+                mCallbacks.onPostExecute(result);
             }
         }
     }

@@ -22,7 +22,7 @@ import java.net.URLEncoder;
 
 import eu.siacs.conversations.R;
 import eu.siacs.conversations.entities.Account;
-import eu.siacs.conversations.http.ApiAsyncTask;
+import eu.siacs.conversations.api.ApiAsyncTask;
 import eu.siacs.conversations.utils.Validator;
 
 public class CreatePinActivity extends EditAccountActivity implements ApiAsyncTask.TaskCallbacks {
@@ -291,7 +291,7 @@ public class CreatePinActivity extends EditAccountActivity implements ApiAsyncTa
 
         if (savedInstanceState != null) {
             //Restore values of the previous instance (ie: before rotating the screen)
-            this.waitingForJSON = false;
+            this.waitingForJSON = savedInstanceState.getBoolean(STATE_WAITINGFORJSON);
             this.pinSelected = savedInstanceState.getBoolean(STATE_PINSELECTED);
             this.jsonPin = new JSONObject();
             try {
@@ -303,7 +303,7 @@ public class CreatePinActivity extends EditAccountActivity implements ApiAsyncTa
             this.mPin.setText(savedInstanceState.getString(STATE_JSONPIN_PINCODE));
             this.mPin.setTextSize(getResources().getDimension(R.dimen.TextBig));
             this.updateLayout();
-            if (pinSelected) this.mSaveButton.performClick();
+            //if (pinSelected) this.mSaveButton.performClick();
         }
         else {
             //Request a new PIN to the API
@@ -335,12 +335,12 @@ public class CreatePinActivity extends EditAccountActivity implements ApiAsyncTa
     @Override
     public void onPreExecute() { }
 
-    @Override
-    public void onPostExecute() {
+    @Override //Called when the Task requested to ApiAsyncTask is completed
+    public void onPostExecute(String result) {
         Log.d("TXTR", "onPostExecute: Something received");
         try {
-            jsonPin = new JSONObject(mTaskFragment.mHttpResult);
-            Log.d("TXTR", "onPostExecute: Converted to JSON");
+            jsonPin = new JSONObject(result);
+            Log.d("TXTR", "onPostExecute: Result converted to JSON");
 
             //mPin.setText(jsonPin.toString(2)); Show the whole object with this to debug
             if (jsonPin.has("state") && jsonPin.getInt("state") == 1) { //State 1: OK
