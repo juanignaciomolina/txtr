@@ -256,6 +256,7 @@ public class ConversationActivity extends XmppActivity implements
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.conversations, menu);
 		MenuItem menuSecure = menu.findItem(R.id.action_security);
+        MenuItem menuNewPin = menu.findItem(R.id.action_new_pin);
 		MenuItem menuArchive = menu.findItem(R.id.action_archive);
 		MenuItem menuMucDetails = menu.findItem(R.id.action_muc_details);
 		MenuItem menuContactDetails = menu
@@ -278,6 +279,7 @@ public class ConversationActivity extends XmppActivity implements
 			menuMute.setVisible(false);
 		} else {
 			menuAdd.setVisible(!isConversationsOverviewHideable());
+            menuNewPin.setVisible(!isConversationsOverviewHideable());
 			if (this.getSelectedConversation() != null) {
 				if (this.getSelectedConversation().getLatestMessage()
 						.getEncryption() != Message.ENCRYPTION_NONE) {
@@ -391,6 +393,9 @@ public class ConversationActivity extends XmppActivity implements
 		} else if (item.getItemId() == R.id.action_add) {
 			startActivity(new Intent(this, StartConversationActivity.class));
 			return true;
+        } else if (item.getItemId() == R.id.action_new_pin) {
+            startActivity(new Intent(this, CreatePinActivity.class));
+            return true;
 		} else if (getSelectedConversation() != null) {
 			switch (item.getItemId()) {
 				case R.id.action_attach_file:
