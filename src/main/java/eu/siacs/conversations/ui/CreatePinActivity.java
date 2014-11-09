@@ -331,8 +331,10 @@ public class CreatePinActivity extends EditAccountActivity implements ApiAsyncTa
         savedInstanceState.putBoolean(STATE_WAITINGFORJSON, waitingForJSON);
 
         try {
-            savedInstanceState.putString(STATE_JSONPIN_PINCODE, URLEncoder.encode(jsonPin.getString("pincode"), "utf-8"));
-            savedInstanceState.putString(STATE_JSONPIN_TOKEN, URLEncoder.encode(jsonPin.getString("token"), "utf-8"));
+            if (jsonPin != null) {
+                savedInstanceState.putString(STATE_JSONPIN_PINCODE, URLEncoder.encode(jsonPin.getString("pincode"), "utf-8"));
+                savedInstanceState.putString(STATE_JSONPIN_TOKEN, URLEncoder.encode(jsonPin.getString("token"), "utf-8"));
+            }
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         } catch (JSONException e) {
