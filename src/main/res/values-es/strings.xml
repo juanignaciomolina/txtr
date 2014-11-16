@@ -285,10 +285,7 @@
     <string name="message_text">Mensaje de texto</string>
     <string name="url_copied_to_clipboard">URL copiada al portapapeles</string>
     <string name="message_copied_to_clipboard">Mensaje copiado al portapapeles</string>
-<<<<<<< HEAD
     <string name="account_settings_pin">PIN</string>
-
-=======
     <string name="image_transmission_failed">Falló la transferencia de la imagen</string>
     <string name="scan_qr_code">Escanear código QR</string>
     <string name="show_qr_code">Mostrar código QR</string>

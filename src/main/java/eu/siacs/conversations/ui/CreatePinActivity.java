@@ -26,6 +26,8 @@ import eu.siacs.conversations.R;
 import eu.siacs.conversations.api.ApiAsyncTask;
 import eu.siacs.conversations.entities.Account;
 import eu.siacs.conversations.utils.Validator;
+import eu.siacs.conversations.xmpp.jid.InvalidJidException;
+import eu.siacs.conversations.xmpp.jid.Jid;
 
 public class CreatePinActivity extends EditAccountActivity implements ApiAsyncTask.TaskCallbacks {
 
@@ -118,10 +120,11 @@ public class CreatePinActivity extends EditAccountActivity implements ApiAsyncTa
         }
     };
 
-	private OnClickListener mSaveButtonClickListener = new OnClickListener() {
 
-		@Override
-		public void onClick(View v) {
+    private OnClickListener mSaveButtonClickListener = new OnClickListener() {
+
+        @Override
+        public void onClick(View v) {
 
             //In case we have already request a PIN and the user wants it
             if (jsonPin != null || pinSelected) {
@@ -130,8 +133,8 @@ public class CreatePinActivity extends EditAccountActivity implements ApiAsyncTa
                     String pintoken = URLEncoder.encode(jsonPin.getString("token"), "utf-8");
                     String url =
                             "http://api.droidko.com/?method=pinRegister&output=json"
-                            + "&pincode=" + pincode
-                            + "&pintoken=" + pintoken;
+                                    + "&pincode=" + pincode
+                                    + "&pintoken=" + pintoken;
                     pinSelected = true; //This means that the user is commited with this PIN
                     startJSONRequest(url);
 
@@ -143,65 +146,70 @@ public class CreatePinActivity extends EditAccountActivity implements ApiAsyncTa
                 }
             }
 
-			if (mAccount != null
-					&& mAccount.getStatus() == Account.STATUS_DISABLED) {
-				mAccount.setOption(Account.OPTION_DISABLED, false);
-				xmppConnectionService.updateAccount(mAccount);
-				return;
-			}
-			if (!Validator.isValidJid(mAccountJid.getText().toString())) {
-				mAccountJid.setError(getString(R.string.invalid_jid));
-				mAccountJid.requestFocus();
-				return;
-			}
-			boolean registerNewAccount = mRegisterNew.isChecked();
-			String[] jidParts = mAccountJid.getText().toString().split("@");
-			String username = jidParts[0];
-			String server;
-			if (jidParts.length >= 2) {
-				server = jidParts[1];
-			} else {
-				server = "";
-			}
-			String password = mPassword.getText().toString();
-			String passwordConfirm = mPasswordConfirm.getText().toString();
-			if (registerNewAccount) {
-				if (!password.equals(passwordConfirm)) {
-					mPasswordConfirm
-							.setError(getString(R.string.passwords_do_not_match));
-					mPasswordConfirm.requestFocus();
-					return;
-				}
-			}
-			if (mAccount != null) {
-				mAccount.setPassword(password);
-				mAccount.setUsername(username);
-				mAccount.setServer(server);
-				mAccount.setOption(Account.OPTION_REGISTER, registerNewAccount);
-				xmppConnectionService.updateAccount(mAccount);
-			} else {
-				if (xmppConnectionService.findAccountByJid(mAccountJid
-						.getText().toString()) != null) {
-					mAccountJid
-							.setError(getString(R.string.account_already_exists));
-					mAccountJid.requestFocus();
-					return;
-				}
-				mAccount = new Account(username, server, password);
-				mAccount.setOption(Account.OPTION_USETLS, true);
-				mAccount.setOption(Account.OPTION_USECOMPRESSION, true);
-				mAccount.setOption(Account.OPTION_REGISTER, registerNewAccount);
-				xmppConnectionService.createAccount(mAccount);
-			}
-			if (jidToEdit != null) {
-				finish();
-			} else {
-				updateSaveButton();
-				updateAccountInformation();
-			}
+            if (mAccount != null
+                    && mAccount.getStatus() == Account.State.DISABLED) {
+                mAccount.setOption(Account.OPTION_DISABLED, false);
+                xmppConnectionService.updateAccount(mAccount);
+                return;
+            }
+            if (!Validator.isValidJid(mAccountJid.getText().toString())) {
+                mAccountJid.setError(getString(R.string.invalid_jid));
+                mAccountJid.requestFocus();
+                return;
+            }
+            boolean registerNewAccount = mRegisterNew.isChecked();
+            final Jid jid;
+            try {
+                jid = Jid.fromString(mAccountJid.getText().toString());
+            } catch (final InvalidJidException e) {
+                // TODO: Handle this error?
+                return;
+            }
+            String password = mPassword.getText().toString();
+            String passwordConfirm = mPasswordConfirm.getText().toString();
+            if (registerNewAccount) {
+                if (!password.equals(passwordConfirm)) {
+                    mPasswordConfirm
+                            .setError(getString(R.string.passwords_do_not_match));
+                    mPasswordConfirm.requestFocus();
+                    return;
+                }
+            }
+            if (mAccount != null) {
+                mAccount.setPassword(password);
+                try {
+                    mAccount.setUsername(jid.hasLocalpart() ? jid.getLocalpart() : "");
+                    mAccount.setServer(jid.getDomainpart());
+                } catch (final InvalidJidException ignored) {
+                }
+                mAccount.setOption(Account.OPTION_REGISTER, registerNewAccount);
+                xmppConnectionService.updateAccount(mAccount);
+            } else {
+                try {
+                    if (xmppConnectionService.findAccountByJid(Jid.fromString(mAccountJid.getText().toString())) != null) {
+                        mAccountJid
+                                .setError(getString(R.string.account_already_exists));
+                        mAccountJid.requestFocus();
+                        return;
+                    }
+                } catch (InvalidJidException e) {
+                    return;
+                }
+                mAccount = new Account(jid.toBareJid(), password);
+                mAccount.setOption(Account.OPTION_USETLS, true);
+                mAccount.setOption(Account.OPTION_USECOMPRESSION, true);
+                mAccount.setOption(Account.OPTION_REGISTER, registerNewAccount);
+                xmppConnectionService.createAccount(mAccount);
+            }
+            if (jidToEdit != null) {
+                finish();
+            } else {
+                updateSaveButton();
+                updateAccountInformation();
+            }
 
-		}
-	};
+        }
+    };
 
     protected void updateLayout() {
 

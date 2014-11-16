@@ -313,7 +313,6 @@
     <string name="scan_qr_code">Scan QR code</string>
     <string name="show_qr_code">Show QR code</string>
     <string name="account_details">Account details</string>
-<<<<<<< HEAD
     <string name="account_settings_pin">PIN</string>
     <string name="account_settings_example_pin">ABC1234</string>
     <string name="new_pin">New PIN</string>
@@ -321,8 +320,6 @@
     <string name="createPin_no_internet">No internet access</string>
     <string name="createPin_tryanotherpin">Wanna try another PIN?</string>
     <string name="createPin_tryagainnow">Try again now?</string>
-
-=======
     <string name="verify_otr">Verify OTR</string>
     <string name="remote_fingerprint">Remote Fingerprint</string>
     <string name="scan">scan</string>
