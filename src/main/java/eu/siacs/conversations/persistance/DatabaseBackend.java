@@ -9,6 +9,8 @@ import eu.siacs.conversations.entities.Contact;
 import eu.siacs.conversations.entities.Conversation;
 import eu.siacs.conversations.entities.Message;
 import eu.siacs.conversations.entities.Roster;
+import eu.siacs.conversations.xmpp.jid.Jid;
+
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteCantOpenDatabaseException;
@@ -20,7 +22,7 @@ public class DatabaseBackend extends SQLiteOpenHelper {
 	private static DatabaseBackend instance = null;
 
 	private static final String DATABASE_NAME = "history";
-	private static final int DATABASE_VERSION = 9;
+	private static final int DATABASE_VERSION = 10;
 
 	private static String CREATE_CONTATCS_STATEMENT = "create table "
 			+ Contact.TABLENAME + "(" + Contact.ACCOUNT + " TEXT, "
@@ -62,6 +64,7 @@ public class DatabaseBackend extends SQLiteOpenHelper {
 				+ " TEXT, " + Message.TRUE_COUNTERPART + " TEXT,"
 				+ Message.BODY + " TEXT, " + Message.ENCRYPTION + " NUMBER, "
 				+ Message.STATUS + " NUMBER," + Message.TYPE + " NUMBER, "
+				+ Message.RELATIVE_FILE_PATH + " TEXT, "
 				+ Message.REMOTE_MSG_ID + " TEXT, FOREIGN KEY("
 				+ Message.CONVERSATION + ") REFERENCES "
 				+ Conversation.TABLENAME + "(" + Conversation.UUID
@@ -108,6 +111,10 @@ public class DatabaseBackend extends SQLiteOpenHelper {
             db.execSQL("ALTER TABLE " + Contact.TABLENAME + " ADD COLUMN "
                     + Contact.LAST_PRESENCE + " TEXT");
         }
+		if (oldVersion < 10 && newVersion >= 10) {
+			db.execSQL("ALTER TABLE " + Message.TABLENAME + " ADD COLUMN "
+					+ Message.RELATIVE_FILE_PATH + " TEXT");
+		}
 	}
 
 	public static synchronized DatabaseBackend getInstance(Context context) {
@@ -147,7 +154,7 @@ public class DatabaseBackend extends SQLiteOpenHelper {
 	}
 
 	public CopyOnWriteArrayList<Conversation> getConversations(int status) {
-		CopyOnWriteArrayList<Conversation> list = new CopyOnWriteArrayList<Conversation>();
+		CopyOnWriteArrayList<Conversation> list = new CopyOnWriteArrayList<>();
 		SQLiteDatabase db = this.getReadableDatabase();
 		String[] selectionArgs = { Integer.toString(status) };
 		Cursor cursor = db.rawQuery("select * from " + Conversation.TABLENAME
@@ -165,7 +172,7 @@ public class DatabaseBackend extends SQLiteOpenHelper {
 
 	public ArrayList<Message> getMessages(Conversation conversation, int limit,
 			long timestamp) {
-		ArrayList<Message> list = new ArrayList<Message>();
+		ArrayList<Message> list = new ArrayList<>();
 		SQLiteDatabase db = this.getReadableDatabase();
 		Cursor cursor;
 		if (timestamp == -1) {
@@ -192,9 +199,9 @@ public class DatabaseBackend extends SQLiteOpenHelper {
 		return list;
 	}
 
-	public Conversation findConversation(Account account, String contactJid) {
+	public Conversation findConversation(final Account account, final Jid contactJid) {
 		SQLiteDatabase db = this.getReadableDatabase();
-		String[] selectionArgs = { account.getUuid(), contactJid + "%" };
+		String[] selectionArgs = { account.getUuid(), contactJid.toBareJid().toString() + "%" };
 		Cursor cursor = db.query(Conversation.TABLENAME, null,
 				Conversation.ACCOUNT + "=? AND " + Conversation.CONTACTJID
 						+ " like ?", selectionArgs, null, null, null);
@@ -212,7 +219,7 @@ public class DatabaseBackend extends SQLiteOpenHelper {
 	}
 
 	public List<Account> getAccounts() {
-		List<Account> list = new ArrayList<Account>();
+		List<Account> list = new ArrayList<>();
 		SQLiteDatabase db = this.getReadableDatabase();
 		Cursor cursor = db.query(Account.TABLENAME, null, null, null, null,
 				null, null);
@@ -276,15 +283,15 @@ public class DatabaseBackend extends SQLiteOpenHelper {
 		cursor.close();
 	}
 
-	public void writeRoster(Roster roster) {
-		Account account = roster.getAccount();
-		SQLiteDatabase db = this.getWritableDatabase();
+	public void writeRoster(final Roster roster) {
+		final Account account = roster.getAccount();
+		final SQLiteDatabase db = this.getWritableDatabase();
 		for (Contact contact : roster.getContacts()) {
 			if (contact.getOption(Contact.Options.IN_ROSTER)) {
 				db.insert(Contact.TABLENAME, null, contact.getContentValues());
 			} else {
 				String where = Contact.ACCOUNT + "=? AND " + Contact.JID + "=?";
-				String[] whereArgs = { account.getUuid(), contact.getJid() };
+				String[] whereArgs = { account.getUuid(), contact.getJid().toString() };
 				db.delete(Contact.TABLENAME, where, whereArgs);
 			}
 		}
@@ -341,7 +348,7 @@ public class DatabaseBackend extends SQLiteOpenHelper {
 	}
 
 	public List<Message> getImageMessages(Conversation conversation) {
-		ArrayList<Message> list = new ArrayList<Message>();
+		ArrayList<Message> list = new ArrayList<>();
 		SQLiteDatabase db = this.getReadableDatabase();
 		Cursor cursor;
 			String[] selectionArgs = { conversation.getUuid(), String.valueOf(Message.TYPE_IMAGE) };

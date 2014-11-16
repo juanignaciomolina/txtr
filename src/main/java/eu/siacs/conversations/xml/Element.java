@@ -5,12 +5,14 @@ import java.util.Hashtable;
 import java.util.List;
 
 import eu.siacs.conversations.utils.XmlHelper;
+import eu.siacs.conversations.xmpp.jid.InvalidJidException;
+import eu.siacs.conversations.xmpp.jid.Jid;
 
 public class Element {
 	protected String name;
-	protected Hashtable<String, String> attributes = new Hashtable<String, String>();
+	protected Hashtable<String, String> attributes = new Hashtable<>();
 	protected String content;
-	protected List<Element> children = new ArrayList<Element>();
+	protected List<Element> children = new ArrayList<>();
 
 	public Element(String name) {
 		this.name = name;
@@ -101,6 +103,18 @@ public class Element {
 		} else {
 			return null;
 		}
+	}
+
+	public Jid getAttributeAsJid(String name) {
+		final String jid = this.getAttribute(name);
+        if (jid != null && !jid.isEmpty()) {
+            try {
+                return Jid.fromString(jid);
+            } catch (final InvalidJidException e) {
+                return null;
+            }
+        }
+        return null;
 	}
 
 	public Hashtable<String, String> getAttributes() {

@@ -58,7 +58,7 @@
     <string name="add_contact">Add contact</string>
     <string name="send_failed">delivery failed</string>
     <string name="send_rejected">rejected</string>
-    <string name="receiving_image">Receiving image file. Please wait…</string>
+    <string name="receiving_image">Receiving image file (%1$d%%)</string>
     <string name="preparing_image">Preparing image for transmission</string>
     <string name="action_clear_history">Clear history</string>
     <string name="clear_conversation_history">Clear Conversation History</string>
@@ -141,6 +141,8 @@
     <string name="account_status_regis_conflict">Username already in use</string>
     <string name="account_status_regis_success">Registration completed</string>
     <string name="account_status_regis_not_sup">Server does not support registration</string>
+    <string name="account_status_security_error">Security error</string>
+    <string name="account_status_incompatible_server">Incompatible server</string>
     <string name="encryption_choice_none">Plain text</string>
     <string name="encryption_choice_otr">OTR</string>
     <string name="encryption_choice_pgp">OpenPGP</string>
@@ -256,21 +258,30 @@
     <string name="pref_expert_options_summary">Please be careful with these</string>
     <string name="title_activity_about">About Conversations</string>
     <string name="pref_about_conversations_summary">Build and licensing information</string>
-    <string name="pref_about_message">Conversations © 2014 Daniel Gultsch\n
-			\nThis program is free software; you can redistribute it and/or modify it
-			under the terms of the GNU General Public License version 3 as published
-			by the Free Software Foundation.
-			\nhttps://www.gnu.org/licenses/gpl-3.0.html\n
-			\nOpenPGP API is licensed under the Apache License, Version 2.0
-            \nhttps://www.apache.org/licenses/LICENSE-2.0\n
-			\nMinidns © 2014 Rene Treffer and is provided under the WTFPL
-            \nhttp://wtfpl.org\n
-			\nMemorizingTrustManager © 2010 Georg Lukas under the terms of the MIT
-			License
-            \nhttp://opensource.org/licenses/MIT\n
-            \nDownload the full source code at
-            \nhttps://github.com/siacs/Conversations
-			</string>
+    <string name="pref_about_message"  translatable="false">
+            Conversations • the very last word in instant messaging.
+            \n\nCopyright © 2014 Daniel Gultsch
+            \n\nThis program is free software: you can redistribute it and/or modify
+            it under the terms of the GNU General Public License as published by
+            the Free Software Foundation, either version 3 of the License, or
+            (at your option) any later version.
+            \n\nThis program is distributed in the hope that it will be useful,
+            but WITHOUT ANY WARRANTY; without even the implied warranty of
+            MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+            GNU General Public License for more details.
+            \n\nYou should have received a copy of the GNU General Public License
+            along with this program. If not, see https://www.gnu.org/licenses
+            \n\nDownload the full source code at https://github.com/siacs/Conversations
+            \n\n\nLibraries
+            \n\nhttps://www.bouncycastle.org\n(The MIT License (MIT))
+            \n\nhttps://www.gnu.org/software/libidn\n(Apache License, Version 2.0)
+            \n\nhttps://github.com/ge0rg/MemorizingTrustManager\n(The MIT License (MIT))
+            \n\nhttps://github.com/rtreffer/minidns\n(WTFPL)
+            \n\nhttps://github.com/open-keychain/openkeychain-api-lib\n(Apache License, Version 2.0)
+            \n\nhttps://github.com/jitsi/otr4j\n(LGPL-3.0)
+            \n\nhttps://developer.android.com/tools/support-library\n(Apache License, Version 2.0)
+            \n\nhttps://github.com/zxing/zxing\n(Apache License, Version 2.0)
+    </string>
     <string name="pref_use_larger_font">Increase font size</string>
     <string name="pref_use_larger_font_summary">Use larger font sizes across the entire app</string>
     <string name="pref_use_send_button_to_indicate_status">Send button indicates status</string>
@@ -302,6 +313,7 @@
     <string name="scan_qr_code">Scan QR code</string>
     <string name="show_qr_code">Show QR code</string>
     <string name="account_details">Account details</string>
+<<<<<<< HEAD
     <string name="account_settings_pin">PIN</string>
     <string name="account_settings_example_pin">ABC1234</string>
     <string name="new_pin">New PIN</string>
@@ -310,4 +322,39 @@
     <string name="createPin_tryanotherpin">Wanna try another PIN?</string>
     <string name="createPin_tryagainnow">Try again now?</string>
 
+=======
+    <string name="verify_otr">Verify OTR</string>
+    <string name="remote_fingerprint">Remote Fingerprint</string>
+    <string name="scan">scan</string>
+    <string name="or_touch_phones">(or touch phones)</string>
+    <string name="smp">Socialist Millionaire Protocol</string>
+    <string name="shared_secret_hint">Hint or Question</string>
+    <string name="shared_secret_secret">Shared Secret</string>
+    <string name="confirm">Confirm</string>
+    <string name="in_progress">In progress</string>
+    <string name="respond">Respond</string>
+    <string name="failed">Failed</string>
+    <string name="secrets_do_not_match">Secrets do not match</string>
+    <string name="try_again">Try again</string>;
+    <string name="finish">Finish</string>
+    <string name="verified">Verified!</string>
+    <string name="smp_requested">Contact requested SMP verification</string>
+    <string name="no_otr_session_found">No valid OTR session has been found!</string>
+    <string name="conversations_foreground_service">Conversations</string>
+    <string name="touch_to_disable">Touch to disable foreground service</string>
+    <string name="pref_keep_foreground_service">Keep service in foreground</string>
+    <string name="pref_keep_foreground_service_summary">Prevents the operating system from killing your connection</string>
+    <string name="choose_file">Choose file</string>
+    <string name="receiving_file">Receiving %1$s file (%2$d%% completed)</string>
+    <string name="download_file">Download %s file</string>
+    <string name="open_file">Open %s file</string>
+    <string name="sending_file">sending (%1$d%% completed)</string>
+    <string name="preparing_file">Preparing file for transmission</string>
+    <string name="file_offered_for_download">File offered for download</string>
+    <string name="file">%s file</string>
+    <string name="cancel_transmission">Cancel transmission</string>
+    <string name="file_transmission_failed">file transmission failed</string>
+    <string name="file_deleted">The file has been deleted</string>
+    <string name="no_application_found_to_open_file">No application found to open file</string>
+>>>>>>> origin/development
 </resources>

@@ -110,7 +110,7 @@ public class UIHelper {
 			List<Account> accounts) {
 		NotificationManager mNotificationManager = (NotificationManager) context
 				.getSystemService(Context.NOTIFICATION_SERVICE);
-		List<Account> accountsWproblems = new ArrayList<Account>();
+		List<Account> accountsWproblems = new ArrayList<>();
 		for (Account account : accounts) {
 			if (account.hasErrorStatus()) {
 				accountsWproblems.add(account);
@@ -124,7 +124,7 @@ public class UIHelper {
 		} else if (accountsWproblems.size() == 1) {
 			mBuilder.setContentTitle(context
 					.getString(R.string.problem_connecting_to_account));
-			mBuilder.setContentText(accountsWproblems.get(0).getJid());
+			mBuilder.setContentText(accountsWproblems.get(0).getJid().toBareJid().toString());
 		} else {
 			mBuilder.setContentTitle(context
 					.getString(R.string.problem_connecting_to_accounts));
@@ -146,40 +146,6 @@ public class UIHelper {
 		mBuilder.setContentIntent(resultPendingIntent);
 		Notification notification = mBuilder.build();
 		mNotificationManager.notify(1111, notification);
-	}
-
-	@SuppressLint("InflateParams")
-	public static AlertDialog getVerifyFingerprintDialog(
-			final ConversationActivity activity,
-			final Conversation conversation, final View msg) {
-		final Contact contact = conversation.getContact();
-		final Account account = conversation.getAccount();
-
-		AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-		builder.setTitle("Verify fingerprint");
-		LayoutInflater inflater = activity.getLayoutInflater();
-		View view = inflater.inflate(R.layout.dialog_verify_otr, null);
-		TextView jid = (TextView) view.findViewById(R.id.verify_otr_jid);
-		TextView fingerprint = (TextView) view
-				.findViewById(R.id.verify_otr_fingerprint);
-		TextView yourprint = (TextView) view
-				.findViewById(R.id.verify_otr_yourprint);
-
-		jid.setText(contact.getJid());
-		fingerprint.setText(conversation.getOtrFingerprint());
-		yourprint.setText(account.getOtrFingerprint());
-		builder.setNegativeButton("Cancel", null);
-		builder.setPositiveButton("Verify", new OnClickListener() {
-
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				contact.addOtrFingerprint(conversation.getOtrFingerprint());
-				msg.setVisibility(View.GONE);
-				activity.xmppConnectionService.syncRosterToDisk(account);
-			}
-		});
-		builder.setView(view);
-		return builder.create();
 	}
 
 	private final static class EmoticonPattern {

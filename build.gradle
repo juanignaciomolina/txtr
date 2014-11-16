@@ -20,11 +20,11 @@ allprojects {
 apply plugin: 'com.android.application'
 
 repositories {
-	jcenter()
-	mavenCentral()
 	maven {
 		url "http://jitsi.github.com/otr4j/repository/"
 	}
+	jcenter()
+	mavenCentral()
 }
 
 dependencies {
@@ -34,6 +34,7 @@ dependencies {
 	compile 'com.android.support:support-v13:19.1.0'
 	compile 'org.bouncycastle:bcprov-jdk15on:1.50'
 	compile 'net.java:otr4j:0.21'
+	compile 'org.gnu.inet:libidn:1.15'
 	compile 'com.google.zxing:core:3.1.0'
 	compile 'com.google.zxing:android-integration:3.1.0'
 }
@@ -45,8 +46,8 @@ android {
 	defaultConfig {
 		minSdkVersion 14
 		targetSdkVersion 19
-		versionCode 34
-		versionName "0.8.2"
+		versionCode 35
+		versionName "0.8.3"
 	}
 
 	compileOptions {

@@ -1,13 +1,8 @@
 package eu.siacs.conversations.entities;
 
-import java.security.interfaces.DSAPublicKey;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import eu.siacs.conversations.services.XmppConnectionService;
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.os.SystemClock;
 
 import net.java.otr4j.OtrException;
 import net.java.otr4j.crypto.OtrCryptoEngineImpl;
@@ -15,9 +10,17 @@ import net.java.otr4j.crypto.OtrCryptoException;
 import net.java.otr4j.session.SessionID;
 import net.java.otr4j.session.SessionImpl;
 import net.java.otr4j.session.SessionStatus;
-import android.content.ContentValues;
-import android.database.Cursor;
-import android.os.SystemClock;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.security.interfaces.DSAPublicKey;
+import java.util.ArrayList;
+import java.util.List;
+
+import eu.siacs.conversations.services.XmppConnectionService;
+import eu.siacs.conversations.xmpp.jid.InvalidJidException;
+import eu.siacs.conversations.xmpp.jid.Jid;
 
 public class Conversation extends AbstractEntity {
 	public static final String TABLENAME = "conversations";
@@ -45,43 +48,42 @@ public class Conversation extends AbstractEntity {
 	private String name;
 	private String contactUuid;
 	private String accountUuid;
-	private String contactJid;
+	private Jid contactJid;
 	private int status;
 	private long created;
 	private int mode;
 
 	private JSONObject attributes = new JSONObject();
 
-	private String nextPresence;
+	private Jid nextCounterpart;
 
-	protected ArrayList<Message> messages = new ArrayList<Message>();
+	protected ArrayList<Message> messages = new ArrayList<>();
 	protected Account account = null;
 
 	private transient SessionImpl otrSession;
 
 	private transient String otrFingerprint = null;
+	private Smp mSmp = new Smp();
 
 	private String nextMessage;
 
 	private transient MucOptions mucOptions = null;
 
-	// private transient String latestMarkableMessageId;
-
 	private byte[] symmetricKey;
 
 	private Bookmark bookmark;
 
-	public Conversation(String name, Account account, String contactJid,
-			int mode) {
+	public Conversation(final String name, final Account account, final Jid contactJid,
+			final int mode) {
 		this(java.util.UUID.randomUUID().toString(), name, null, account
 				.getUuid(), contactJid, System.currentTimeMillis(),
 				STATUS_AVAILABLE, mode, "");
 		this.account = account;
 	}
 
-	public Conversation(String uuid, String name, String contactUuid,
-			String accountUuid, String contactJid, long created, int status,
-			int mode, String attributes) {
+	public Conversation(final String uuid, final String name, final String contactUuid,
+			final String accountUuid, final Jid contactJid, final long created, final int status,
+			final int mode, final String attributes) {
 		this.uuid = uuid;
 		this.name = name;
 		this.contactUuid = contactUuid;
@@ -91,10 +93,7 @@ public class Conversation extends AbstractEntity {
 		this.status = status;
 		this.mode = mode;
 		try {
-			if (attributes == null) {
-				attributes = new String();
-			}
-			this.attributes = new JSONObject(attributes);
+			this.attributes = new JSONObject(attributes == null ? "" : attributes);
 		} catch (JSONException e) {
 			this.attributes = new JSONObject();
 		}
@@ -105,10 +104,8 @@ public class Conversation extends AbstractEntity {
 	}
 
 	public boolean isRead() {
-		if ((this.messages == null) || (this.messages.size() == 0))
-			return true;
-		return this.messages.get(this.messages.size() - 1).isRead();
-	}
+        return (this.messages == null) || (this.messages.size() == 0) || this.messages.get(this.messages.size() - 1).isRead();
+    }
 
 	public void markRead() {
 		if (this.messages == null) {
@@ -186,7 +183,7 @@ public class Conversation extends AbstractEntity {
 		this.account = account;
 	}
 
-	public String getContactJid() {
+	public Jid getContactJid() {
 		return this.contactJid;
 	}
 
@@ -204,7 +201,7 @@ public class Conversation extends AbstractEntity {
 		values.put(NAME, name);
 		values.put(CONTACT, contactUuid);
 		values.put(ACCOUNT, accountUuid);
-		values.put(CONTACTJID, contactJid);
+		values.put(CONTACTJID, contactJid.toString());
 		values.put(CREATED, created);
 		values.put(STATUS, status);
 		values.put(MODE, mode);
@@ -213,11 +210,18 @@ public class Conversation extends AbstractEntity {
 	}
 
 	public static Conversation fromCursor(Cursor cursor) {
-		return new Conversation(cursor.getString(cursor.getColumnIndex(UUID)),
+        Jid jid;
+        try {
+            jid = Jid.fromString(cursor.getString(cursor.getColumnIndex(CONTACTJID)));
+        } catch (final InvalidJidException e) {
+            // Borked DB..
+            jid = null;
+        }
+        return new Conversation(cursor.getString(cursor.getColumnIndex(UUID)),
 				cursor.getString(cursor.getColumnIndex(NAME)),
 				cursor.getString(cursor.getColumnIndex(CONTACT)),
 				cursor.getString(cursor.getColumnIndex(ACCOUNT)),
-				cursor.getString(cursor.getColumnIndex(CONTACTJID)),
+				jid,
 				cursor.getLong(cursor.getColumnIndex(CREATED)),
 				cursor.getInt(cursor.getColumnIndex(STATUS)),
 				cursor.getInt(cursor.getColumnIndex(MODE)),
@@ -241,8 +245,9 @@ public class Conversation extends AbstractEntity {
 		if (this.otrSession != null) {
 			return this.otrSession;
 		} else {
-			SessionID sessionId = new SessionID(this.getContactJid().split("/",
-					2)[0], presence, "xmpp");
+            final SessionID sessionId = new SessionID(this.getContactJid().toBareJid().toString(),
+                    presence,
+                    "xmpp");
 			this.otrSession = new SessionImpl(sessionId, getAccount()
 					.getOtrEngine(service));
 			try {
@@ -265,6 +270,13 @@ public class Conversation extends AbstractEntity {
 	public void resetOtrSession() {
 		this.otrFingerprint = null;
 		this.otrSession = null;
+		this.mSmp.hint = null;
+		this.mSmp.secret = null;
+		this.mSmp.status = Smp.STATUS_NONE;
+	}
+
+	public Smp smp() {
+		return mSmp;
 	}
 
 	public void startOtrIfNeeded() {
@@ -317,11 +329,19 @@ public class Conversation extends AbstractEntity {
 				builder.insert(26, " ");
 				builder.insert(35, " ");
 				this.otrFingerprint = builder.toString();
-			} catch (OtrCryptoException e) {
+			} catch (final OtrCryptoException ignored) {
 
 			}
 		}
 		return this.otrFingerprint;
+	}
+
+	public void verifyOtrFingerprint() {
+		getContact().addOtrFingerprint(getOtrFingerprint());
+	}
+
+	public boolean isOtrFingerprintVerified() {
+		return getContact().getOtrFingerprints().contains(getOtrFingerprint());
 	}
 
 	public synchronized MucOptions getMucOptions() {
@@ -335,16 +355,16 @@ public class Conversation extends AbstractEntity {
 		this.mucOptions = null;
 	}
 
-	public void setContactJid(String jid) {
+	public void setContactJid(final Jid jid) {
 		this.contactJid = jid;
 	}
 
-	public void setNextPresence(String presence) {
-		this.nextPresence = presence;
+	public void setNextCounterpart(Jid jid) {
+		this.nextCounterpart = jid;
 	}
 
-	public String getNextPresence() {
-		return this.nextPresence;
+	public Jid getNextCounterpart() {
+		return this.nextCounterpart;
 	}
 
 	public int getLatestEncryption() {
@@ -395,6 +415,10 @@ public class Conversation extends AbstractEntity {
 		} else {
 			return this.nextMessage;
 		}
+	}
+
+	public boolean smpRequested() {
+		return smp().status == Smp.STATUS_CONTACT_REQUESTED;
 	}
 
 	public void setNextMessage(String message) {
@@ -496,5 +520,17 @@ public class Conversation extends AbstractEntity {
 		synchronized (this.messages) {
 			this.messages.addAll(index, messages);
 		}
+	}
+
+	public class Smp {
+		public static final int STATUS_NONE = 0;
+		public static final int STATUS_CONTACT_REQUESTED = 1;
+		public static final int STATUS_WE_REQUESTED = 2;
+		public static final int STATUS_FAILED = 3;
+		public static final int STATUS_VERIFIED = 4;
+
+		public String secret = null;
+		public String hint = null;
+		public int status = 0;
 	}
 }

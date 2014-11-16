@@ -22,15 +22,13 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
-public class ManageAccountActivity extends XmppActivity {
+public class ManageAccountActivity extends XmppActivity implements OnAccountUpdate {
 
 	protected Account selectedAccount = null;
 
 	protected List<Account> accountList = new ArrayList<Account>();
 	protected ListView accountListView;
 	protected AccountAdapter mAccountAdapter;
-	protected OnAccountUpdate accountChanged = new OnAccountUpdate() {
-
 		@Override
 		public void onAccountUpdate() {
 			accountList.clear();
@@ -43,7 +41,6 @@ public class ManageAccountActivity extends XmppActivity {
 				}
 			});
 		}
-	};
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -81,20 +78,11 @@ public class ManageAccountActivity extends XmppActivity {
 		} else {
 			menu.findItem(R.id.mgmt_account_enable).setVisible(false);
 		}
-		menu.setHeaderTitle(this.selectedAccount.getJid());
-	}
-
-	@Override
-	protected void onStop() {
-		if (xmppConnectionServiceBound) {
-			xmppConnectionService.removeOnAccountListChangedListener();
-		}
-		super.onStop();
+		menu.setHeaderTitle(this.selectedAccount.getJid().toBareJid().toString());
 	}
 
 	@Override
 	void onBackendConnected() {
-		xmppConnectionService.setOnAccountListChangedListener(accountChanged);
 		this.accountList.clear();
 		this.accountList.addAll(xmppConnectionService.getAccounts());
 		mAccountAdapter.notifyDataSetChanged();
@@ -166,7 +154,7 @@ public class ManageAccountActivity extends XmppActivity {
 	private void publishAvatar(Account account) {
 		Intent intent = new Intent(getApplicationContext(),
 				PublishProfilePictureActivity.class);
-		intent.putExtra("account", account.getJid());
+		intent.putExtra("account", account.getJid().toString());
 		startActivity(intent);
 	}
 

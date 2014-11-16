@@ -28,6 +28,7 @@ import eu.siacs.conversations.R;
 import eu.siacs.conversations.entities.Account;
 import eu.siacs.conversations.entities.Conversation;
 import eu.siacs.conversations.entities.Downloadable;
+import eu.siacs.conversations.entities.DownloadableFile;
 import eu.siacs.conversations.entities.Message;
 import eu.siacs.conversations.ui.ConversationActivity;
 
@@ -38,6 +39,7 @@ public class NotificationService {
 	private LinkedHashMap<String, ArrayList<Message>> notifications = new LinkedHashMap<String, ArrayList<Message>>();
 
 	public static int NOTIFICATION_ID = 0x2342;
+	public static int FOREGROUND_NOTIFICATION_ID = 0x8899;
 	private Conversation mOpenConversation;
 	private boolean mIsInForeground;
 	private long mLastNotification;
@@ -266,14 +268,21 @@ public class NotificationService {
 		if (message.getDownloadable() != null
 				&& (message.getDownloadable().getStatus() == Downloadable.STATUS_OFFER || message
 				.getDownloadable().getStatus() == Downloadable.STATUS_OFFER_CHECK_FILESIZE)) {
-			return mXmppConnectionService.getText(
-					R.string.image_offered_for_download).toString();
+			if (message.getType() == Message.TYPE_FILE) {
+				return mXmppConnectionService.getString(R.string.file_offered_for_download);
+			} else {
+				return mXmppConnectionService.getText(
+						R.string.image_offered_for_download).toString();
+			}
 		} else if (message.getEncryption() == Message.ENCRYPTION_PGP) {
 			return mXmppConnectionService.getText(
 					R.string.encrypted_message_received).toString();
 		} else if (message.getEncryption() == Message.ENCRYPTION_DECRYPTION_FAILED) {
 			return mXmppConnectionService.getText(R.string.decryption_failed)
 					.toString();
+		} else if (message.getType() == Message.TYPE_FILE) {
+			DownloadableFile file = mXmppConnectionService.getFileBackend().getFile(message);
+			return mXmppConnectionService.getString(R.string.file,file.getMimeType());
 		} else if (message.getType() == Message.TYPE_IMAGE) {
 			return mXmppConnectionService.getText(R.string.image_file)
 					.toString();
@@ -290,9 +299,11 @@ public class NotificationService {
 		Intent viewConversationIntent = new Intent(mXmppConnectionService,
 				ConversationActivity.class);
 		viewConversationIntent.setAction(Intent.ACTION_VIEW);
-		viewConversationIntent.putExtra(ConversationActivity.CONVERSATION,
-				conversationUuid);
-		viewConversationIntent.setType(ConversationActivity.VIEW_CONVERSATION);
+		if (conversationUuid!=null) {
+			viewConversationIntent.putExtra(ConversationActivity.CONVERSATION,
+					conversationUuid);
+			viewConversationIntent.setType(ConversationActivity.VIEW_CONVERSATION);
+		}
 
 		stackBuilder.addNextIntent(viewConversationIntent);
 
@@ -304,7 +315,14 @@ public class NotificationService {
 	private PendingIntent createDeleteIntent() {
 		Intent intent = new Intent(mXmppConnectionService,
 				XmppConnectionService.class);
-		intent.setAction("clear_notification");
+		intent.setAction(XmppConnectionService.ACTION_CLEAR_NOTIFICATION);
+		return PendingIntent.getService(mXmppConnectionService, 0, intent, 0);
+	}
+
+	private PendingIntent createDisableForeground() {
+		Intent intent = new Intent(mXmppConnectionService,
+				XmppConnectionService.class);
+		intent.setAction(XmppConnectionService.ACTION_DISABLE_FOREGROUND);
 		return PendingIntent.getService(mXmppConnectionService, 0, intent, 0);
 	}
 
@@ -347,8 +365,19 @@ public class NotificationService {
 	}
 
 	private boolean inMiniGracePeriod(Account account) {
-		int miniGrace = account.getStatus() == Account.STATUS_ONLINE ? Config.MINI_GRACE_PERIOD
+		int miniGrace = account.getStatus() == Account.State.ONLINE ? Config.MINI_GRACE_PERIOD
 				: Config.MINI_GRACE_PERIOD * 2;
 		return SystemClock.elapsedRealtime() < (this.mLastNotification + miniGrace);
+	}
+
+	public Notification createForegroundNotification() {
+		NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(mXmppConnectionService);
+		mBuilder.setSmallIcon(R.drawable.ic_stat_communication_import_export);
+		mBuilder.setContentTitle(mXmppConnectionService.getString(R.string.conversations_foreground_service));
+		mBuilder.setContentText(mXmppConnectionService.getString(R.string.touch_to_disable));
+		mBuilder.setContentIntent(createDisableForeground());
+		mBuilder.setWhen(0);
+		mBuilder.setPriority(NotificationCompat.PRIORITY_MIN);
+		return mBuilder.build();
 	}
 }
