@@ -22,7 +22,7 @@ import org.json.JSONObject;
 import eu.siacs.conversations.R;
 import eu.siacs.conversations.api.ApiAsyncTask;
 
-public class DismissPinActivity extends EditAccountActivity implements ApiAsyncTask.TaskCallbacks {
+public class DismissPinActivity extends XmppActivity implements ApiAsyncTask.TaskCallbacks {
 
     private TextView mPin;
     private TextView mAssignedPin;
@@ -143,6 +143,8 @@ public class DismissPinActivity extends EditAccountActivity implements ApiAsyncT
         mPincode = getIntent().getExtras().getString("pincode");
         mPin.setText(mPincode);
 
+        getActionBar().setTitle("Delete PIN");
+
         FragmentManager fm = getFragmentManager();
         mTaskFragment = (ApiAsyncTask) fm.findFragmentByTag(TAG_TASK_FRAGMENT);
 
@@ -230,7 +232,6 @@ public class DismissPinActivity extends EditAccountActivity implements ApiAsyncT
 
 	@Override
 	protected void onBackendConnected() {
-        super.onBackendConnected();
 
         updateLayout();
 	}
