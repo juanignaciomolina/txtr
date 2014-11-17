@@ -323,9 +323,4 @@
     <string name="file_transmission_failed">falló la transferencia del archivo</string>
     <string name="file_deleted">El archivo ha sido eliminado</string>
     <string name="no_application_found_to_open_file">No se ha encontrado ninguna aplicación para abrir el archivo</string>
-<<<<<<< HEAD
->>>>>>> origin/development
 </resources>
-=======
-</resources>
->>>>>>> origin/development
