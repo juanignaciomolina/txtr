@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/secondarybackground" >
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/button_bar"
+        android:layout_alignParentTop="true" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <LinearLayout
+                android:id="@+id/editor"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:background="@drawable/infocard_border"
+                android:orientation="vertical"
+                android:padding="16dp" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/account_settings_pin"
+                    android:textColor="@color/primarytext"
+                    android:textSize="?attr/TextSizeBody"
+                    android:visibility="gone"/>
+
+                <TextView
+                    android:id="@+id/account_no_internet"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/createPin_no_internet"
+                    android:textColor="@color/red"
+                    android:autoText="false"
+                    android:textIsSelectable="true"
+                    android:password="false"
+                    android:gravity="clip_horizontal|center|clip_vertical"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="8dp"
+                    android:textStyle="bold"
+                    android:textSize="?attr/TextSizeHeadline" />
+
+                <TextView
+                    android:id="@+id/account_pin"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:hint="XXXXXXX"
+                    android:textColor="@color/primarytext"
+                    android:textColorHint="@color/secondarytext"
+                    android:textSize="?attr/TextSizeHeadline"
+                    android:autoText="false"
+                    android:textIsSelectable="false"
+                    android:password="false"
+                    android:gravity="clip_horizontal|center|clip_vertical"
+                    android:layout_gravity="center"/>
+
+                <TextView
+                    android:id="@+id/dismiss_warning"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/mgmt_account_are_you_sure"
+                    android:textColor="@color/primarytext"
+                    android:textColorHint="@color/secondarytext"
+                    android:textSize="?attr/TextSizeHeadline"
+                    android:autoText="false"
+                    android:textIsSelectable="false"
+                    android:password="false"
+                    android:gravity="clip_horizontal|center|clip_vertical"
+                    android:layout_gravity="center"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/dismiss_disclaimer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/mgmt_account_delete_confirm_text"
+                    android:textColor="@color/primarytext"
+                    android:textColorHint="@color/secondarytext"
+                    android:textSize="?attr/TextSizeBody"
+                    android:autoText="false"
+                    android:textIsSelectable="false"
+                    android:password="false"
+                    android:gravity="clip_horizontal|center|clip_vertical"
+                    android:layout_gravity="center" />
+
+                <LinearLayout
+                    android:id="@+id/reload_layout"
+                    android:orientation="horizontal"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent">
+
+                <TextView
+                    android:id="@+id/info_tryanother"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/createPin_tryanotherpin"
+                    android:textColor="@color/primarytext"
+                    android:textColorHint="@color/secondarytext"
+                    android:textSize="?attr/TextSizeHeadline"
+                    android:autoText="false"
+                    android:textIsSelectable="false"
+                    android:password="false"
+                    android:gravity="clip_horizontal|center|clip_vertical"
+                    android:layout_gravity="center" />
+
+                    <ImageButton
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/reload_button"
+                        android:src="@drawable/ic_action_refresh"
+                        android:background="@color/primarybackground"
+                        android:layout_gravity="center"
+                        android:focusableInTouchMode="false" />
+                </LinearLayout>
+
+                <RelativeLayout
+                    android:id="@+id/loadingPanel"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center">
+
+                    <ProgressBar
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:indeterminate="true" />
+                </RelativeLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+    <LinearLayout
+        android:id="@+id/button_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true" >
+
+        <Button
+            android:id="@+id/cancel_button"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/cancel"
+            android:textColor="@color/primarytext" />
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="fill_parent"
+            android:layout_marginBottom="7dp"
+            android:layout_marginTop="7dp"
+            android:background="@color/divider" />
+
+        <Button
+            android:id="@+id/save_button"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:enabled="false"
+            android:text="@string/next"
+            android:textColor="@color/secondarytext" />
+    </LinearLayout>
+
+</RelativeLayout>
