@@ -88,6 +88,10 @@
             android:windowSoftInputMode="stateHidden|adjustResize">
         </activity>
         <activity
+            android:name=".ui.DismissPinActivity"
+            android:windowSoftInputMode="stateHidden|adjustResize">
+        </activity>
+        <activity
             android:name=".ui.ConferenceDetailsActivity"
             android:label="@string/title_activity_conference_details"
             android:windowSoftInputMode="stateHidden" />

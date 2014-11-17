@@ -353,5 +353,6 @@
     <string name="file_transmission_failed">file transmission failed</string>
     <string name="file_deleted">The file has been deleted</string>
     <string name="no_application_found_to_open_file">No application found to open file</string>
->>>>>>> origin/development
+    <string name="dismissPin_tryagain">Wanna try again?</string>
+    >>>>>>> origin/development
 </resources>
