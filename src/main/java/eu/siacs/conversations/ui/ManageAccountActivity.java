@@ -1,5 +1,7 @@
 package eu.siacs.conversations.ui;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.ContextMenu;
@@ -175,16 +177,17 @@ public class ManageAccountActivity extends XmppActivity implements OnAccountUpda
 	}
 
 	private void deleteAccount(final Account account) {
-        Intent openNext = new Intent(this,DismissPinActivity.class);
+        /*Intent openNext = new Intent(this,DismissPinActivity.class);
         openNext.putExtra("pincode",  account.getJid().toBareJid().toString());
         startActivity(openNext);
-		/*AlertDialog.Builder builder = new AlertDialog.Builder(
+        */
+		AlertDialog.Builder builder = new AlertDialog.Builder(
 				ManageAccountActivity.this);
 		builder.setTitle(getString(R.string.mgmt_account_are_you_sure));
 		builder.setIconAttribute(android.R.attr.alertDialogIcon);
 		builder.setMessage(getString(R.string.mgmt_account_delete_confirm_text));
 		builder.setPositiveButton(getString(R.string.delete),
-				new OnClickListener() {
+				new DialogInterface.OnClickListener() {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
 						//Default behavior for account deleting:
@@ -194,7 +197,7 @@ public class ManageAccountActivity extends XmppActivity implements OnAccountUpda
 				});
 		builder.setNegativeButton(getString(R.string.cancel), null);
 		builder.create().show();
-		*/
+
 	}
 
 	@Override

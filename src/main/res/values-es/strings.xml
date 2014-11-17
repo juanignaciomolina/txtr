@@ -302,7 +302,7 @@
     <string name="respond">Responder</string>
     <string name="failed">Falló</string>
     <string name="secrets_do_not_match">Los secretos no coinciden</string>
-    <string name="try_again">Intentar de nuevo</string>;
+    <string name="try_again">Intentar de nuevo</string>
     <string name="finish">Terminar</string>
     <string name="verified">Verificado!</string>
     <string name="smp_requested">El contacto solicita verificación SMP</string>
@@ -323,5 +323,9 @@
     <string name="file_transmission_failed">falló la transferencia del archivo</string>
     <string name="file_deleted">El archivo ha sido eliminado</string>
     <string name="no_application_found_to_open_file">No se ha encontrado ninguna aplicación para abrir el archivo</string>
+<<<<<<< HEAD
 >>>>>>> origin/development
 </resources>
+=======
+</resources>
+>>>>>>> origin/development

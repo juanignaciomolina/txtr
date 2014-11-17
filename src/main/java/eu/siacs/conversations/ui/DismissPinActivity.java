@@ -11,8 +11,6 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -21,6 +19,9 @@ import org.json.JSONObject;
 
 import eu.siacs.conversations.R;
 import eu.siacs.conversations.api.ApiAsyncTask;
+import eu.siacs.conversations.entities.Account;
+import eu.siacs.conversations.xmpp.jid.InvalidJidException;
+import eu.siacs.conversations.xmpp.jid.Jid;
 
 public class DismissPinActivity extends XmppActivity implements ApiAsyncTask.TaskCallbacks {
 
@@ -30,15 +31,15 @@ public class DismissPinActivity extends XmppActivity implements ApiAsyncTask.Tas
     private TextView mTryAgain;
     private TextView mDeletingPin;
     private RelativeLayout mLoadingPanel;
-    private LinearLayout mReloadLayout;
-    private ImageButton mReloadButton;
     private Button mSaveButton;
     private Button mCancelButton;
 
     private boolean waitingForJSON = false;
     private JSONObject jsonPin;
     private String mPincode;
+    private String mHost;
     private String mPintoken;
+    private Account mAccount;
     private int nAttempts = 0;
     static final int MAX_ATTEMPTS = 3;
 
@@ -139,8 +140,16 @@ public class DismissPinActivity extends XmppActivity implements ApiAsyncTask.Tas
         this.mSaveButton.setOnClickListener(this.mSaveButtonClickListener);
         this.mCancelButton.setOnClickListener(this.mCancelButtonClickListener);
 
-        //Retrieve the pincode send to the activity
-        mPincode = getIntent().getExtras().getString("pincode");
+        //TODO unHardcode this
+        //Split the jid received
+        try {
+            this.mAccount = xmppConnectionService.findAccountByJid(Jid.fromString(getIntent().getExtras().getString("pincode")));
+        } catch (InvalidJidException e) {
+            e.printStackTrace();
+        }
+        String[] separated =  getIntent().getExtras().getString("pincode").split("@");
+        mPincode = separated[0]; //Retrieve the pincode send to the activity
+        mHost = separated[1];
         mPin.setText(mPincode);
 
         getActionBar().setTitle("Delete PIN");
@@ -186,6 +195,9 @@ public class DismissPinActivity extends XmppActivity implements ApiAsyncTask.Tas
 
             //mPin.setText(jsonPin.toString(2)); Show the whole object with this to debug
             if (jsonPin.has("state") && jsonPin.getInt("state") == 1) { //State 1: OK
+                //Delete the account locally
+                xmppConnectionService.deleteAccount(mAccount);
+
                 //AlertDialog for letting the user now that the pin has been deleted
                 AlertDialog.Builder builder = new AlertDialog.Builder(
                         DismissPinActivity.this);

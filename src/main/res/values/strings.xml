@@ -332,7 +332,7 @@
     <string name="respond">Respond</string>
     <string name="failed">Failed</string>
     <string name="secrets_do_not_match">Secrets do not match</string>
-    <string name="try_again">Try again</string>;
+    <string name="try_again">Try again</string>
     <string name="finish">Finish</string>
     <string name="verified">Verified!</string>
     <string name="smp_requested">Contact requested SMP verification</string>
@@ -354,5 +354,10 @@
     <string name="file_deleted">The file has been deleted</string>
     <string name="no_application_found_to_open_file">No application found to open file</string>
     <string name="dismissPin_tryagain">Wanna try again?</string>
-    >>>>>>> origin/development
+    <string name="could_not_verify_fingerprint">Could not verify fingerprint</string>
+    <string name="manually_verify">Manually verify</string>
+    <string name="are_you_sure_verify_fingerprint">Are you sure that you want to verify your contacts OTR fingerprint?</string>
+    <string name="pref_show_dynamic_tags">Show dynamic tags</string>
+    <string name="pref_show_dynamic_tags_summary">Display read-only tags underneath contacts</string>
+    <string name="enable_notifications">Enable notifications</string>
 </resources>

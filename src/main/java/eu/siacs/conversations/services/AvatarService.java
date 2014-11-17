@@ -17,6 +17,7 @@ import eu.siacs.conversations.entities.Contact;
 import eu.siacs.conversations.entities.Conversation;
 import eu.siacs.conversations.entities.ListItem;
 import eu.siacs.conversations.entities.MucOptions;
+import eu.siacs.conversations.utils.UIHelper;
 
 public class AvatarService {
 
@@ -57,9 +58,11 @@ public class AvatarService {
 	}
 
 	public void clear(Contact contact) {
-		for (Integer size : sizes) {
-			this.mXmppConnectionService.getBitmapCache().remove(
-					key(contact, size));
+		synchronized (this.sizes) {
+			for (Integer size : sizes) {
+				this.mXmppConnectionService.getBitmapCache().remove(
+						key(contact, size));
+			}
 		}
 	}
 
@@ -119,7 +122,7 @@ public class AvatarService {
 		if (count == 0) {
 			String name = mucOptions.getConversation().getName();
 			String letter = name.substring(0, 1);
-			int color = this.getColorForName(name);
+			int color = UIHelper.getColorForName(name);
 			drawTile(canvas, letter, color, 0, 0, size, size);
 		} else if (count == 1) {
 			drawTile(canvas, users.get(0), 0, 0, size, size);
@@ -149,9 +152,11 @@ public class AvatarService {
 	}
 
 	public void clear(MucOptions options) {
-		for (Integer size : sizes) {
-			this.mXmppConnectionService.getBitmapCache().remove(
-					key(options, size));
+		synchronized (this.sizes) {
+			for (Integer size : sizes) {
+				this.mXmppConnectionService.getBitmapCache().remove(
+						key(options, size));
+			}
 		}
 	}
 
@@ -181,9 +186,11 @@ public class AvatarService {
 	}
 
 	public void clear(Account account) {
-		for (Integer size : sizes) {
-			this.mXmppConnectionService.getBitmapCache().remove(
-					key(account, size));
+		synchronized (this.sizes) {
+			for (Integer size : sizes) {
+				this.mXmppConnectionService.getBitmapCache().remove(
+						key(account, size));
+			}
 		}
 	}
 
@@ -209,7 +216,7 @@ public class AvatarService {
 		int color;
 		if (name.length() > 0) {
 			letter = name.substring(0, 1);
-			color = this.getColorForName(name);
+			color = UIHelper.getColorForName(name);
 		} else {
 			letter = "X";
 			color = PLACEHOLDER_COLOR;
@@ -272,7 +279,7 @@ public class AvatarService {
 		int color;
 		if (name.length() > 0) {
 			letter = name.substring(0, 1);
-			color = this.getColorForName(name);
+			color = UIHelper.getColorForName(name);
 		} else {
 			letter = "X";
 			color = PLACEHOLDER_COLOR;
@@ -284,13 +291,6 @@ public class AvatarService {
 						  int dstright, int dstbottom) {
 		Rect dst = new Rect(dstleft, dsttop, dstright, dstbottom);
 		canvas.drawBitmap(bm, null, dst, null);
-	}
-
-	private int getColorForName(String name) {
-		int holoColors[] = {0xFFe91e63, 0xFF9c27b0, 0xFF673ab7, 0xFF3f51b5,
-				0xFF5677fc, 0xFF03a9f4, 0xFF00bcd4, 0xFF009688, 0xFFff5722,
-				0xFF795548, 0xFF607d8b};
-		return holoColors[(int) ((name.hashCode() & 0xffffffffl) % holoColors.length)];
 	}
 
 }
