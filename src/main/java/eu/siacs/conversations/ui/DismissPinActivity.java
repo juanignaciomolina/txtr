@@ -31,6 +31,7 @@ public class DismissPinActivity extends XmppActivity implements ApiAsyncTask.Tas
     private TextView mTryAgain;
     private TextView mDeletingPin;
     private TextView mPinDeletedSuccessfully;
+    private TextView mDisclaimer;
     private RelativeLayout mLoadingPanel;
     private Button mSaveButton;
     private Button mCancelButton;
@@ -51,6 +52,10 @@ public class DismissPinActivity extends XmppActivity implements ApiAsyncTask.Tas
 
     //SavedInstanceState keys
     static final String STATE_WAITINGFORJSON = "waitingForJson";
+    static final String STATE_PINELIMINATED = "pinEliminated";
+    static final String STATE_PINCODE = "pinCode";
+    static final String STATE_HOST = "host";
+    static final String STATE_PINTOKEN ="pinToken";
 
     public boolean isConnected(){
         ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Activity.CONNECTIVITY_SERVICE);
@@ -128,9 +133,11 @@ public class DismissPinActivity extends XmppActivity implements ApiAsyncTask.Tas
 
         if (pinEliminated) {
             mPinDeletedSuccessfully.setVisibility(View.VISIBLE);
+            mDisclaimer.setVisibility(View.GONE);
         }
         else {
             mPinDeletedSuccessfully.setVisibility(View.GONE);
+            mDisclaimer.setVisibility(View.VISIBLE);
         }
 
     }
@@ -148,6 +155,7 @@ public class DismissPinActivity extends XmppActivity implements ApiAsyncTask.Tas
         this.mAssignedPin = (TextView) findViewById(R.id.info_assigned_pin);
         this.mNoInternet = (TextView) findViewById(R.id.info_no_internet);
         this.mTryAgain = (TextView) findViewById(R.id.info_tryanother);
+        this.mDisclaimer = (TextView) findViewById(R.id.dismiss_disclaimer);
         this.mPinDeletedSuccessfully = (TextView) findViewById(R.id.info_pin_eliminated_successfully);
         this.mSaveButton = (Button) findViewById(R.id.save_button);
         this.mCancelButton = (Button) findViewById(R.id.cancel_button);
@@ -169,20 +177,15 @@ public class DismissPinActivity extends XmppActivity implements ApiAsyncTask.Tas
         if (savedInstanceState != null) {
             //Restore values of the previous instance (ie: before rotating the screen)
             this.waitingForJSON = savedInstanceState.getBoolean(STATE_WAITINGFORJSON);
+            this.pinEliminated = savedInstanceState.getBoolean(STATE_PINELIMINATED);
+            this.mPincode = savedInstanceState.getString(STATE_PINCODE);
+            this.mHost = savedInstanceState.getString(STATE_HOST);
+            this.mPintoken = savedInstanceState.getString(STATE_PINTOKEN);
         }
 
         this.updateLayout();
 
 	}
-
-    @Override
-    public void onSaveInstanceState(Bundle savedInstanceState) {
-        // Save the user's current activity state
-        savedInstanceState.putBoolean(STATE_WAITINGFORJSON, waitingForJSON);
-
-        // Always call the superclass so it can save the view hierarchy state
-        super.onSaveInstanceState(savedInstanceState);
-    }
 
     //**Overrides for the ApiAsyncTask interface**//
     @Override
@@ -287,6 +290,19 @@ public class DismissPinActivity extends XmppActivity implements ApiAsyncTask.Tas
 	protected void onStop() {
 		super.onStop();
 	}
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        // Save the user's current activity state
+        savedInstanceState.putBoolean(STATE_PINELIMINATED, pinEliminated);
+        savedInstanceState.putBoolean(STATE_WAITINGFORJSON, waitingForJSON);
+        savedInstanceState.putString(STATE_PINCODE, mPincode);
+        savedInstanceState.putString(STATE_PINTOKEN, mPintoken);
+        savedInstanceState.putString(STATE_HOST, mHost);
+
+        // Always call the superclass so it can save the view hierarchy state
+        super.onSaveInstanceState(savedInstanceState);
+    }
 
 	@Override
 	protected void onBackendConnected() {
