@@ -36,9 +36,11 @@ public class DismissPinActivity extends XmppActivity implements ApiAsyncTask.Tas
 
     private boolean waitingForJSON = false;
     private JSONObject jsonPin;
+    private Jid receivedJid;
     private String mPincode;
     private String mHost;
     private String mPintoken;
+    //private XmppConnectionService xmppConnectionService = super.xmppConnectionService;
     private Account mAccount;
     private int nAttempts = 0;
     static final int MAX_ATTEMPTS = 3;
@@ -88,7 +90,7 @@ public class DismissPinActivity extends XmppActivity implements ApiAsyncTask.Tas
 
             if (!waitingForJSON && mPincode != null) {
                 //Request the delete of a desired PIN
-                startJSONRequest("http://api.droidko.com/?method=pinDismiss&output=json&pincode="+mPincode);
+                startJSONRequest("api.droidko.com/?method=pinDismiss&output=json&pincode="+mPincode);
             }
 
         }
@@ -139,18 +141,6 @@ public class DismissPinActivity extends XmppActivity implements ApiAsyncTask.Tas
         this.mCancelButton = (Button) findViewById(R.id.cancel_button);
         this.mSaveButton.setOnClickListener(this.mSaveButtonClickListener);
         this.mCancelButton.setOnClickListener(this.mCancelButtonClickListener);
-
-        //TODO unHardcode this
-        //Split the jid received
-        try {
-            this.mAccount = xmppConnectionService.findAccountByJid(Jid.fromString(getIntent().getExtras().getString("pincode")));
-        } catch (InvalidJidException e) {
-            e.printStackTrace();
-        }
-        String[] separated =  getIntent().getExtras().getString("pincode").split("@");
-        mPincode = separated[0]; //Retrieve the pincode send to the activity
-        mHost = separated[1];
-        mPin.setText(mPincode);
 
         getActionBar().setTitle("Delete PIN");
 
@@ -244,6 +234,20 @@ public class DismissPinActivity extends XmppActivity implements ApiAsyncTask.Tas
 
 	@Override
 	protected void onBackendConnected() {
+
+        //TODO unHardcode this
+        //Split the jid received
+        try {
+            receivedJid = Jid.fromString(getIntent().getExtras().getString("jidString"));
+            mAccount = xmppConnectionService.findAccountByJid(receivedJid);
+        } catch (InvalidJidException e) {
+            e.printStackTrace();
+        }
+        //String[] separated =  getIntent().getExtras().getString("pincode").split("@");
+        //mPincode = separated[0]; //Retrieve the pincode send to the activity
+        //mHost = separated[1];
+        mPincode = receivedJid.getLocalpart().toUpperCase();
+        mPin.setText(mPincode);
 
         updateLayout();
 	}
