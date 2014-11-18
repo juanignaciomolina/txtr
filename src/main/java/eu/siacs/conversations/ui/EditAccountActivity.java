@@ -126,7 +126,7 @@ public class EditAccountActivity extends XmppActivity implements OnAccountUpdate
 
         }
     };
-    private OnClickListener mCancelButtonClickListener = new OnClickListener() {
+    public OnClickListener mCancelButtonClickListener = new OnClickListener() {
 
         @Override
         public void onClick(View v) {
@@ -364,7 +364,7 @@ public class EditAccountActivity extends XmppActivity implements OnAccountUpdate
 		updateSaveButton();
 	}
 
-	private void updateAccountInformation() {
+	public void updateAccountInformation() {
 		this.mAccountJid.setText(this.mAccount.getJid().toBareJid().toString());
 		this.mPassword.setText(this.mAccount.getPassword());
 		if (this.jidToEdit != null) {
@@ -383,8 +383,8 @@ public class EditAccountActivity extends XmppActivity implements OnAccountUpdate
 				&& !this.mFetchingAvatar) {
 			this.mStats.setVisibility(View.VISIBLE);
 			this.mSessionEst.setText(UIHelper.readableTimeDifferenceFull(
-					getApplicationContext(), this.mAccount.getXmppConnection()
-							.getLastSessionEstablished()));
+                    getApplicationContext(), this.mAccount.getXmppConnection()
+                            .getLastSessionEstablished()));
 			Features features = this.mAccount.getXmppConnection().getFeatures();
 			if (features.carbons()) {
 				this.mServerInfoCarbons.setText(R.string.server_info_available);
@@ -411,17 +411,17 @@ public class EditAccountActivity extends XmppActivity implements OnAccountUpdate
 				this.mOtrFingerprintToClipboardButton
 						.setOnClickListener(new View.OnClickListener() {
 
-							@Override
-							public void onClick(View v) {
+                            @Override
+                            public void onClick(View v) {
 
-								if (copyTextToClipboard(fingerprint, R.string.otr_fingerprint)) {
-									Toast.makeText(
-											EditAccountActivity.this,
-											R.string.toast_message_otr_fingerprint,
-											Toast.LENGTH_SHORT).show();
-								}
-							}
-						});
+                                if (copyTextToClipboard(fingerprint, R.string.otr_fingerprint)) {
+                                    Toast.makeText(
+                                            EditAccountActivity.this,
+                                            R.string.toast_message_otr_fingerprint,
+                                            Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
 			} else {
 				this.mOtrFingerprintBox.setVisibility(View.GONE);
 			}

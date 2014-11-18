@@ -125,7 +125,6 @@ public class CreatePinActivity extends EditAccountActivity implements ApiAsyncTa
 
         @Override
         public void onClick(View v) {
-
             //In case we have already request a PIN and the user wants it
             if (jsonPin != null || pinSelected) {
                 try {
