@@ -48,6 +48,21 @@
                     android:textSize="?attr/TextSizeHeadline" />
 
                 <TextView
+                    android:id="@+id/info_pin_eliminated_successfully"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/dismissPin_eliminated_successfully"
+                    android:textColor="@color/green"
+                    android:autoText="false"
+                    android:textIsSelectable="true"
+                    android:password="false"
+                    android:gravity="clip_horizontal|center|clip_vertical"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="8dp"
+                    android:textStyle="bold"
+                    android:textSize="?attr/TextSizeHeadline" />
+
+                <TextView
                     android:id="@+id/dismiss_warning"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -60,7 +75,9 @@
                     android:password="false"
                     android:gravity="clip_horizontal|center|clip_vertical"
                     android:layout_gravity="center"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp" />
 
                 <TextView
                     android:id="@+id/account_pin"
@@ -69,12 +86,14 @@
                     android:hint="XXXXXXX"
                     android:textColor="@color/primarytext"
                     android:textColorHint="@color/secondarytext"
-                    android:textSize="?attr/TextSizeHeadline"
+                    android:textSize="@dimen/TextBig"
                     android:autoText="false"
                     android:textIsSelectable="false"
                     android:password="false"
                     android:gravity="clip_horizontal|center|clip_vertical"
-                    android:layout_gravity="center"/>
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginTop="8dp" />
 
                 <TextView
                     android:id="@+id/dismiss_disclaimer"
@@ -94,7 +113,9 @@
                     android:id="@+id/loadingPanel"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:gravity="center">
+                    android:gravity="center"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp">
 
                     <ProgressBar
                         android:layout_width="wrap_content"

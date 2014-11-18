@@ -30,17 +30,18 @@ public class DismissPinActivity extends XmppActivity implements ApiAsyncTask.Tas
     private TextView mNoInternet;
     private TextView mTryAgain;
     private TextView mDeletingPin;
+    private TextView mPinDeletedSuccessfully;
     private RelativeLayout mLoadingPanel;
     private Button mSaveButton;
     private Button mCancelButton;
 
     private boolean waitingForJSON = false;
+    private boolean pinEliminated = false;
     private JSONObject jsonPin;
     private Jid receivedJid;
     private String mPincode;
     private String mHost;
     private String mPintoken;
-    //private XmppConnectionService xmppConnectionService = super.xmppConnectionService;
     private Account mAccount;
     private int nAttempts = 0;
     static final int MAX_ATTEMPTS = 3;
@@ -88,9 +89,12 @@ public class DismissPinActivity extends XmppActivity implements ApiAsyncTask.Tas
         @Override
         public void onClick(View v) {
 
-            if (!waitingForJSON && mPincode != null) {
+            if (pinEliminated) {
+                finish();
+            }
+            else if (!waitingForJSON && mPincode != null) {
                 //Request the delete of a desired PIN
-                startJSONRequest("api.droidko.com/?method=pinDismiss&output=json&pincode="+mPincode);
+                startJSONRequest("http://api.droidko.com/?method=pinDismiss&output=json&pincode="+mPincode);
             }
 
         }
@@ -122,6 +126,13 @@ public class DismissPinActivity extends XmppActivity implements ApiAsyncTask.Tas
             mNoInternet.setVisibility(View.GONE);
         }
 
+        if (pinEliminated) {
+            mPinDeletedSuccessfully.setVisibility(View.VISIBLE);
+        }
+        else {
+            mPinDeletedSuccessfully.setVisibility(View.GONE);
+        }
+
     }
 
 	@Override
@@ -137,6 +148,7 @@ public class DismissPinActivity extends XmppActivity implements ApiAsyncTask.Tas
         this.mAssignedPin = (TextView) findViewById(R.id.info_assigned_pin);
         this.mNoInternet = (TextView) findViewById(R.id.info_no_internet);
         this.mTryAgain = (TextView) findViewById(R.id.info_tryanother);
+        this.mPinDeletedSuccessfully = (TextView) findViewById(R.id.info_pin_eliminated_successfully);
         this.mSaveButton = (Button) findViewById(R.id.save_button);
         this.mCancelButton = (Button) findViewById(R.id.cancel_button);
         this.mSaveButton.setOnClickListener(this.mSaveButtonClickListener);
@@ -184,24 +196,68 @@ public class DismissPinActivity extends XmppActivity implements ApiAsyncTask.Tas
             Log.d("TXTR", "onPostExecute: Result converted to JSON");
 
             //mPin.setText(jsonPin.toString(2)); Show the whole object with this to debug
-            if (jsonPin.has("state") && jsonPin.getInt("state") == 1) { //State 1: OK
-                //Delete the account locally
-                xmppConnectionService.deleteAccount(mAccount);
+            if (jsonPin.has("state")) {
 
-                //AlertDialog for letting the user now that the pin has been deleted
+                //Alert dialog builder instantiation
                 AlertDialog.Builder builder = new AlertDialog.Builder(
                         DismissPinActivity.this);
-                builder.setTitle("PIN deleted successfully");
-                builder.setIconAttribute(android.R.attr.alertDialogIcon);
-                builder.setMessage("PIN "+mPincode+" has been removed and cannot receive messages anymore. Contacts from this PIN has also been removed from your device.");
-                builder.setPositiveButton(getString(R.string.ok),
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                finish();
-                            }
-                        });
+
+                 switch (jsonPin.getInt("state")) {
+                     //State 1: OK
+                     case 1:
+                         //Delete the account locally
+                         xmppConnectionService.deleteAccount(mAccount);
+                         pinEliminated = true;
+                         //AlertDialog for letting the user now that the pin has been deleted
+                         builder.setTitle("PIN deleted successfully");
+                         builder.setIconAttribute(android.R.attr.alertDialogIcon);
+                         builder.setMessage("PIN "+mPincode+" has been removed and cannot receive messages anymore. Contacts from this PIN has also been removed from your device.");
+                         builder.setPositiveButton(getString(R.string.ok),
+                                 new DialogInterface.OnClickListener() {
+                                     @Override
+                                     public void onClick(DialogInterface dialog, int which) {
+                                         finish();
+                                     }
+                                 });
+                         break;
+
+                     //State 203: Already deleted or not even registered
+                     case 203:
+                         //Delete the account locally
+                         xmppConnectionService.deleteAccount(mAccount);
+                         pinEliminated = true;
+                         //AlertDialog for letting the user now that the pin was already eliminated
+                         builder.setTitle("PIN already deleted");
+                         builder.setIconAttribute(android.R.attr.alertDialogIcon);
+                         builder.setMessage("PIN "+mPincode+" was not registered on TXTR servers. The PIN and its contacts has been removed from your device.");
+                         builder.setPositiveButton(getString(R.string.ok),
+                                 new DialogInterface.OnClickListener() {
+                                     @Override
+                                     public void onClick(DialogInterface dialog, int which) {
+                                         finish();
+                                     }
+                                 });
+                         break;
+
+                     //In case of any other type of error
+                     default:
+                         //AlertDialog for letting the user now that the pin was already eliminated
+                         builder.setTitle("Couldn't delete the PIN");
+                         builder.setIconAttribute(android.R.attr.alertDialogIcon);
+                         builder.setMessage("There was an error eliminating the PIN "+mPincode+". Try again later, if this error continues, please contact support and let them now this: Error code: "+jsonPin.getInt("state"));
+                         builder.setPositiveButton(getString(R.string.ok),
+                                 new DialogInterface.OnClickListener() {
+                                     @Override
+                                     public void onClick(DialogInterface dialog, int which) {
+                                         finish();
+                                     }
+                                 });
+                         break;
+                 }
+
+                //Show Alert dialog
                 builder.create().show();
+
             }
             else if (nAttempts < MAX_ATTEMPTS) { //Check that the same PIN is not being tried too many times
                 nAttempts++;
