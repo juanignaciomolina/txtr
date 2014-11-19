@@ -118,6 +118,10 @@ public class ManageAccountActivity extends XmppActivity implements OnAccountUpda
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
+            case R.id.action_new_pin:
+                startActivity(new Intent(getApplicationContext(),
+                        CreatePinActivity.class));
+            break;
 		case R.id.action_add_account:
 			startActivity(new Intent(getApplicationContext(),
 					EditAccountActivity.class));

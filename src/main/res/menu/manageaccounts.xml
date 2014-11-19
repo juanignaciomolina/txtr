@@ -2,9 +2,14 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <item
-        android:id="@+id/action_add_account"
-        android:icon="@drawable/ic_action_add_person"
+        android:id="@+id/action_new_pin"
+        android:icon="@drawable/ic_action_new"
         android:showAsAction="always"
+        android:title="@string/new_pin"/>
+    <item
+        android:id="@+id/action_add_account"
+        android:orderInCategory="90"
+        android:showAsAction="never"
         android:title="@string/action_add_account"/>
     <item
         android:id="@+id/action_settings"
