@@ -1,9 +1,7 @@
 package eu.siacs.conversations.ui;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.FragmentManager;
-import android.content.DialogInterface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -32,6 +30,12 @@ public class DismissPinActivity extends XmppActivity implements ApiAsyncTask.Tas
     private TextView mDeletingPin;
     private TextView mPinDeletedSuccessfully;
     private TextView mDisclaimer;
+    private TextView mWarningMessage;
+    private TextView mErrorMessage;
+    private TextView mState1Message;
+    private TextView mState203Message;
+    private TextView mStateUnknown;
+    private TextView mErrorCodeMessage;
     private RelativeLayout mLoadingPanel;
     private Button mSaveButton;
     private Button mCancelButton;
@@ -45,6 +49,7 @@ public class DismissPinActivity extends XmppActivity implements ApiAsyncTask.Tas
     private String mPintoken;
     private Account mAccount;
     private int nAttempts = 0;
+    private int mState = 0;
     static final int MAX_ATTEMPTS = 3;
 
     private static final String TAG_TASK_FRAGMENT = "task_api_createpin";
@@ -56,6 +61,7 @@ public class DismissPinActivity extends XmppActivity implements ApiAsyncTask.Tas
     static final String STATE_PINCODE = "pinCode";
     static final String STATE_HOST = "host";
     static final String STATE_PINTOKEN ="pinToken";
+    static final String STATE_REQUESTSTATE = "requestState";
 
     public boolean isConnected(){
         ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Activity.CONNECTIVITY_SERVICE);
@@ -132,12 +138,47 @@ public class DismissPinActivity extends XmppActivity implements ApiAsyncTask.Tas
         }
 
         if (pinEliminated) {
-            mPinDeletedSuccessfully.setVisibility(View.VISIBLE);
             mDisclaimer.setVisibility(View.GONE);
+            mWarningMessage.setVisibility(View.GONE);
         }
         else {
-            mPinDeletedSuccessfully.setVisibility(View.GONE);
             mDisclaimer.setVisibility(View.VISIBLE);
+            mWarningMessage.setVisibility(View.VISIBLE);
+        }
+
+        switch (mState) {
+            case 0:
+                mPinDeletedSuccessfully.setVisibility(View.GONE);
+                mState1Message.setVisibility(View.GONE);
+                mState203Message.setVisibility(View.GONE);
+                mStateUnknown.setVisibility(View.GONE);
+                mErrorMessage.setVisibility(View.GONE);
+                mErrorCodeMessage.setVisibility(View.GONE);
+            break;
+            case 1:
+                mPinDeletedSuccessfully.setVisibility(View.VISIBLE);
+                mState1Message.setVisibility(View.VISIBLE);
+                mState203Message.setVisibility(View.GONE);
+                mStateUnknown.setVisibility(View.GONE);
+                mErrorMessage.setVisibility(View.GONE);
+                mErrorCodeMessage.setVisibility(View.GONE);
+            break;
+            case 203:
+                mPinDeletedSuccessfully.setVisibility(View.VISIBLE);
+                mState1Message.setVisibility(View.GONE);
+                mState203Message.setVisibility(View.VISIBLE);
+                mStateUnknown.setVisibility(View.GONE);
+                mErrorMessage.setVisibility(View.GONE);
+                mErrorCodeMessage.setVisibility(View.GONE);
+            break;
+            default:
+                mPinDeletedSuccessfully.setVisibility(View.GONE);
+                mState1Message.setVisibility(View.GONE);
+                mState203Message.setVisibility(View.GONE);
+                mStateUnknown.setVisibility(View.VISIBLE);
+                mErrorMessage.setVisibility(View.VISIBLE);
+                mErrorCodeMessage.setText(getString(R.string.pinDismiss_error_code)+mState);
+                mErrorCodeMessage.setVisibility(View.VISIBLE);
         }
 
     }
@@ -156,13 +197,19 @@ public class DismissPinActivity extends XmppActivity implements ApiAsyncTask.Tas
         this.mNoInternet = (TextView) findViewById(R.id.info_no_internet);
         this.mTryAgain = (TextView) findViewById(R.id.info_tryanother);
         this.mDisclaimer = (TextView) findViewById(R.id.dismiss_disclaimer);
+        this.mState1Message = (TextView) findViewById(R.id.dismiss_result_1);
+        this.mState203Message = (TextView) findViewById(R.id.dismiss_result_203);
+        this.mStateUnknown = (TextView) findViewById(R.id.dismiss_result_unknown);
+        this.mWarningMessage = (TextView) findViewById(R.id.dismiss_warning);
+        this.mErrorMessage = (TextView) findViewById(R.id.info_error);
+        this.mErrorCodeMessage = (TextView) findViewById(R.id.dismiss_error_code);
         this.mPinDeletedSuccessfully = (TextView) findViewById(R.id.info_pin_eliminated_successfully);
         this.mSaveButton = (Button) findViewById(R.id.save_button);
         this.mCancelButton = (Button) findViewById(R.id.cancel_button);
         this.mSaveButton.setOnClickListener(this.mSaveButtonClickListener);
         this.mCancelButton.setOnClickListener(this.mCancelButtonClickListener);
 
-        getActionBar().setTitle("Delete PIN");
+        getActionBar().setTitle("Eliminate PIN");
 
         FragmentManager fm = getFragmentManager();
         mTaskFragment = (ApiAsyncTask) fm.findFragmentByTag(TAG_TASK_FRAGMENT);
@@ -181,6 +228,7 @@ public class DismissPinActivity extends XmppActivity implements ApiAsyncTask.Tas
             this.mPincode = savedInstanceState.getString(STATE_PINCODE);
             this.mHost = savedInstanceState.getString(STATE_HOST);
             this.mPintoken = savedInstanceState.getString(STATE_PINTOKEN);
+            this.mState = savedInstanceState.getInt(STATE_REQUESTSTATE);
         }
 
         this.updateLayout();
@@ -201,74 +249,38 @@ public class DismissPinActivity extends XmppActivity implements ApiAsyncTask.Tas
             //mPin.setText(jsonPin.toString(2)); Show the whole object with this to debug
             if (jsonPin.has("state")) {
 
-                //Alert dialog builder instantiation
-                AlertDialog.Builder builder = new AlertDialog.Builder(
-                        DismissPinActivity.this);
-
                  switch (jsonPin.getInt("state")) {
                      //State 1: OK
                      case 1:
                          //Delete the account locally
                          xmppConnectionService.deleteAccount(mAccount);
                          pinEliminated = true;
-                         //AlertDialog for letting the user now that the pin has been deleted
-                         builder.setTitle("PIN deleted successfully");
-                         builder.setIconAttribute(android.R.attr.alertDialogIcon);
-                         builder.setMessage("PIN "+mPincode+" has been removed and cannot receive messages anymore. Contacts from this PIN has also been removed from your device.");
-                         builder.setPositiveButton(getString(R.string.ok),
-                                 new DialogInterface.OnClickListener() {
-                                     @Override
-                                     public void onClick(DialogInterface dialog, int which) {
-                                         finish();
-                                     }
-                                 });
+                         mState = 1;
                          break;
 
                      //State 203: Already deleted or not even registered
                      case 203:
-                         //Delete the account locally
                          xmppConnectionService.deleteAccount(mAccount);
                          pinEliminated = true;
-                         //AlertDialog for letting the user now that the pin was already eliminated
-                         builder.setTitle("PIN already deleted");
-                         builder.setIconAttribute(android.R.attr.alertDialogIcon);
-                         builder.setMessage("PIN "+mPincode+" was not registered on TXTR servers. The PIN and its contacts has been removed from your device.");
-                         builder.setPositiveButton(getString(R.string.ok),
-                                 new DialogInterface.OnClickListener() {
-                                     @Override
-                                     public void onClick(DialogInterface dialog, int which) {
-                                         finish();
-                                     }
-                                 });
+                         mState = 203;
                          break;
 
                      //In case of any other type of error
                      default:
-                         //AlertDialog for letting the user now that the pin was already eliminated
-                         builder.setTitle("Couldn't delete the PIN");
-                         builder.setIconAttribute(android.R.attr.alertDialogIcon);
-                         builder.setMessage("There was an error eliminating the PIN "+mPincode+". Try again later, if this error continues, please contact support and let them now this: Error code: "+jsonPin.getInt("state"));
-                         builder.setPositiveButton(getString(R.string.ok),
-                                 new DialogInterface.OnClickListener() {
-                                     @Override
-                                     public void onClick(DialogInterface dialog, int which) {
-                                         finish();
-                                     }
-                                 });
+                         pinEliminated = false;
+                         mState = jsonPin.getInt("state");
                          break;
                  }
 
-                //Show Alert dialog
-                builder.create().show();
-
             }
-            else if (nAttempts < MAX_ATTEMPTS) { //Check that the same PIN is not being tried too many times
+            else if (nAttempts < MAX_ATTEMPTS) { //Server response unexpected, retry
+                pinEliminated = false;
                 nAttempts++;
                 mSaveButton.performClick();
             }
-            else {
-                mPin.setText("Couldn't delete the PIN, try again later");
-                mPin.setTextSize(getResources().getDimension(R.dimen.TextMedium));
+            else { //Server response unexpected, no more tries
+                pinEliminated = false;
+                mState = 299; //State 299: Unknown
             }
 
         } catch (JSONException e) {
@@ -299,6 +311,7 @@ public class DismissPinActivity extends XmppActivity implements ApiAsyncTask.Tas
         savedInstanceState.putString(STATE_PINCODE, mPincode);
         savedInstanceState.putString(STATE_PINTOKEN, mPintoken);
         savedInstanceState.putString(STATE_HOST, mHost);
+        savedInstanceState.putInt(STATE_REQUESTSTATE, mState);
 
         // Always call the superclass so it can save the view hierarchy state
         super.onSaveInstanceState(savedInstanceState);
@@ -320,6 +333,7 @@ public class DismissPinActivity extends XmppActivity implements ApiAsyncTask.Tas
         //mHost = separated[1];
         mPincode = receivedJid.getLocalpart().toUpperCase();
         mPin.setText(mPincode);
+        mPin.setTextSize(getResources().getDimension(R.dimen.TextBig));
 
         updateLayout();
 	}
