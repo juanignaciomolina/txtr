@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -36,6 +37,8 @@ public class DismissPinActivity extends XmppActivity implements ApiAsyncTask.Tas
     private TextView mState203Message;
     private TextView mStateUnknown;
     private TextView mErrorCodeMessage;
+    private ImageView mOkIcon;
+    private ImageView mErrorIcon;
     private RelativeLayout mLoadingPanel;
     private Button mSaveButton;
     private Button mCancelButton;
@@ -154,6 +157,8 @@ public class DismissPinActivity extends XmppActivity implements ApiAsyncTask.Tas
                 mStateUnknown.setVisibility(View.GONE);
                 mErrorMessage.setVisibility(View.GONE);
                 mErrorCodeMessage.setVisibility(View.GONE);
+                mOkIcon.setVisibility(View.GONE);
+                mErrorIcon.setVisibility(View.GONE);
             break;
             case 1:
                 mPinDeletedSuccessfully.setVisibility(View.VISIBLE);
@@ -162,6 +167,8 @@ public class DismissPinActivity extends XmppActivity implements ApiAsyncTask.Tas
                 mStateUnknown.setVisibility(View.GONE);
                 mErrorMessage.setVisibility(View.GONE);
                 mErrorCodeMessage.setVisibility(View.GONE);
+                mOkIcon.setVisibility(View.VISIBLE);
+                mErrorIcon.setVisibility(View.GONE);
             break;
             case 203:
                 mPinDeletedSuccessfully.setVisibility(View.VISIBLE);
@@ -170,6 +177,8 @@ public class DismissPinActivity extends XmppActivity implements ApiAsyncTask.Tas
                 mStateUnknown.setVisibility(View.GONE);
                 mErrorMessage.setVisibility(View.GONE);
                 mErrorCodeMessage.setVisibility(View.GONE);
+                mOkIcon.setVisibility(View.VISIBLE);
+                mErrorIcon.setVisibility(View.GONE);
             break;
             default:
                 mPinDeletedSuccessfully.setVisibility(View.GONE);
@@ -179,6 +188,8 @@ public class DismissPinActivity extends XmppActivity implements ApiAsyncTask.Tas
                 mErrorMessage.setVisibility(View.VISIBLE);
                 mErrorCodeMessage.setText(getString(R.string.pinDismiss_error_code)+mState);
                 mErrorCodeMessage.setVisibility(View.VISIBLE);
+                mOkIcon.setVisibility(View.GONE);
+                mErrorIcon.setVisibility(View.VISIBLE);
         }
 
     }
@@ -204,6 +215,8 @@ public class DismissPinActivity extends XmppActivity implements ApiAsyncTask.Tas
         this.mErrorMessage = (TextView) findViewById(R.id.info_error);
         this.mErrorCodeMessage = (TextView) findViewById(R.id.dismiss_error_code);
         this.mPinDeletedSuccessfully = (TextView) findViewById(R.id.info_pin_eliminated_successfully);
+        this.mOkIcon = (ImageView) findViewById(R.id.ok_icon);
+        this.mErrorIcon = (ImageView) findViewById(R.id.error_icon);
         this.mSaveButton = (Button) findViewById(R.id.save_button);
         this.mCancelButton = (Button) findViewById(R.id.cancel_button);
         this.mSaveButton.setOnClickListener(this.mSaveButtonClickListener);

@@ -185,6 +185,18 @@
                     android:visibility="visible"
                     android:textStyle="bold" />
 
+                <ImageView
+                android:id="@+id/ok_icon"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_action_accept" />
+
+                <ImageView
+                    android:id="@+id/error_icon"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_action_remove" />
+
                 <RelativeLayout
                     android:id="@+id/loadingPanel"
                     android:layout_width="match_parent"
