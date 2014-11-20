@@ -33,6 +33,7 @@ public class Account extends AbstractEntity {
 	public static final String ROSTERVERSION = "rosterversion";
 	public static final String KEYS = "keys";
 	public static final String AVATAR = "avatar";
+    public static final String PINTOKEN = "pintoken";
 
 	public static final String PINNED_MECHANISM_KEY = "pinned_mechanism";
 

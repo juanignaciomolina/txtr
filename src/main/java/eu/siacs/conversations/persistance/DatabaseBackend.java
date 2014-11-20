@@ -1,5 +1,11 @@
 package eu.siacs.conversations.persistance;
 
+import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteCantOpenDatabaseException;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -11,18 +17,12 @@ import eu.siacs.conversations.entities.Message;
 import eu.siacs.conversations.entities.Roster;
 import eu.siacs.conversations.xmpp.jid.Jid;
 
-import android.content.Context;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteCantOpenDatabaseException;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
-
 public class DatabaseBackend extends SQLiteOpenHelper {
 
 	private static DatabaseBackend instance = null;
 
 	private static final String DATABASE_NAME = "history";
-	private static final int DATABASE_VERSION = 11;
+	private static final int DATABASE_VERSION = 12;
 
 	private static String CREATE_CONTATCS_STATEMENT = "create table "
 			+ Contact.TABLENAME + "(" + Contact.ACCOUNT + " TEXT, "
@@ -47,8 +47,8 @@ public class DatabaseBackend extends SQLiteOpenHelper {
 				+ " TEXT PRIMARY KEY," + Account.USERNAME + " TEXT,"
 				+ Account.SERVER + " TEXT," + Account.PASSWORD + " TEXT,"
 				+ Account.ROSTERVERSION + " TEXT," + Account.OPTIONS
-				+ " NUMBER, " + Account.AVATAR + " TEXT, " + Account.KEYS
-				+ " TEXT)");
+				+ " NUMBER, " + Account.AVATAR + " TEXT," + Account.PINTOKEN + " TEXT,"
+                + Account.KEYS + " TEXT)");
 		db.execSQL("create table " + Conversation.TABLENAME + " ("
 				+ Conversation.UUID + " TEXT PRIMARY KEY, " + Conversation.NAME
 				+ " TEXT, " + Conversation.CONTACT + " TEXT, "
@@ -121,6 +121,11 @@ public class DatabaseBackend extends SQLiteOpenHelper {
 			db.execSQL("delete from "+Contact.TABLENAME);
 			db.execSQL("update "+Account.TABLENAME+" set "+Account.ROSTERVERSION+" = NULL");
 		}
+        //TXTR CUSTOM: PINTOKEN COLUMN
+        if (oldVersion < 12 && newVersion >= 12) {
+            db.execSQL("ALTER TABLE " + Account.TABLENAME + " ADD COLUMN "
+                    + Account.PINTOKEN + " TEXT");
+        }
 	}
 
 	public static synchronized DatabaseBackend getInstance(Context context) {
