@@ -131,7 +131,7 @@ public class CreatePinActivity extends EditAccountActivity implements ApiAsyncTa
             if (jsonPin != null || pinSelected) {
                 try {
                     String pincode = URLEncoder.encode(jsonPin.getString("pincode"), "utf-8");
-                    String pintoken = URLEncoder.encode(jsonPin.getString("token"), "utf-8");
+                    String pintoken = URLEncoder.encode(jsonPin.getString("pintoken"), "utf-8");
                     String url =
                             "http://api.droidko.com/?method=pinRegister&output=json"
                                     + "&pincode=" + pincode
@@ -327,7 +327,7 @@ public class CreatePinActivity extends EditAccountActivity implements ApiAsyncTa
                 this.jsonPin = new JSONObject();
                 try {
                     this.jsonPin.put("pincode", savedInstanceState.getString(STATE_JSONPIN_PINCODE));
-                    this.jsonPin.put("token", savedInstanceState.getString(STATE_JSONPIN_TOKEN));
+                    this.jsonPin.put("pintoken", savedInstanceState.getString(STATE_JSONPIN_TOKEN));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -352,7 +352,7 @@ public class CreatePinActivity extends EditAccountActivity implements ApiAsyncTa
         try {
             if (jsonPin != null) {
                 savedInstanceState.putString(STATE_JSONPIN_PINCODE, URLEncoder.encode(jsonPin.getString("pincode"), "utf-8"));
-                savedInstanceState.putString(STATE_JSONPIN_TOKEN, URLEncoder.encode(jsonPin.getString("token"), "utf-8"));
+                savedInstanceState.putString(STATE_JSONPIN_TOKEN, URLEncoder.encode(jsonPin.getString("pintoken"), "utf-8"));
             }
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
@@ -386,7 +386,7 @@ public class CreatePinActivity extends EditAccountActivity implements ApiAsyncTa
                             jsonPin.getString("pincode"),
                             jsonPin.getString("password"),
                             jsonPin.getString("host"),
-                            jsonPin.getString("token"));
+                            jsonPin.getString("pintoken"));
                 }
             }
             else if (nAttempts < MAX_ATTEMPTS) { //Check that the same PIN is not being tried too many times
