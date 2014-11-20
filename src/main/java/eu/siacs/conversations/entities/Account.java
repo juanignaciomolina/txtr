@@ -114,6 +114,7 @@ public class Account extends AbstractEntity {
 	protected State status = State.OFFLINE;
 	protected JSONObject keys = new JSONObject();
 	protected String avatar;
+    protected String pintoken;
 	protected boolean online = false;
 	private OtrEngine otrEngine = null;
 	private XmppConnection xmppConnection = null;
@@ -129,12 +130,12 @@ public class Account extends AbstractEntity {
 
 	public Account(final Jid jid, final String password) {
 		this(java.util.UUID.randomUUID().toString(), jid,
-				password, 0, null, "", null);
+				password, 0, null, "", null, null);
 	}
 
 	public Account(final String uuid, final Jid jid,
 			final String password, final int options, final String rosterVersion, final String keys,
-			final String avatar) {
+			final String avatar, final String pintoken) {
 		this.uuid = uuid;
 		this.jid = jid;
 		if (jid.isBareJid()) {
@@ -149,6 +150,7 @@ public class Account extends AbstractEntity {
 
 		}
 		this.avatar = avatar;
+        this.pintoken = pintoken;
 	}
 
 	public static Account fromCursor(Cursor cursor) {
@@ -164,7 +166,8 @@ public class Account extends AbstractEntity {
 				cursor.getInt(cursor.getColumnIndex(OPTIONS)),
 				cursor.getString(cursor.getColumnIndex(ROSTERVERSION)),
 				cursor.getString(cursor.getColumnIndex(KEYS)),
-				cursor.getString(cursor.getColumnIndex(AVATAR)));
+				cursor.getString(cursor.getColumnIndex(AVATAR)),
+                cursor.getString(cursor.getColumnIndex(PINTOKEN)));
 	}
 
 	public boolean isOptionSet(int option) {
@@ -278,6 +281,7 @@ public class Account extends AbstractEntity {
 		values.put(KEYS, this.keys.toString());
 		values.put(ROSTERVERSION, rosterVersion);
 		values.put(AVATAR, avatar);
+        values.put(PINTOKEN, pintoken);
 		return values;
 	}
 
@@ -394,7 +398,18 @@ public class Account extends AbstractEntity {
 		return this.avatar;
 	}
 
-	public void activateGracePeriod() {
+    public boolean setPintoken (String newPinToken) {
+        if (this.pintoken != null && this.pintoken.equals(newPinToken)) {
+            return false;
+        } else {
+            this.pintoken = newPinToken;
+            return true;
+        }
+    }
+
+    public String getPintoken() { return this.pintoken; }
+
+    public void activateGracePeriod() {
 		this.mEndGracePeriod = SystemClock.elapsedRealtime()
 			+ (Config.CARBON_GRACE_PERIOD * 1000);
 	}
