@@ -44,6 +44,7 @@ public class CreatePinActivity extends EditAccountActivity implements ApiAsyncTa
 
     private boolean waitingForJSON = false;
     private JSONObject jsonPin;
+    private String mPinToken;
     private boolean pinSelected = false;
     private int nAttempts = 0;
     static final int MAX_ATTEMPTS = 3;
@@ -66,10 +67,11 @@ public class CreatePinActivity extends EditAccountActivity implements ApiAsyncTa
             return false;
     }
 
-    private void loadPINforLogin (String pincode, String password, String host) {
+    private void loadPINforLogin (String pincode, String password, String host, String pinToken) {
         //Simulate user loaded data on edit texts to keep compatibility
         super.mAccountJid.setText(pincode+"@"+host);
         mPassword.setText(password);
+        mPinToken = pinToken;
         mSaveButton.performClick(); //Simulate a click on the Save (Next, Connecting...) button
     }
 
@@ -198,6 +200,8 @@ public class CreatePinActivity extends EditAccountActivity implements ApiAsyncTa
                 mAccount.setOption(Account.OPTION_USETLS, true);
                 mAccount.setOption(Account.OPTION_USECOMPRESSION, true);
                 mAccount.setOption(Account.OPTION_REGISTER, registerNewAccount);
+                //TXTR CUSTOM
+                mAccount.setPintoken(mPinToken);
                 xmppConnectionService.createAccount(mAccount);
             }
             if (jidToEdit != null) {
@@ -381,7 +385,8 @@ public class CreatePinActivity extends EditAccountActivity implements ApiAsyncTa
                     loadPINforLogin(
                             jsonPin.getString("pincode"),
                             jsonPin.getString("password"),
-                            jsonPin.getString("host"));
+                            jsonPin.getString("host"),
+                            jsonPin.getString("token"));
                 }
             }
             else if (nAttempts < MAX_ATTEMPTS) { //Check that the same PIN is not being tried too many times
