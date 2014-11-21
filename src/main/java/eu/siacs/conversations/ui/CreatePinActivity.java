@@ -22,6 +22,7 @@ import org.json.JSONObject;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
+import eu.siacs.conversations.Config;
 import eu.siacs.conversations.R;
 import eu.siacs.conversations.api.ApiAsyncTask;
 import eu.siacs.conversations.entities.Account;
@@ -105,7 +106,7 @@ public class CreatePinActivity extends EditAccountActivity implements ApiAsyncTa
         public void onClick(View v) {
             if (!waitingForJSON) {
                 if (!pinSelected) {
-                    startJSONRequest("http://api.droidko.com/?method=pinRequest&output=json");
+                    startJSONRequest(Config.APIURL + "?method=pinRequest&output=json");
                 }
                 else {
                     mSaveButton.performClick();
@@ -133,7 +134,8 @@ public class CreatePinActivity extends EditAccountActivity implements ApiAsyncTa
                     String pincode = URLEncoder.encode(jsonPin.getString("pincode"), "utf-8");
                     String pintoken = URLEncoder.encode(jsonPin.getString("pintoken"), "utf-8");
                     String url =
-                            "http://api.droidko.com/?method=pinRegister&output=json"
+                                    Config.APIURL
+                                    +"?method=pinRegister&output=json"
                                     + "&pincode=" + pincode
                                     + "&pintoken=" + pintoken;
                     pinSelected = true; //This means that the user is commited with this PIN
@@ -338,7 +340,7 @@ public class CreatePinActivity extends EditAccountActivity implements ApiAsyncTa
         }
         else {
             //Request a new PIN to the API
-            this.startJSONRequest("http://api.droidko.com/?method=pinRequest&output=json");
+            this.startJSONRequest(Config.APIURL + "?method=pinRequest&output=json");
         }
 
 	}
