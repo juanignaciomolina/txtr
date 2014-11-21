@@ -125,6 +125,20 @@
                     android:layout_gravity="center" />
 
                 <TextView
+                    android:id="@+id/dismiss_info_onlylocalpin"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/dismissPin_info_onlylocalpin"
+                    android:textColor="@color/primarytext"
+                    android:textColorHint="@color/secondarytext"
+                    android:textSize="?attr/TextSizeBody"
+                    android:autoText="false"
+                    android:textIsSelectable="false"
+                    android:password="false"
+                    android:gravity="clip_horizontal|center|clip_vertical"
+                    android:layout_gravity="center" />
+
+                <TextView
                     android:id="@+id/dismiss_result_1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -144,6 +158,21 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:hint="@string/dismissPin_state_203"
+                    android:textColor="@color/primarytext"
+                    android:textColorHint="@color/secondarytext"
+                    android:textSize="?attr/TextSizeBody"
+                    android:autoText="false"
+                    android:textIsSelectable="false"
+                    android:password="false"
+                    android:gravity="clip_horizontal|center|clip_vertical"
+                    android:layout_gravity="center"
+                    android:visibility="gone"/>
+
+                <TextView
+                    android:id="@+id/dismiss_result_onlylocal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/pinDismiss_state_onlylocal"
                     android:textColor="@color/primarytext"
                     android:textColorHint="@color/secondarytext"
                     android:textSize="?attr/TextSizeBody"

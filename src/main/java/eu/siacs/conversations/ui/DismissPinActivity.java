@@ -16,6 +16,7 @@ import android.widget.TextView;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import eu.siacs.conversations.Config;
 import eu.siacs.conversations.R;
 import eu.siacs.conversations.api.ApiAsyncTask;
 import eu.siacs.conversations.entities.Account;
@@ -31,11 +32,13 @@ public class DismissPinActivity extends XmppActivity implements ApiAsyncTask.Tas
     private TextView mDeletingPin;
     private TextView mPinDeletedSuccessfully;
     private TextView mDisclaimer;
+    private TextView mOnlyLocalMessage;
     private TextView mWarningMessage;
     private TextView mErrorMessage;
     private TextView mState1Message;
     private TextView mState203Message;
     private TextView mStateUnknown;
+    private TextView mStateOnlyLocal;
     private TextView mErrorCodeMessage;
     private ImageView mOkIcon;
     private ImageView mErrorIcon;
@@ -45,6 +48,8 @@ public class DismissPinActivity extends XmppActivity implements ApiAsyncTask.Tas
 
     private boolean waitingForJSON = false;
     private boolean pinEliminated = false;
+    private boolean mOnlyLocalDismiss = true;
+    private boolean mBackEndConnected = false;
     private JSONObject jsonPin;
     private Jid receivedJid;
     private String mPincode;
@@ -103,12 +108,17 @@ public class DismissPinActivity extends XmppActivity implements ApiAsyncTask.Tas
         @Override
         public void onClick(View v) {
 
-            if (pinEliminated) {
-                finish();
-            }
-            else if (!waitingForJSON && mPincode != null) {
-                //Request the delete of a desired PIN
-                startJSONRequest("http://api.droidko.com/?method=pinDismiss&output=json&pincode="+mPincode);
+            if (mBackEndConnected) {
+                if (pinEliminated) {
+                    finish();
+                }
+                else if (!waitingForJSON && mPincode != null && mPintoken != null) {
+                    //Request the delete of a desired PIN
+                        startJSONRequest(Config.APIURL + "?method=pinDismiss&output=json&pincode=" + mPincode + "&pintoken=" + mPintoken);
+                }
+                else if (mOnlyLocalDismiss) {
+                    xmppConnectionService.deleteAccount(mAccount);
+                }
             }
 
         }
@@ -140,9 +150,18 @@ public class DismissPinActivity extends XmppActivity implements ApiAsyncTask.Tas
             mNoInternet.setVisibility(View.GONE);
         }
 
+        if (mOnlyLocalDismiss) {
+            mOnlyLocalMessage.setVisibility(View.VISIBLE);
+        }
+        else {
+            mOnlyLocalMessage.setVisibility(View.GONE);
+        }
+
         if (pinEliminated) {
             mDisclaimer.setVisibility(View.GONE);
             mWarningMessage.setVisibility(View.GONE);
+            if (mOnlyLocalDismiss) {mStateOnlyLocal.setVisibility(View.VISIBLE);}
+            else {mStateOnlyLocal.setVisibility(View.GONE);}
         }
         else {
             mDisclaimer.setVisibility(View.VISIBLE);
@@ -208,9 +227,11 @@ public class DismissPinActivity extends XmppActivity implements ApiAsyncTask.Tas
         this.mNoInternet = (TextView) findViewById(R.id.info_no_internet);
         this.mTryAgain = (TextView) findViewById(R.id.info_tryanother);
         this.mDisclaimer = (TextView) findViewById(R.id.dismiss_disclaimer);
+        this.mOnlyLocalMessage = (TextView) findViewById(R.id.dismiss_info_onlylocalpin);
         this.mState1Message = (TextView) findViewById(R.id.dismiss_result_1);
         this.mState203Message = (TextView) findViewById(R.id.dismiss_result_203);
         this.mStateUnknown = (TextView) findViewById(R.id.dismiss_result_unknown);
+        this.mStateOnlyLocal = (TextView) findViewById(R.id.dismiss_result_onlylocal);
         this.mWarningMessage = (TextView) findViewById(R.id.dismiss_warning);
         this.mErrorMessage = (TextView) findViewById(R.id.info_error);
         this.mErrorCodeMessage = (TextView) findViewById(R.id.dismiss_error_code);
@@ -335,6 +356,7 @@ public class DismissPinActivity extends XmppActivity implements ApiAsyncTask.Tas
 
         //TODO unHardcode this
         //Split the jid received
+        mBackEndConnected = true;
         try {
             receivedJid = Jid.fromString(getIntent().getExtras().getString("jidString"));
             mAccount = xmppConnectionService.findAccountByJid(receivedJid);
@@ -347,6 +369,10 @@ public class DismissPinActivity extends XmppActivity implements ApiAsyncTask.Tas
         mPincode = receivedJid.getLocalpart().toUpperCase();
         mPin.setText(mPincode);
         mPin.setTextSize(getResources().getDimension(R.dimen.TextBig));
+        mPintoken = mAccount.getPintoken();
+        //If there is no pintoken in the account, then it doesn't have 'admin' privileges and cannot
+        //delete the pin from the server, only from the device.
+        mOnlyLocalDismiss = (mPintoken == null);
 
         updateLayout();
 	}

@@ -23,6 +23,9 @@ public final class Config {
 
 	public static final boolean NO_PROXY_LOOKUP = false; //useful to debug ibb
 
+    //TXTR CUSTOM//
+    public static final String APIURL = "http://api.droidko.com/";
+
 	private Config() {
 
 	}
