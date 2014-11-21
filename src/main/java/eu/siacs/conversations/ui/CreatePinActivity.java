@@ -15,6 +15,7 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -45,7 +46,6 @@ public class CreatePinActivity extends EditAccountActivity implements ApiAsyncTa
 
     private boolean waitingForJSON = false;
     private JSONObject jsonPin;
-    private String mPinToken;
     private boolean pinSelected = false;
     private int nAttempts = 0;
     static final int MAX_ATTEMPTS = 3;
@@ -66,14 +66,6 @@ public class CreatePinActivity extends EditAccountActivity implements ApiAsyncTa
             return true;
         else
             return false;
-    }
-
-    private void loadPINforLogin (String pincode, String password, String host, String pinToken) {
-        //Simulate user loaded data on edit texts to keep compatibility
-        super.mAccountJid.setText(pincode+"@"+host);
-        mPassword.setText(password);
-        mPinToken = pinToken;
-        mSaveButton.performClick(); //Simulate a click on the Save (Next, Connecting...) button
     }
 
     private void startJSONRequest (String url) {
@@ -98,6 +90,48 @@ public class CreatePinActivity extends EditAccountActivity implements ApiAsyncTa
             waitingForJSON = false;
         }
         this.updateLayout();
+    }
+
+    private void CreateAndLogIn (String pinCode, String pinPassword, String pinHost, String pinToken) {
+
+        String pinJidString = pinCode+"@"+pinHost;
+
+        //Check point: Should never happen
+        if (!Validator.isValidJid(pinJidString)) {
+            Toast toast = Toast.makeText(
+                    getApplicationContext(),
+                    "Error: Not a valid PIN",
+                    Toast.LENGTH_SHORT);
+            toast.show();
+            return;
+        }
+        Jid jid;
+        try {
+            jid = Jid.fromString(pinJidString);
+        } catch (final InvalidJidException e) {
+            // TODO: Handle this error?
+            return;
+        }
+        try {
+            //Check point: Should never happen
+            if (xmppConnectionService.findAccountByJid(Jid.fromString(pinJidString)) != null) {
+                Toast toast = Toast.makeText(
+                        getApplicationContext(),
+                        "Error: This PIN is already in your device",
+                        Toast.LENGTH_SHORT);
+                toast.show();
+                return;
+            }
+        } catch (InvalidJidException e) {
+            return;
+        }
+        //Create local account
+        mAccount = new Account(jid.toBareJid(), pinPassword);
+        mAccount.setOption(Account.OPTION_USETLS, true);
+        mAccount.setOption(Account.OPTION_USECOMPRESSION, true);
+        mAccount.setOption(Account.OPTION_REGISTER, false);
+        mAccount.setPintoken(pinToken); //TXTR CUSTOM FIELD
+        xmppConnectionService.createAccount(mAccount);
     }
 
     private OnClickListener mReloadButtonClickListener = new OnClickListener() {
@@ -147,70 +181,6 @@ public class CreatePinActivity extends EditAccountActivity implements ApiAsyncTa
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }
-            }
-
-            if (mAccount != null
-                    && mAccount.getStatus() == Account.State.DISABLED) {
-                mAccount.setOption(Account.OPTION_DISABLED, false);
-                xmppConnectionService.updateAccount(mAccount);
-                return;
-            }
-            if (!Validator.isValidJid(mAccountJid.getText().toString())) {
-                mAccountJid.setError(getString(R.string.invalid_jid));
-                mAccountJid.requestFocus();
-                return;
-            }
-            boolean registerNewAccount = mRegisterNew.isChecked();
-            final Jid jid;
-            try {
-                jid = Jid.fromString(mAccountJid.getText().toString());
-            } catch (final InvalidJidException e) {
-                // TODO: Handle this error?
-                return;
-            }
-            String password = mPassword.getText().toString();
-            String passwordConfirm = mPasswordConfirm.getText().toString();
-            if (registerNewAccount) {
-                if (!password.equals(passwordConfirm)) {
-                    mPasswordConfirm
-                            .setError(getString(R.string.passwords_do_not_match));
-                    mPasswordConfirm.requestFocus();
-                    return;
-                }
-            }
-            if (mAccount != null) {
-                mAccount.setPassword(password);
-                try {
-                    mAccount.setUsername(jid.hasLocalpart() ? jid.getLocalpart() : "");
-                    mAccount.setServer(jid.getDomainpart());
-                } catch (final InvalidJidException ignored) {
-                }
-                mAccount.setOption(Account.OPTION_REGISTER, registerNewAccount);
-                xmppConnectionService.updateAccount(mAccount);
-            } else {
-                try {
-                    if (xmppConnectionService.findAccountByJid(Jid.fromString(mAccountJid.getText().toString())) != null) {
-                        mAccountJid
-                                .setError(getString(R.string.account_already_exists));
-                        mAccountJid.requestFocus();
-                        return;
-                    }
-                } catch (InvalidJidException e) {
-                    return;
-                }
-                mAccount = new Account(jid.toBareJid(), password);
-                mAccount.setOption(Account.OPTION_USETLS, true);
-                mAccount.setOption(Account.OPTION_USECOMPRESSION, true);
-                mAccount.setOption(Account.OPTION_REGISTER, registerNewAccount);
-                //TXTR CUSTOM
-                mAccount.setPintoken(mPinToken);
-                xmppConnectionService.createAccount(mAccount);
-            }
-            if (jidToEdit != null) {
-                finish();
-            } else {
-                updateSaveButton();
-                updateAccountInformation();
             }
 
         }
@@ -384,7 +354,7 @@ public class CreatePinActivity extends EditAccountActivity implements ApiAsyncTa
                 nAttempts = 0; //Reset attempts
 
                 if(pinSelected) {
-                    loadPINforLogin(
+                    CreateAndLogIn(
                             jsonPin.getString("pincode"),
                             jsonPin.getString("password"),
                             jsonPin.getString("host"),
