@@ -5,25 +5,22 @@
     android:background="@color/secondarybackground"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <ScrollView
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/button_bar"
-        android:layout_alignParentTop="true" >
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" >
+            android:orientation="vertical"
+            android:layout_above="@+id/button_bar"
+            android:layout_alignParentTop="true">
 
             <LinearLayout
                 android:id="@+id/editor"
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_margin="8dp"
                 android:background="@drawable/infocard_border"
                 android:orientation="vertical"
-                android:padding="16dp" >
+                android:padding="16dp"
+                android:baselineAligned="false">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -239,7 +236,7 @@
                 <RelativeLayout
                     android:id="@+id/loadingPanel"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:gravity="center"
                     android:layout_marginTop="8dp"
                     android:layout_marginBottom="8dp">
@@ -276,7 +273,6 @@
             </LinearLayout>
 
         </LinearLayout>
-    </ScrollView>
 
     <LinearLayout
         android:id="@+id/button_bar"

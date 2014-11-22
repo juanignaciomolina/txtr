@@ -8,18 +8,26 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.Collections;
+
 import eu.siacs.conversations.Config;
 import eu.siacs.conversations.R;
 import eu.siacs.conversations.api.ApiAsyncTask;
 import eu.siacs.conversations.entities.Account;
+import eu.siacs.conversations.entities.Contact;
+import eu.siacs.conversations.entities.ListItem;
+import eu.siacs.conversations.ui.adapter.ListItemAdapter;
 import eu.siacs.conversations.xmpp.jid.InvalidJidException;
 import eu.siacs.conversations.xmpp.jid.Jid;
 
@@ -45,6 +53,9 @@ public class DismissPinActivity extends XmppActivity implements ApiAsyncTask.Tas
     private RelativeLayout mLoadingPanel;
     private Button mSaveButton;
     private Button mCancelButton;
+    private ListView mListView;
+    private ArrayList<ListItem> contacts = new ArrayList<>();
+    private ArrayAdapter<ListItem> mContactsAdapter;
 
     private boolean waitingForJSON = false;
     private boolean pinEliminated = false;
@@ -93,6 +104,22 @@ public class DismissPinActivity extends XmppActivity implements ApiAsyncTask.Tas
         }
         this.updateLayout();
     }
+
+    protected void filterContacts(String needle) {
+        this.contacts.clear();
+        for (Account account : xmppConnectionService.getAccounts()) {
+            if (account.getStatus() != Account.State.DISABLED) {
+                for (Contact contact : account.getRoster().getContacts()) {
+                    if (contact.showInRoster() && contact.match(needle)) {
+                        this.contacts.add(contact);
+                    }
+                }
+            }
+        }
+        Collections.sort(this.contacts);
+        mContactsAdapter.notifyDataSetChanged();
+    }
+
 
     public OnClickListener mCancelButtonClickListener = new OnClickListener() {
 
@@ -207,7 +234,7 @@ public class DismissPinActivity extends XmppActivity implements ApiAsyncTask.Tas
                 mDisclaimer.setVisibility(View.GONE);
                 mStateUnknown.setVisibility(View.VISIBLE);
                 mErrorMessage.setVisibility(View.VISIBLE);
-                mErrorCodeMessage.setText(getString(R.string.pinDismiss_error_code)+" "+mState);
+                mErrorCodeMessage.setText(getString(R.string.pinDismiss_error_code) + " " + mState);
                 mErrorCodeMessage.setVisibility(View.VISIBLE);
                 mOkIcon.setVisibility(View.GONE);
                 mErrorIcon.setVisibility(View.VISIBLE);
@@ -244,6 +271,10 @@ public class DismissPinActivity extends XmppActivity implements ApiAsyncTask.Tas
         this.mCancelButton = (Button) findViewById(R.id.cancel_button);
         this.mSaveButton.setOnClickListener(this.mSaveButtonClickListener);
         this.mCancelButton.setOnClickListener(this.mCancelButtonClickListener);
+        mListView = (ListView) findViewById(R.id.dismiss_contact_list);
+        mListView.setFastScrollEnabled(true);
+        mContactsAdapter = new ListItemAdapter(this, contacts);
+        mListView.setAdapter(mContactsAdapter);
 
         getActionBar().setTitle("Eliminate PIN");
 
@@ -375,6 +406,9 @@ public class DismissPinActivity extends XmppActivity implements ApiAsyncTask.Tas
         //If there is no pintoken in the account, then it doesn't have 'admin' privileges and cannot
         //delete the pin from the server, only from the device.
         mOnlyLocalDismiss = (mPintoken == null);
+
+        //This loads the PIN's contacts
+        filterContacts(null);
 
         updateLayout();
 	}
