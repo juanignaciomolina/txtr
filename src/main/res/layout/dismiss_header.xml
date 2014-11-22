@@ -113,20 +113,12 @@
 
     </RelativeLayout>
 
-    <TextView
-        android:id="@+id/dismiss_disclaimer"
-        android:layout_width="wrap_content"
+    <ImageView
+        android:id="@+id/warning_icon"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/mgmt_account_delete_confirm_text"
-        android:textColor="@color/primarytext"
-        android:textColorHint="@color/secondarytext"
-        android:textSize="?attr/TextSizeBody"
-        android:autoText="false"
-        android:textIsSelectable="false"
-        android:password="false"
-        android:gravity="clip_horizontal|center|clip_vertical"
-        android:layout_gravity="center"
-        android:visibility="visible"/>
+        android:src="@drawable/ic_action_warning"
+        android:visibility="gone"/>
 
     <TextView
         android:id="@+id/dismiss_info_onlylocalpin"
@@ -141,7 +133,23 @@
         android:password="false"
         android:gravity="clip_horizontal|center|clip_vertical"
         android:layout_gravity="center"
+        android:layout_marginBottom="8dp"
         android:visibility="gone"/>
+
+    <TextView
+        android:id="@+id/dismiss_disclaimer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="@string/mgmt_account_delete_confirm_text"
+        android:textColor="@color/primarytext"
+        android:textColorHint="@color/secondarytext"
+        android:textSize="?attr/TextSizeBody"
+        android:autoText="false"
+        android:textIsSelectable="false"
+        android:password="false"
+        android:gravity="clip_horizontal|center|clip_vertical"
+        android:layout_gravity="center"
+        android:visibility="visible"/>
 
     <TextView
         android:id="@+id/dismiss_result_1"

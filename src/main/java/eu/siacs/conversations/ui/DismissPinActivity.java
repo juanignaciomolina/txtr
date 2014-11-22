@@ -53,6 +53,7 @@ public class DismissPinActivity extends XmppActivity implements ApiAsyncTask.Tas
     private TextView mYesContacts;
     private ImageView mOkIcon;
     private ImageView mErrorIcon;
+    private ImageView mWarningIcon;
     private ImageView mAvatar;
     private RelativeLayout mLoadingPanel;
     private Button mSaveButton;
@@ -217,6 +218,7 @@ public class DismissPinActivity extends XmppActivity implements ApiAsyncTask.Tas
                 mErrorCodeMessage.setVisibility(View.GONE);
                 mOkIcon.setVisibility(View.GONE);
                 mErrorIcon.setVisibility(View.GONE);
+                mWarningIcon.setVisibility(View.VISIBLE);
             break;
             case 1:
                 mPinDeletedSuccessfully.setVisibility(View.VISIBLE);
@@ -227,6 +229,7 @@ public class DismissPinActivity extends XmppActivity implements ApiAsyncTask.Tas
                 mErrorCodeMessage.setVisibility(View.GONE);
                 mOkIcon.setVisibility(View.VISIBLE);
                 mErrorIcon.setVisibility(View.GONE);
+                mWarningIcon.setVisibility(View.GONE);
                 this.mListView.smoothScrollToPosition(0);
             break;
             case 203:
@@ -238,6 +241,7 @@ public class DismissPinActivity extends XmppActivity implements ApiAsyncTask.Tas
                 mErrorCodeMessage.setVisibility(View.GONE);
                 mOkIcon.setVisibility(View.VISIBLE);
                 mErrorIcon.setVisibility(View.GONE);
+                mWarningIcon.setVisibility(View.GONE);
                 this.mListView.smoothScrollToPosition(0);
             break;
             default: //Other error cases
@@ -252,6 +256,7 @@ public class DismissPinActivity extends XmppActivity implements ApiAsyncTask.Tas
                 mErrorCodeMessage.setVisibility(View.VISIBLE);
                 mOkIcon.setVisibility(View.GONE);
                 mErrorIcon.setVisibility(View.VISIBLE);
+                mWarningIcon.setVisibility(View.GONE);
                 this.mListView.smoothScrollToPosition(0);
         }
 
@@ -295,6 +300,7 @@ public class DismissPinActivity extends XmppActivity implements ApiAsyncTask.Tas
         this.mYesContacts = (TextView) findViewById(R.id.info_pin_contacts);
         this.mOkIcon = (ImageView) findViewById(R.id.ok_icon);
         this.mErrorIcon = (ImageView) findViewById(R.id.error_icon);
+        this.mWarningIcon = (ImageView) findViewById(R.id.warning_icon);
         this.mAvatar = (ImageView) findViewById(R.id.dismiss_avatar);
         this.mSaveButton = (Button) findViewById(R.id.save_button);
         this.mCancelButton = (Button) findViewById(R.id.cancel_button);
