@@ -114,7 +114,7 @@ public class DismissPinActivity extends XmppActivity implements ApiAsyncTask.Tas
                 }
                 else if (!waitingForJSON && mPincode != null && mPintoken != null) {
                     //Request the delete of a desired PIN
-                        startJSONRequest(Config.APIURL + "?method=pinDismiss&output=json&pincode=" + mPincode + "&pintoken=" + mPintoken);
+                    startJSONRequest(Config.APIURL + "?method=pinDismiss&output=json&pincode=" + mPincode + "&pintoken=" + mPintoken);
                 }
                 else if (mOnlyLocalDismiss) {
                     xmppConnectionService.deleteAccount(mAccount);
@@ -203,9 +203,11 @@ public class DismissPinActivity extends XmppActivity implements ApiAsyncTask.Tas
                 mPinDeletedSuccessfully.setVisibility(View.GONE);
                 mState1Message.setVisibility(View.GONE);
                 mState203Message.setVisibility(View.GONE);
+                mWarningMessage.setVisibility(View.GONE);
+                mDisclaimer.setVisibility(View.GONE);
                 mStateUnknown.setVisibility(View.VISIBLE);
                 mErrorMessage.setVisibility(View.VISIBLE);
-                mErrorCodeMessage.setText(getString(R.string.pinDismiss_error_code)+mState);
+                mErrorCodeMessage.setText(getString(R.string.pinDismiss_error_code)+" "+mState);
                 mErrorCodeMessage.setVisibility(View.VISIBLE);
                 mOkIcon.setVisibility(View.GONE);
                 mErrorIcon.setVisibility(View.VISIBLE);
