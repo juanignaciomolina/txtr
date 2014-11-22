@@ -109,15 +109,11 @@ public class DismissPinActivity extends XmppActivity implements ApiAsyncTask.Tas
         this.updateLayout();
     }
 
-    protected void filterContacts(String needle) {
+    protected void loadContacts (Account account) {
         this.contacts.clear();
-        for (Account account : xmppConnectionService.getAccounts()) {
-            if (account.getStatus() != Account.State.DISABLED) {
-                for (Contact contact : account.getRoster().getContacts()) {
-                    if (contact.showInRoster() && contact.match(needle)) {
-                        this.contacts.add(contact);
-                    }
-                }
+        for (Contact contact : account.getRoster().getContacts()) {
+            if (contact.showInRoster()) {
+                this.contacts.add(contact);
             }
         }
         Collections.sort(this.contacts);
@@ -416,6 +412,8 @@ public class DismissPinActivity extends XmppActivity implements ApiAsyncTask.Tas
         if (mAccount != null) {
             mAvatarBitMap = avatarService().get(this.mAccount, getPixel(72)); //If necessary to prevent NPE
             mPintoken = mAccount.getPintoken();
+            //This loads the PIN's contacts
+            loadContacts(mAccount);
         }
         if (mAvatarBitMap != null) mAvatar.setImageBitmap(mAvatarBitMap);
         mPin.setText(mPincode);
@@ -423,9 +421,6 @@ public class DismissPinActivity extends XmppActivity implements ApiAsyncTask.Tas
         //If there is no pintoken in the account, then it doesn't have 'admin' privileges and cannot
         //delete the pin from the server, only from the device.
         mOnlyLocalDismiss = (mPintoken == null);
-
-        //This loads the PIN's contacts
-        filterContacts(null);
 
         updateLayout();
 	}
