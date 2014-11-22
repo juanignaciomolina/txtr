@@ -196,6 +196,10 @@ public class CreatePinActivity extends EditAccountActivity implements ApiAsyncTa
             mSaveButton.setEnabled(false);
             mSaveButton.setTextColor(getSecondaryTextColor());
             mSaveButton.setText(R.string.account_status_connecting);
+            if (pinSelected) {
+                mCancelButton.setEnabled(false);
+                mCancelButton.setTextColor(getSecondaryTextColor());
+            }
         }
         else {
             if (pinSelected) {
