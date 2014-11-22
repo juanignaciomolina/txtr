@@ -49,6 +49,8 @@ public class DismissPinActivity extends XmppActivity implements ApiAsyncTask.Tas
     private TextView mStateUnknown;
     private TextView mStateOnlyLocal;
     private TextView mErrorCodeMessage;
+    private TextView mNoContacts;
+    private TextView mYesContacts;
     private ImageView mOkIcon;
     private ImageView mErrorIcon;
     private ImageView mAvatar;
@@ -184,6 +186,15 @@ public class DismissPinActivity extends XmppActivity implements ApiAsyncTask.Tas
             mOnlyLocalMessage.setVisibility(View.GONE);
         }
 
+        if (contacts.isEmpty()) {
+            mNoContacts.setVisibility(View.VISIBLE);
+            mYesContacts.setVisibility(View.GONE);
+        }
+        else {
+            mNoContacts.setVisibility(View.GONE);
+            mYesContacts.setVisibility(View.VISIBLE);
+        }
+
         if (pinEliminated) {
             mDisclaimer.setVisibility(View.GONE);
             mWarningMessage.setVisibility(View.GONE);
@@ -280,6 +291,8 @@ public class DismissPinActivity extends XmppActivity implements ApiAsyncTask.Tas
         this.mErrorMessage = (TextView) findViewById(R.id.info_error);
         this.mErrorCodeMessage = (TextView) findViewById(R.id.dismiss_error_code);
         this.mPinDeletedSuccessfully = (TextView) findViewById(R.id.info_pin_eliminated_successfully);
+        this.mNoContacts = (TextView) findViewById(R.id.info_pin_no_contacts);
+        this.mYesContacts = (TextView) findViewById(R.id.info_pin_contacts);
         this.mOkIcon = (ImageView) findViewById(R.id.ok_icon);
         this.mErrorIcon = (ImageView) findViewById(R.id.error_icon);
         this.mAvatar = (ImageView) findViewById(R.id.dismiss_avatar);
