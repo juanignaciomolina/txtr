@@ -249,6 +249,17 @@ public class DismissPinActivity extends XmppActivity implements ApiAsyncTask.Tas
 
 		setContentView(R.layout.activity_dismiss_pin);
 
+        //Important: the XML layout was splitted in two files, activity_dismiss_pin.xml
+        //and dismiss_header.xml because you can't have two scrollables nested.
+        //So it's 'impossible' to have a ListView inside a ScrollView.
+        //Therefore it's important to inflate the header file before making references to its views.
+        mListView = (ListView) findViewById(R.id.dismiss_contact_list);
+        mListView.setFastScrollEnabled(true);
+        mContactsAdapter = new ListItemAdapter(this, contacts);
+        mListView.setAdapter(mContactsAdapter);
+        View header = getLayoutInflater().inflate(R.layout.dismiss_header, null);
+        mListView.addHeaderView(header);
+
         this.mLoadingPanel = (RelativeLayout) findViewById(R.id.loadingPanel);
         this.mPin = (TextView) findViewById(R.id.account_pin);
         this.mDeletingPin = (TextView) findViewById(R.id.account_request_pin);
@@ -271,10 +282,6 @@ public class DismissPinActivity extends XmppActivity implements ApiAsyncTask.Tas
         this.mCancelButton = (Button) findViewById(R.id.cancel_button);
         this.mSaveButton.setOnClickListener(this.mSaveButtonClickListener);
         this.mCancelButton.setOnClickListener(this.mCancelButtonClickListener);
-        mListView = (ListView) findViewById(R.id.dismiss_contact_list);
-        mListView.setFastScrollEnabled(true);
-        mContactsAdapter = new ListItemAdapter(this, contacts);
-        mListView.setAdapter(mContactsAdapter);
 
         getActionBar().setTitle("Eliminate PIN");
 
