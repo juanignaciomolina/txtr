@@ -25,6 +25,7 @@ public final class Config {
 
     //TXTR CUSTOM//
     public static final String APIURL = "http://api.droidko.com/";
+    public static final int DISMISSCOUNTDOWNLOCK = 5000; //in miliseconds
 
 	private Config() {
 

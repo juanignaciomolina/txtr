@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -66,6 +67,7 @@ public class DismissPinActivity extends XmppActivity implements ApiAsyncTask.Tas
     private boolean pinEliminated = false;
     private boolean mOnlyLocalDismiss = true;
     private boolean mBackEndConnected = false;
+    private boolean mCountdownFinished = false;
     private Bitmap mAvatarBitMap;
     private JSONObject jsonPin;
     private Jid receivedJid;
@@ -123,6 +125,21 @@ public class DismissPinActivity extends XmppActivity implements ApiAsyncTask.Tas
         mContactsAdapter.notifyDataSetChanged();
     }
 
+    private void startCountdown() {
+        mCountdownFinished = false;
+        new CountDownTimer(Config.DISMISSCOUNTDOWNLOCK, 1000) {
+
+            public void onTick(long millisUntilFinished) {
+                mSaveButton.setText(getString(R.string.waiting) + " " + millisUntilFinished / 1000);
+            }
+
+            public void onFinish() {
+                mCountdownFinished = true;
+                updateLayout();
+            }
+        }.start();
+    }
+
 
     public OnClickListener mCancelButtonClickListener = new OnClickListener() {
 
@@ -158,16 +175,24 @@ public class DismissPinActivity extends XmppActivity implements ApiAsyncTask.Tas
 
         if (waitingForJSON) {
             mLoadingPanel.setVisibility(View.VISIBLE);
-            mSaveButton.setEnabled(false);
-            mSaveButton.setTextColor(getSecondaryTextColor());
-            mSaveButton.setText(R.string.account_status_connecting);
             this.mListView.smoothScrollToPosition(0);
+            mCancelButton.setEnabled(false);
+            mCancelButton.setTextColor(getSecondaryTextColor());
+            if (mCountdownFinished) {
+                mSaveButton.setEnabled(false);
+                mSaveButton.setTextColor(getSecondaryTextColor());
+                mSaveButton.setText(R.string.account_status_connecting);
+            }
         }
         else {
             mLoadingPanel.setVisibility(View.GONE);
-            mSaveButton.setEnabled(true);
-            mSaveButton.setTextColor(getPrimaryTextColor());
-            mSaveButton.setText(R.string.next);
+            mCancelButton.setEnabled(true);
+            mCancelButton.setTextColor(getPrimaryTextColor());
+            if (mCountdownFinished) {
+                mSaveButton.setEnabled(true);
+                mSaveButton.setTextColor(getPrimaryTextColor());
+                mSaveButton.setText(R.string.confirm);
+            }
         }
 
         if (!isConnected()) {
@@ -199,6 +224,9 @@ public class DismissPinActivity extends XmppActivity implements ApiAsyncTask.Tas
         if (pinEliminated) {
             mDisclaimer.setVisibility(View.GONE);
             mWarningMessage.setVisibility(View.GONE);
+            mSaveButton.setText(R.string.finish);
+            mCancelButton.setEnabled(false);
+            mCancelButton.setTextColor(getSecondaryTextColor());
             if (mOnlyLocalDismiss) {mStateOnlyLocal.setVisibility(View.VISIBLE);}
             else {mStateOnlyLocal.setVisibility(View.GONE);}
         }
@@ -330,6 +358,7 @@ public class DismissPinActivity extends XmppActivity implements ApiAsyncTask.Tas
             this.mAvatarBitMap = savedInstanceState.getParcelable(STATE_AVATARBITMAP);
         }
 
+        this.startCountdown(); //Save button countdown lock
         this.updateLayout();
 
 	}
