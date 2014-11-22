@@ -2,6 +2,7 @@ package eu.siacs.conversations.ui;
 
 import android.app.Activity;
 import android.app.FragmentManager;
+import android.graphics.Bitmap;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -50,6 +51,7 @@ public class DismissPinActivity extends XmppActivity implements ApiAsyncTask.Tas
     private TextView mErrorCodeMessage;
     private ImageView mOkIcon;
     private ImageView mErrorIcon;
+    private ImageView mAvatar;
     private RelativeLayout mLoadingPanel;
     private Button mSaveButton;
     private Button mCancelButton;
@@ -61,6 +63,7 @@ public class DismissPinActivity extends XmppActivity implements ApiAsyncTask.Tas
     private boolean pinEliminated = false;
     private boolean mOnlyLocalDismiss = true;
     private boolean mBackEndConnected = false;
+    private Bitmap mAvatarBitMap;
     private JSONObject jsonPin;
     private Jid receivedJid;
     private String mPincode;
@@ -81,6 +84,7 @@ public class DismissPinActivity extends XmppActivity implements ApiAsyncTask.Tas
     static final String STATE_HOST = "host";
     static final String STATE_PINTOKEN ="pinToken";
     static final String STATE_REQUESTSTATE = "requestState";
+    static final String STATE_AVATARBITMAP = "avatarBitMap";
 
     public boolean isConnected(){
         ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Activity.CONNECTIVITY_SERVICE);
@@ -153,12 +157,12 @@ public class DismissPinActivity extends XmppActivity implements ApiAsyncTask.Tas
 
     protected void updateLayout() {
 
-
         if (waitingForJSON) {
             mLoadingPanel.setVisibility(View.VISIBLE);
             mSaveButton.setEnabled(false);
             mSaveButton.setTextColor(getSecondaryTextColor());
             mSaveButton.setText(R.string.account_status_connecting);
+            this.mListView.smoothScrollToPosition(0);
         }
         else {
             mLoadingPanel.setVisibility(View.GONE);
@@ -196,6 +200,7 @@ public class DismissPinActivity extends XmppActivity implements ApiAsyncTask.Tas
         }
 
         switch (mState) {
+
             case 0:
                 mPinDeletedSuccessfully.setVisibility(View.GONE);
                 mState1Message.setVisibility(View.GONE);
@@ -215,6 +220,7 @@ public class DismissPinActivity extends XmppActivity implements ApiAsyncTask.Tas
                 mErrorCodeMessage.setVisibility(View.GONE);
                 mOkIcon.setVisibility(View.VISIBLE);
                 mErrorIcon.setVisibility(View.GONE);
+                this.mListView.smoothScrollToPosition(0);
             break;
             case 203:
                 mPinDeletedSuccessfully.setVisibility(View.VISIBLE);
@@ -225,8 +231,9 @@ public class DismissPinActivity extends XmppActivity implements ApiAsyncTask.Tas
                 mErrorCodeMessage.setVisibility(View.GONE);
                 mOkIcon.setVisibility(View.VISIBLE);
                 mErrorIcon.setVisibility(View.GONE);
+                this.mListView.smoothScrollToPosition(0);
             break;
-            default:
+            default: //Other error cases
                 mPinDeletedSuccessfully.setVisibility(View.GONE);
                 mState1Message.setVisibility(View.GONE);
                 mState203Message.setVisibility(View.GONE);
@@ -238,6 +245,7 @@ public class DismissPinActivity extends XmppActivity implements ApiAsyncTask.Tas
                 mErrorCodeMessage.setVisibility(View.VISIBLE);
                 mOkIcon.setVisibility(View.GONE);
                 mErrorIcon.setVisibility(View.VISIBLE);
+                this.mListView.smoothScrollToPosition(0);
         }
 
     }
@@ -278,6 +286,7 @@ public class DismissPinActivity extends XmppActivity implements ApiAsyncTask.Tas
         this.mPinDeletedSuccessfully = (TextView) findViewById(R.id.info_pin_eliminated_successfully);
         this.mOkIcon = (ImageView) findViewById(R.id.ok_icon);
         this.mErrorIcon = (ImageView) findViewById(R.id.error_icon);
+        this.mAvatar = (ImageView) findViewById(R.id.dismiss_avatar);
         this.mSaveButton = (Button) findViewById(R.id.save_button);
         this.mCancelButton = (Button) findViewById(R.id.cancel_button);
         this.mSaveButton.setOnClickListener(this.mSaveButtonClickListener);
@@ -303,6 +312,7 @@ public class DismissPinActivity extends XmppActivity implements ApiAsyncTask.Tas
             this.mHost = savedInstanceState.getString(STATE_HOST);
             this.mPintoken = savedInstanceState.getString(STATE_PINTOKEN);
             this.mState = savedInstanceState.getInt(STATE_REQUESTSTATE);
+            this.mAvatarBitMap = savedInstanceState.getParcelable(STATE_AVATARBITMAP);
         }
 
         this.updateLayout();
@@ -386,6 +396,7 @@ public class DismissPinActivity extends XmppActivity implements ApiAsyncTask.Tas
         savedInstanceState.putString(STATE_PINTOKEN, mPintoken);
         savedInstanceState.putString(STATE_HOST, mHost);
         savedInstanceState.putInt(STATE_REQUESTSTATE, mState);
+        savedInstanceState.putParcelable(STATE_AVATARBITMAP, mAvatarBitMap);
 
         // Always call the superclass so it can save the view hierarchy state
         super.onSaveInstanceState(savedInstanceState);
@@ -394,8 +405,6 @@ public class DismissPinActivity extends XmppActivity implements ApiAsyncTask.Tas
 	@Override
 	protected void onBackendConnected() {
 
-        //TODO unHardcode this
-        //Split the jid received
         mBackEndConnected = true;
         try {
             receivedJid = Jid.fromString(getIntent().getExtras().getString("jidString"));
@@ -403,13 +412,14 @@ public class DismissPinActivity extends XmppActivity implements ApiAsyncTask.Tas
         } catch (InvalidJidException e) {
             e.printStackTrace();
         }
-        //String[] separated =  getIntent().getExtras().getString("pincode").split("@");
-        //mPincode = separated[0]; //Retrieve the pincode send to the activity
-        //mHost = separated[1];
         mPincode = receivedJid.getLocalpart().toUpperCase();
+        if (mAccount != null) {
+            mAvatarBitMap = avatarService().get(this.mAccount, getPixel(72)); //If necessary to prevent NPE
+            mPintoken = mAccount.getPintoken();
+        }
+        if (mAvatarBitMap != null) mAvatar.setImageBitmap(mAvatarBitMap);
         mPin.setText(mPincode);
-        mPin.setTextSize(getResources().getDimension(R.dimen.TextBig));
-        mPintoken = mAccount.getPintoken();
+        mPin.setTextSize(getResources().getDimension(R.dimen.TextMedium));
         //If there is no pintoken in the account, then it doesn't have 'admin' privileges and cannot
         //delete the pin from the server, only from the device.
         mOnlyLocalDismiss = (mPintoken == null);
