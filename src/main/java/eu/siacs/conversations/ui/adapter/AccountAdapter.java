@@ -1,10 +1,5 @@
 package eu.siacs.conversations.ui.adapter;
 
-import java.util.List;
-
-import eu.siacs.conversations.R;
-import eu.siacs.conversations.entities.Account;
-import eu.siacs.conversations.ui.XmppActivity;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +7,12 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import java.util.List;
+
+import eu.siacs.conversations.R;
+import eu.siacs.conversations.entities.Account;
+import eu.siacs.conversations.ui.XmppActivity;
 
 public class AccountAdapter extends ArrayAdapter<Account> {
 
@@ -31,8 +32,9 @@ public class AccountAdapter extends ArrayAdapter<Account> {
 			view = inflater.inflate(R.layout.account_row, parent, false);
 		}
 		TextView jid = (TextView) view.findViewById(R.id.account_jid);
-		jid.setText(account.getJid().toBareJid().toString());
-		TextView statusView = (TextView) view.findViewById(R.id.account_status);
+		//jid.setText(account.getJid().toBareJid().toString()); //Original
+        jid.setText(account.getJid().toPin());                  //TXTR CUSTOM
+        TextView statusView = (TextView) view.findViewById(R.id.account_status);
 		ImageView imageView = (ImageView) view.findViewById(R.id.account_image);
 		imageView.setImageBitmap(activity.avatarService().get(account,
 				activity.getPixel(48)));

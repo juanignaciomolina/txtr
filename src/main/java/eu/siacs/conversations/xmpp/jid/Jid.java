@@ -4,6 +4,7 @@ import net.java.otr4j.session.SessionID;
 
 import java.net.IDN;
 
+import eu.siacs.conversations.Config;
 import gnu.inet.encoding.Stringprep;
 import gnu.inet.encoding.StringprepException;
 
@@ -155,6 +156,17 @@ public final class Jid {
         } catch (final InvalidJidException e) {
             // This should never happen.
             return null;
+        }
+    }
+
+    //TXTR CUSTOM
+    public String toPin () {
+        //If the JID is a PIN, return it. Otherwise return the full jid
+        if (domainpart.equals(Config.PINDOMAIN)) {
+            return localpart.toUpperCase();
+        }
+        else {
+            return toBareJid().toString();
         }
     }
 
