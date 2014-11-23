@@ -69,8 +69,8 @@ run your own XMPP server for you and your friends. These XEP's are:
 * [betheg](https://github.com/betheg)
 
 #### Logo
-
-* [Diego Turtulici](http://efesto.eigenlab.org/~diesys)
+* [Ilia Rostovtsev](https://github.com/qooob) (Progress)
+* [Diego Turtulici](http://efesto.eigenlab.org/~diesys) (Original)
 
 #### Translations
 
@@ -122,6 +122,12 @@ engine of your choice. Or maybe your university has one. Or you can run your
 own. Or ask a friend to run one. Once you've found one, you can use
 Conversations to create an account. Just select 'register new account on server'
 within the create account dialog.
+
+#### Where can I set up a custom hostname / port
+Conversations will automatically look up the SRV records for your domain name
+which can point to any hostname port combination. If your server doesn’t provide
+those please contact your admin and have them read
+[this](http://prosody.im/doc/dns#srv_records)
 
 #### Conversations doesn't work for me. Where can I get help?
 

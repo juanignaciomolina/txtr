@@ -56,7 +56,7 @@ public class Conversation extends AbstractEntity {
 
 	private Jid nextCounterpart;
 
-	protected ArrayList<Message> messages = new ArrayList<>();
+	protected final ArrayList<Message> messages = new ArrayList<>();
 	protected Account account = null;
 
 	private transient SessionImpl otrSession;
@@ -118,7 +118,7 @@ public class Conversation extends AbstractEntity {
 		}
 	}
 
-	public String getLatestMarkableMessageId() {
+	public Message getLatestMarkableMessage() {
 		if (this.messages == null) {
 			return null;
 		}
@@ -128,7 +128,7 @@ public class Conversation extends AbstractEntity {
 				if (this.messages.get(i).isRead()) {
 					return null;
 				} else {
-					return this.messages.get(i).getRemoteMsgId();
+					return this.messages.get(i);
 				}
 			}
 		}
@@ -147,16 +147,20 @@ public class Conversation extends AbstractEntity {
 		}
 	}
 
-	public void setMessages(ArrayList<Message> msgs) {
-		this.messages = msgs;
-	}
-
 	public String getName() {
-		if (getMode() == MODE_MULTI && getMucOptions().getSubject() != null) {
-			return getMucOptions().getSubject();
-		} else if (getMode() == MODE_MULTI && bookmark != null
-				&& bookmark.getName() != null) {
-			return bookmark.getName();
+		if (getMode() == MODE_MULTI) {
+			if (getMucOptions().getSubject() != null) {
+				return getMucOptions().getSubject();
+			} else if (bookmark != null && bookmark.getName() != null) {
+				return bookmark.getName();
+			} else {
+				String generatedName = getMucOptions().createNameFromParticipants();
+				if (generatedName != null) {
+					return generatedName;
+				} else {
+					return getContactJid().getLocalpart();
+				}
+			}
 		} else {
 			return this.getContact().getDisplayName();
 		}
@@ -524,7 +528,7 @@ public class Conversation extends AbstractEntity {
 		public static final int STATUS_CONTACT_REQUESTED = 1;
 		public static final int STATUS_WE_REQUESTED = 2;
 		public static final int STATUS_FAILED = 3;
-		public static final int STATUS_VERIFIED = 4;
+		public static final int STATUS_FINISHED = 4;
 
 		public String secret = null;
 		public String hint = null;

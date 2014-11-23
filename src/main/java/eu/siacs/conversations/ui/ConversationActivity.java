@@ -15,7 +15,6 @@ import android.os.SystemClock;
 import android.provider.MediaStore;
 import android.support.v4.widget.SlidingPaneLayout;
 import android.support.v4.widget.SlidingPaneLayout.PanelSlideListener;
-import android.view.ContextMenu;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -75,7 +74,6 @@ public class ConversationActivity extends XmppActivity implements
 
 	private List<Conversation> conversationList = new ArrayList<>();
 	private Conversation mSelectedConversation = null;
-	private Conversation mSelectedConversationForContext = null;
 	private ListView listView;
 	private ConversationFragment mConversationFragment;
 
@@ -182,7 +180,6 @@ public class ConversationActivity extends XmppActivity implements
 				hideConversationsOverview();
 			}
 		});
-		registerForContextMenu(listView);
 		mContentView = findViewById(R.id.content_view_spl);
 		if (mContentView == null) {
 			mContentView = findViewById(R.id.content_view_ll);
@@ -197,12 +194,7 @@ public class ConversationActivity extends XmppActivity implements
 
 				@Override
 				public void onPanelOpened(View arg0) {
-					ActionBar ab = getActionBar();
-					if (ab != null) {
-						ab.setDisplayHomeAsUpEnabled(false);
-						ab.setHomeButtonEnabled(false);
-						ab.setTitle(R.string.app_name);
-					}
+					updateActionBarTitle();
 					invalidateOptionsMenu();
 					hideKeyboard();
 					if (xmppConnectionServiceBound) {
@@ -227,55 +219,43 @@ public class ConversationActivity extends XmppActivity implements
 	}
 
 	@Override
-	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-		getMenuInflater().inflate(R.menu.conversations_context, menu);
-		AdapterView.AdapterContextMenuInfo acmi = (AdapterView.AdapterContextMenuInfo) menuInfo;
-		this.mSelectedConversationForContext = this.conversationList.get(acmi.position);
-		menu.setHeaderTitle(this.mSelectedConversationForContext.getName());
-		MenuItem enableNotifications = menu.findItem(R.id.action_unmute);
-		MenuItem disableNotifications = menu.findItem(R.id.action_mute);
-		if (this.mSelectedConversationForContext.isMuted()) {
-			disableNotifications.setVisible(false);
-		} else {
-			enableNotifications.setVisible(false);
-		}
-		super.onCreateContextMenu(menu,v,menuInfo);
+	public void switchToConversation(Conversation conversation) {
+		setSelectedConversation(conversation);
+		runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				ConversationActivity.this.mConversationFragment.reInit(getSelectedConversation());
+				openConversation();
+			}
+		});
 	}
 
-	@Override
-	public boolean onContextItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-			case R.id.action_archive:
-				endConversation(mSelectedConversationForContext);
-				return true;
-			case R.id.action_mute:
-				muteConversationDialog(mSelectedConversationForContext);
-				return true;
-			case R.id.action_unmute:
-				mSelectedConversationForContext.setMutedTill(0);
-				xmppConnectionService.updateConversation(mSelectedConversationForContext);
-				updateConversationList();
-				ConversationActivity.this.mConversationFragment.updateMessages();
-				return true;
-			default:
-				return super.onContextItemSelected(item);
-		}
+	private void updateActionBarTitle() {
+		updateActionBarTitle(isConversationsOverviewHideable() && !isConversationsOverviewVisable());
 	}
 
-	public void openConversation() {
+	private void updateActionBarTitle(boolean titleShouldBeName) {
 		ActionBar ab = getActionBar();
 		if (ab != null) {
-			ab.setDisplayHomeAsUpEnabled(true);
-			ab.setHomeButtonEnabled(true);
-			if (getSelectedConversation().getMode() == Conversation.MODE_SINGLE
-					|| ConversationActivity.this
-					.useSubjectToIdentifyConference()) {
-				ab.setTitle(getSelectedConversation().getName());
+			if (titleShouldBeName) {
+				ab.setDisplayHomeAsUpEnabled(true);
+				ab.setHomeButtonEnabled(true);
+				if (getSelectedConversation().getMode() == Conversation.MODE_SINGLE || useSubjectToIdentifyConference()) {
+					ab.setTitle(getSelectedConversation().getName());
+				} else {
+					ab.setTitle(getSelectedConversation().getContactJid().toBareJid().toString());
+				}
 			} else {
-				ab.setTitle(getSelectedConversation().getContactJid().toBareJid().toString());
+				ab.setDisplayHomeAsUpEnabled(false);
+				ab.setHomeButtonEnabled(false);
+				ab.setTitle(R.string.app_name);
 			}
 		}
-		invalidateOptionsMenu();
+	}
+
+	private void openConversation() {
+		this.updateActionBarTitle();
+		this.invalidateOptionsMenu();
 		if (xmppConnectionServiceBound) {
 			xmppConnectionService.getNotificationService().setOpenConversation(getSelectedConversation());
 			if (!getSelectedConversation().isRead()) {
@@ -299,6 +279,7 @@ public class ConversationActivity extends XmppActivity implements
 		MenuItem menuAdd = menu.findItem(R.id.action_add);
 		MenuItem menuInviteContact = menu.findItem(R.id.action_invite);
 		MenuItem menuMute = menu.findItem(R.id.action_mute);
+		MenuItem menuUnmute = menu.findItem(R.id.action_unmute);
 
 		if (isConversationsOverviewVisable()
 				&& isConversationsOverviewHideable()) {
@@ -310,6 +291,7 @@ public class ConversationActivity extends XmppActivity implements
 			menuAttach.setVisible(false);
 			menuClearHistory.setVisible(false);
 			menuMute.setVisible(false);
+			menuUnmute.setVisible(false);
 		} else {
 			menuAdd.setVisible(!isConversationsOverviewHideable());
             menuNewPin.setVisible(!isConversationsOverviewHideable());
@@ -323,7 +305,12 @@ public class ConversationActivity extends XmppActivity implements
 					menuAttach.setVisible(false);
 				} else {
 					menuMucDetails.setVisible(false);
-					menuInviteContact.setVisible(false);
+					menuInviteContact.setTitle(R.string.conference_with);
+				}
+				if (this.getSelectedConversation().isMuted()) {
+					menuMute.setVisible(false);
+				} else {
+					menuUnmute.setVisible(false);
 				}
 			}
 		}
@@ -468,6 +455,9 @@ public class ConversationActivity extends XmppActivity implements
 					break;
 				case R.id.action_mute:
 					muteConversationDialog(getSelectedConversation());
+					break;
+				case R.id.action_unmute:
+					unmuteConversation(getSelectedConversation());
 					break;
 				default:
 					break;
@@ -644,20 +634,27 @@ public class ConversationActivity extends XmppActivity implements
 								.updateConversation(conversation);
 						updateConversationList();
 						ConversationActivity.this.mConversationFragment.updateMessages();
+						invalidateOptionsMenu();
 					}
 				});
 		builder.create().show();
 	}
 
+	public void unmuteConversation(final Conversation conversation) {
+		conversation.setMutedTill(0);
+		this.xmppConnectionService.databaseBackend.updateConversation(conversation);
+		updateConversationList();
+		ConversationActivity.this.mConversationFragment.updateMessages();
+		invalidateOptionsMenu();
+	}
+
 	@Override
-	public boolean onKeyDown(final int keyCode, final KeyEvent event) {
-		if (keyCode == KeyEvent.KEYCODE_BACK) {
-			if (!isConversationsOverviewVisable()) {
-				showConversationsOverview();
-				return false;
-			}
+	public void onBackPressed() {
+		if (!isConversationsOverviewVisable()) {
+			showConversationsOverview();
+		} else {
+			moveTaskToBack(true);
 		}
-		return super.onKeyDown(keyCode, event);
 	}
 
 	@Override
@@ -752,8 +749,9 @@ public class ConversationActivity extends XmppActivity implements
 			this.mConversationFragment.appendText(text);
 		}
 		hideConversationsOverview();
+		openConversation();
 		if (mContentView instanceof SlidingPaneLayout) {
-			openConversation();
+			updateActionBarTitle(true); //fixes bug where slp isn't properly closed yet
 		}
 	}
 
@@ -941,17 +939,15 @@ public class ConversationActivity extends XmppActivity implements
 
 	@Override
 	public void onAccountUpdate() {
-		final ConversationFragment fragment = (ConversationFragment) getFragmentManager()
-				.findFragmentByTag("conversation");
-		if (fragment != null) {
-			runOnUiThread(new Runnable() {
+		runOnUiThread(new Runnable() {
 
-				@Override
-				public void run() {
-					fragment.updateMessages();
-				}
-			});
-		}
+			@Override
+			public void run() {
+				updateConversationList();
+				ConversationActivity.this.mConversationFragment.updateMessages();
+				updateActionBarTitle();
+			}
+		});
 	}
 
 	@Override
@@ -967,6 +963,7 @@ public class ConversationActivity extends XmppActivity implements
 					finish();
 				}
 				ConversationActivity.this.mConversationFragment.updateMessages();
+				updateActionBarTitle();
 			}
 		});
 	}
@@ -977,7 +974,9 @@ public class ConversationActivity extends XmppActivity implements
 
 				@Override
 				public void run() {
+					updateConversationList();
 					ConversationActivity.this.mConversationFragment.updateMessages();
+					updateActionBarTitle();
 				}
 			});
 	}

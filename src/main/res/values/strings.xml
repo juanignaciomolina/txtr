@@ -371,4 +371,10 @@
     <string name="pinDismiss_error_code">Error Code: </string>
     <string name="dismissPin_info_onlylocalpin">Take in mind that you don\'t have admin privileges on this PIN (you didn\'t created it). \n The PIN will only be deleted from your device, not from TXTR servers,
         and will still be able to receive messages on other devices.</string>
+    <string name="conference_with">Create conference with…</string>
+    <string name="no_conference_server_found">No conference server found</string>
+    <string name="conference_creation_failed">Conference creation failed!</string>
+    <string name="conference_created">Conference created!</string>
+    <string name="secret_accepted">Secret accepted!</string>
+    <string name="reset">Reset</string>
 </resources>

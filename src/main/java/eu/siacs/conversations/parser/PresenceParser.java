@@ -4,6 +4,7 @@ import eu.siacs.conversations.crypto.PgpEngine;
 import eu.siacs.conversations.entities.Account;
 import eu.siacs.conversations.entities.Contact;
 import eu.siacs.conversations.entities.Conversation;
+import eu.siacs.conversations.entities.MucOptions;
 import eu.siacs.conversations.entities.Presences;
 import eu.siacs.conversations.generator.PresenceGenerator;
 import eu.siacs.conversations.services.XmppConnectionService;
@@ -21,28 +22,15 @@ public class PresenceParser extends AbstractParser implements
 
 	public void parseConferencePresence(PresencePacket packet, Account account) {
 		PgpEngine mPgpEngine = mXmppConnectionService.getPgpEngine();
-		if (packet.hasChild("x", "http://jabber.org/protocol/muc#user")) {
-			final Conversation muc = packet.getFrom() == null ? null : mXmppConnectionService.find(
-                    account,
-                    packet.getFrom().toBareJid());
-			if (muc != null) {
-				boolean before = muc.getMucOptions().online();
-				muc.getMucOptions().processPacket(packet, mPgpEngine);
-				if (before != muc.getMucOptions().online()) {
-					mXmppConnectionService.updateConversationUi();
-				}
-				mXmppConnectionService.getAvatarService().clear(muc);
-			}
-		} else if (packet.hasChild("x", "http://jabber.org/protocol/muc")) {
-			final Conversation muc = mXmppConnectionService.find(account,
-                    packet.getFrom().toBareJid());
-			if (muc != null) {
-				boolean before = muc.getMucOptions().online();
-				muc.getMucOptions().processPacket(packet, mPgpEngine);
-				if (before != muc.getMucOptions().online()) {
-					mXmppConnectionService.updateConversationUi();
-				}
-				mXmppConnectionService.getAvatarService().clear(muc);
+		final Conversation conversation = packet.getFrom() == null ? null : mXmppConnectionService.find(account, packet.getFrom().toBareJid());
+		if (conversation != null) {
+			final MucOptions mucOptions = conversation.getMucOptions();
+			boolean before = mucOptions.online();
+			int count = mucOptions.getUsers().size();
+			mucOptions.processPacket(packet, mPgpEngine);
+			mXmppConnectionService.getAvatarService().clear(conversation);
+			if (before != mucOptions.online() || (mucOptions.online() && count != mucOptions.getUsers().size())) {
+				mXmppConnectionService.updateConversationUi();
 			}
 		}
 	}
@@ -53,7 +41,7 @@ public class PresenceParser extends AbstractParser implements
 		if (packet.getFrom() == null) {
 			return;
 		}
-        final Jid from = packet.getFrom();
+		final Jid from = packet.getFrom();
 		String type = packet.getAttribute("type");
 		if (from.toBareJid().equals(account.getJid().toBareJid())) {
 			if (!from.isBareJid()) {
