@@ -1,6 +1,8 @@
 package eu.siacs.conversations.ui;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.FragmentManager;
 import android.graphics.Bitmap;
 import android.net.ConnectivityManager;
@@ -10,11 +12,14 @@ import android.os.CountDownTimer;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import org.json.JSONException;
@@ -22,6 +27,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 import eu.siacs.conversations.Config;
 import eu.siacs.conversations.R;
@@ -29,7 +35,9 @@ import eu.siacs.conversations.api.ApiAsyncTask;
 import eu.siacs.conversations.entities.Account;
 import eu.siacs.conversations.entities.Contact;
 import eu.siacs.conversations.entities.ListItem;
+import eu.siacs.conversations.ui.adapter.KnownHostsAdapter;
 import eu.siacs.conversations.ui.adapter.ListItemAdapter;
+import eu.siacs.conversations.utils.Validator;
 import eu.siacs.conversations.xmpp.jid.InvalidJidException;
 import eu.siacs.conversations.xmpp.jid.Jid;
 
@@ -62,6 +70,8 @@ public class DismissPinActivity extends XmppActivity implements ApiAsyncTask.Tas
     private ListView mListView;
     private ArrayList<ListItem> contacts = new ArrayList<>();
     private ArrayAdapter<ListItem> mContactsAdapter;
+    private List<String> mActivatedAccounts = new ArrayList<String>();
+    private List<String> mKnownHosts;
 
     private boolean waitingForJSON = false;
     private boolean pinEliminated = false;
@@ -140,6 +150,82 @@ public class DismissPinActivity extends XmppActivity implements ApiAsyncTask.Tas
         }.start();
     }
 
+    private void populateAccountSpinner(Spinner spinner) {
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_spinner_item, mActivatedAccounts);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+    }
+
+    @SuppressLint("InflateParams")
+    protected void showCreateContactDialog(final String prefilledJid, final String fingerprint) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.create_contact);
+        View dialogView = getLayoutInflater().inflate(
+                R.layout.create_contact_dialog, null);
+        final Spinner spinner = (Spinner) dialogView.findViewById(R.id.account);
+        final AutoCompleteTextView jid = (AutoCompleteTextView) dialogView
+                .findViewById(R.id.jid);
+        jid.setAdapter(new KnownHostsAdapter(this,
+                android.R.layout.simple_list_item_1, mKnownHosts));
+        if (prefilledJid != null) {
+            jid.append(prefilledJid);
+            if (fingerprint!=null) {
+                jid.setFocusable(false);
+                jid.setFocusableInTouchMode(false);
+                jid.setClickable(false);
+                jid.setCursorVisible(false);
+            }
+        }
+        populateAccountSpinner(spinner);
+        builder.setView(dialogView);
+        builder.setNegativeButton(R.string.cancel, null);
+        builder.setPositiveButton(R.string.create, null);
+        final AlertDialog dialog = builder.create();
+        dialog.show();
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(
+                new View.OnClickListener() {
+
+                    @Override
+                    public void onClick(View v) {
+                        if (!xmppConnectionServiceBound) {
+                            return;
+                        }
+                        if (Validator.isValidJid(jid.getText().toString())) {
+                            final Jid accountJid;
+                            try {
+                                accountJid = Jid.fromString((String) spinner
+                                        .getSelectedItem());
+                            } catch (final InvalidJidException e) {
+                                return;
+                            }
+                            final Jid contactJid;
+                            try {
+                                contactJid = Jid.fromString(jid.getText().toString());
+                            } catch (final InvalidJidException e) {
+                                return;
+                            }
+                            Account account = xmppConnectionService
+                                    .findAccountByJid(accountJid);
+                            if (account == null) {
+                                dialog.dismiss();
+                                return;
+                            }
+                            Contact contact = account.getRoster().getContact(contactJid);
+                            if (contact.showInRoster()) {
+                                jid.setError(getString(R.string.contact_already_exists));
+                            } else {
+                                contact.addOtrFingerprint(fingerprint);
+                                xmppConnectionService.createContact(contact);
+                                dialog.dismiss();
+                            }
+                        } else {
+                            jid.setError(getString(R.string.invalid_jid));
+                        }
+                    }
+                });
+
+    }
 
     public OnClickListener mCancelButtonClickListener = new OnClickListener() {
 
@@ -307,6 +393,19 @@ public class DismissPinActivity extends XmppActivity implements ApiAsyncTask.Tas
         mListView.setAdapter(mContactsAdapter);
         View header = getLayoutInflater().inflate(R.layout.dismiss_header, null);
         mListView.addHeaderView(header);
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> arg0, View arg1,
+                                    int position, long arg3) {
+                //TODO finish this
+                if (position >= 1) //To avoid selecting the header (which is a layout, not a contact)
+                {
+                    ListItem mListItem = contacts.get(position - 1) ;
+                    showCreateContactDialog(mListItem.getJid().toString(), null);
+                }
+            }
+        });
 
         this.mLoadingPanel = (RelativeLayout) findViewById(R.id.loadingPanel);
         this.mPin = (TextView) findViewById(R.id.account_pin);
@@ -469,6 +568,15 @@ public class DismissPinActivity extends XmppActivity implements ApiAsyncTask.Tas
         //If there is no pintoken in the account, then it doesn't have 'admin' privileges and cannot
         //delete the pin from the server, only from the device.
         mOnlyLocalDismiss = (mPintoken == null);
+
+        this.mActivatedAccounts.clear();
+        for (Account account : xmppConnectionService.getAccounts()) {
+            if (account.getStatus() != Account.State.DISABLED) {
+                this.mActivatedAccounts.add(account.getJid().toBareJid().toString());
+            }
+        }
+        this.mKnownHosts = xmppConnectionService.getKnownHosts();
+
 
         updateLayout();
 	}
