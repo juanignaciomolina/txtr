@@ -14,13 +14,13 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -35,7 +35,6 @@ import eu.siacs.conversations.api.ApiAsyncTask;
 import eu.siacs.conversations.entities.Account;
 import eu.siacs.conversations.entities.Contact;
 import eu.siacs.conversations.entities.ListItem;
-import eu.siacs.conversations.ui.adapter.KnownHostsAdapter;
 import eu.siacs.conversations.ui.adapter.ListItemAdapter;
 import eu.siacs.conversations.utils.Validator;
 import eu.siacs.conversations.xmpp.jid.InvalidJidException;
@@ -160,16 +159,14 @@ public class DismissPinActivity extends XmppActivity implements ApiAsyncTask.Tas
     @SuppressLint("InflateParams")
     protected void showCreateContactDialog(final String prefilledJid, final String fingerprint) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(R.string.create_contact);
+        builder.setTitle(R.string.clone_contact);
         View dialogView = getLayoutInflater().inflate(
-                R.layout.create_contact_dialog, null);
+                R.layout.clone_contact_dialog, null);
         final Spinner spinner = (Spinner) dialogView.findViewById(R.id.account);
-        final AutoCompleteTextView jid = (AutoCompleteTextView) dialogView
+        final TextView jid = (TextView) dialogView
                 .findViewById(R.id.jid);
-        jid.setAdapter(new KnownHostsAdapter(this,
-                android.R.layout.simple_list_item_1, mKnownHosts));
         if (prefilledJid != null) {
-            jid.append(prefilledJid);
+            jid.setText(prefilledJid);
             if (fingerprint!=null) {
                 jid.setFocusable(false);
                 jid.setFocusableInTouchMode(false);
@@ -180,7 +177,7 @@ public class DismissPinActivity extends XmppActivity implements ApiAsyncTask.Tas
         populateAccountSpinner(spinner);
         builder.setView(dialogView);
         builder.setNegativeButton(R.string.cancel, null);
-        builder.setPositiveButton(R.string.create, null);
+        builder.setPositiveButton(R.string.clone, null);
         final AlertDialog dialog = builder.create();
         dialog.show();
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(
@@ -213,14 +210,19 @@ public class DismissPinActivity extends XmppActivity implements ApiAsyncTask.Tas
                             }
                             Contact contact = account.getRoster().getContact(contactJid);
                             if (contact.showInRoster()) {
-                                jid.setError(getString(R.string.contact_already_exists));
+                                dialog.dismiss(); //In case the PIN is already in the account
+                                Toast toast = Toast.makeText(getApplicationContext(), "PIN already in the account", Toast.LENGTH_SHORT);
+                                toast.show();
                             } else {
                                 contact.addOtrFingerprint(fingerprint);
                                 xmppConnectionService.createContact(contact);
                                 dialog.dismiss();
+                                Toast toast = Toast.makeText(getApplicationContext(), "PIN cloned", Toast.LENGTH_SHORT);
+                                toast.show();
                             }
-                        } else {
-                            jid.setError(getString(R.string.invalid_jid));
+                        } else { //Should never happen
+                            Toast toast = Toast.makeText(getApplicationContext(), "Error: Invalid PIN", Toast.LENGTH_SHORT);
+                            toast.show();
                         }
                     }
                 });
