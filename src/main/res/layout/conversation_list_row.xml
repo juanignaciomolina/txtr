@@ -27,7 +27,8 @@
             android:singleLine="true"
             android:textColor="@color/primarytext"
             android:textSize="?attr/TextSizeHeadline"
-            android:typeface="sans" />
+            android:typeface="sans"
+            android:textStyle="bold" />
 
         <LinearLayout
             android:id="@+id/conversation_lastwrapper"
@@ -43,7 +44,7 @@
                 android:layout_height="wrap_content"
                 android:scrollHorizontally="false"
                 android:singleLine="true"
-                android:textColor="@color/primarytext"
+                android:textColor="@color/secondarytext"
                 android:textSize="?attr/TextSizeBody" />
 
             <ImageView

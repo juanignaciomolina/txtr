@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import eu.siacs.conversations.Config;
 import eu.siacs.conversations.utils.UIHelper;
 import eu.siacs.conversations.xml.Element;
 import eu.siacs.conversations.xmpp.jid.InvalidJidException;
@@ -106,7 +107,9 @@ public class Contact implements ListItem {
 		} else if (this.presenceName != null) {
 			return this.presenceName;
 		} else if (jid.hasLocalpart()) {
-			return jid.getLocalpart();
+            //TXTR CUSTOM
+            if (jid.getDomainpart().equals(Config.PINDOMAIN)){return jid.getLocalpart().toUpperCase();}
+            else {return jid.getLocalpart();}
 		} else {
 			return jid.getDomainpart();
 		}
