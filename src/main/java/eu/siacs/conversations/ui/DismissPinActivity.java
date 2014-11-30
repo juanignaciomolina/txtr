@@ -57,6 +57,7 @@ public class DismissPinActivity extends XmppActivity implements ApiAsyncTask.Tas
     private TextView mStateUnknown;
     private TextView mStateOnlyLocal;
     private TextView mErrorCodeMessage;
+    private TextView mExternalAccountMessage;
     private TextView mNoContacts;
     private TextView mYesContacts;
     private ImageView mOkIcon;
@@ -75,6 +76,7 @@ public class DismissPinActivity extends XmppActivity implements ApiAsyncTask.Tas
     private boolean waitingForJSON = false;
     private boolean pinEliminated = false;
     private boolean mOnlyLocalDismiss = true;
+    private boolean mExternalAccount = false;
     private boolean mBackEndConnected = false;
     private boolean mCountdownFinished = false;
     private Bitmap mAvatarBitMap;
@@ -253,6 +255,9 @@ public class DismissPinActivity extends XmppActivity implements ApiAsyncTask.Tas
                 }
                 else if (mOnlyLocalDismiss) {
                     xmppConnectionService.deleteAccount(mAccount);
+                    pinEliminated = true;
+                    mState = 3; //Eliminated locally
+                    updateLayout();
                 }
             }
 
@@ -323,9 +328,16 @@ public class DismissPinActivity extends XmppActivity implements ApiAsyncTask.Tas
             mWarningMessage.setVisibility(View.VISIBLE);
         }
 
+        if (mExternalAccount) {
+            mExternalAccountMessage.setVisibility(View.VISIBLE);
+        }
+        else {
+            mExternalAccountMessage.setVisibility(View.GONE);
+        }
+
         switch (mState) {
 
-            case 0:
+            case 0: //Nothing done
                 mPinDeletedSuccessfully.setVisibility(View.GONE);
                 mState1Message.setVisibility(View.GONE);
                 mState203Message.setVisibility(View.GONE);
@@ -336,9 +348,10 @@ public class DismissPinActivity extends XmppActivity implements ApiAsyncTask.Tas
                 mErrorIcon.setVisibility(View.GONE);
                 mWarningIcon.setVisibility(View.VISIBLE);
             break;
-            case 1:
+            case 1: //Eliminated a TXTR account from both server and device
+            case 3: //Eliminated a non TXTR account locally
                 mPinDeletedSuccessfully.setVisibility(View.VISIBLE);
-                mState1Message.setVisibility(View.VISIBLE);
+                if (mState == 1) mState1Message.setVisibility(View.VISIBLE);
                 mState203Message.setVisibility(View.GONE);
                 mStateUnknown.setVisibility(View.GONE);
                 mErrorMessage.setVisibility(View.GONE);
@@ -348,7 +361,7 @@ public class DismissPinActivity extends XmppActivity implements ApiAsyncTask.Tas
                 mWarningIcon.setVisibility(View.GONE);
                 this.mListView.smoothScrollToPosition(0);
             break;
-            case 203:
+            case 203: //Eliminated a TXTR account only locally
                 mPinDeletedSuccessfully.setVisibility(View.VISIBLE);
                 mState1Message.setVisibility(View.GONE);
                 mState203Message.setVisibility(View.VISIBLE);
@@ -417,6 +430,7 @@ public class DismissPinActivity extends XmppActivity implements ApiAsyncTask.Tas
         this.mTryAgain = (TextView) findViewById(R.id.info_tryanother);
         this.mDisclaimer = (TextView) findViewById(R.id.dismiss_disclaimer);
         this.mOnlyLocalMessage = (TextView) findViewById(R.id.dismiss_info_onlylocalpin);
+        this.mExternalAccountMessage = (TextView) findViewById(R.id.dismiss_external_account);
         this.mState1Message = (TextView) findViewById(R.id.dismiss_result_1);
         this.mState203Message = (TextView) findViewById(R.id.dismiss_result_203);
         this.mStateUnknown = (TextView) findViewById(R.id.dismiss_result_unknown);
@@ -571,6 +585,9 @@ public class DismissPinActivity extends XmppActivity implements ApiAsyncTask.Tas
         //delete the pin from the server, only from the device.
         mOnlyLocalDismiss = (mPintoken == null);
 
+        //Check if the account is a PIN from TXTR or an external account
+        mExternalAccount = !receivedJid.getDomainpart().equals(Config.PINDOMAIN);
+
         this.mActivatedAccounts.clear();
         for (Account account : xmppConnectionService.getAccounts()) {
             if (account.getStatus() != Account.State.DISABLED) {
@@ -578,7 +595,6 @@ public class DismissPinActivity extends XmppActivity implements ApiAsyncTask.Tas
             }
         }
         this.mKnownHosts = xmppConnectionService.getKnownHosts();
-
 
         updateLayout();
 	}

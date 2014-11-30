@@ -167,6 +167,21 @@
         android:visibility="gone"/>
 
     <TextView
+        android:id="@+id/dismiss_external_account"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="@string/dismissPin_external_account"
+        android:textColor="@color/primarytext"
+        android:textColorHint="@color/secondarytext"
+        android:textSize="?attr/TextSizeBody"
+        android:autoText="false"
+        android:textIsSelectable="false"
+        android:password="false"
+        android:gravity="clip_horizontal|center|clip_vertical"
+        android:layout_gravity="center"
+        android:visibility="gone"/>
+
+    <TextView
         android:id="@+id/dismiss_result_203"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

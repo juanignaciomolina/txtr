@@ -364,6 +364,7 @@
     <string name="pref_show_dynamic_tags_summary">Display read-only tags underneath contacts</string>
     <string name="enable_notifications">Enable notifications</string>
     <string name="dismissPin_eliminated_successfully">PIN eliminated successfully</string>
+    <string name="dismissPin_external_account">This is an external account, it will only be removed from your device.</string>
     <string name="dismissPin_state_203">The PIN was already eliminated from TXTR servers.\n However, contacts from this PIN has been removed from your device.</string>
     <string name="pinDismiss_state_1">The PIN has been eliminated from TXTR servers and cannot receive messages anymore. \n Contacts from this PIN has also been removed from your device.</string>
     <string name="pinDismiss_state_error">There was an error eliminating the PIN. Try again later. \n If this error continues, please contact support and let them now this:</string>
