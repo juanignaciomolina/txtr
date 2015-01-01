@@ -16,10 +16,7 @@ import android.provider.ContactsContract.Profile;
 
 public class PhoneHelper {
 
-	public static void loadPhoneContacts(Context context,
-			final OnPhoneContactsLoadedListener listener) {
-		final List<Bundle> phoneContacts = new ArrayList<Bundle>();
-
+	public static void loadPhoneContacts(Context context,final List<Bundle> phoneContacts, final OnPhoneContactsLoadedListener listener) {
 		final String[] PROJECTION = new String[] { ContactsContract.Data._ID,
 				ContactsContract.Data.DISPLAY_NAME,
 				ContactsContract.Data.PHOTO_URI,
@@ -64,6 +61,7 @@ public class PhoneHelper {
 				if (listener != null) {
 					listener.onPhoneContactsLoaded(phoneContacts);
 				}
+				cursor.close();
 			}
 		});
 		try {
@@ -85,6 +83,7 @@ public class PhoneHelper {
 		} else {
 			mProfileCursor.moveToFirst();
 			String uri = mProfileCursor.getString(1);
+			mProfileCursor.close();
 			if (uri == null) {
 				return null;
 			} else {

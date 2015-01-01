@@ -65,6 +65,7 @@ public class DatabaseBackend extends SQLiteOpenHelper {
 				+ Message.BODY + " TEXT, " + Message.ENCRYPTION + " NUMBER, "
 				+ Message.STATUS + " NUMBER," + Message.TYPE + " NUMBER, "
 				+ Message.RELATIVE_FILE_PATH + " TEXT, "
+				+ Message.SERVER_MSG_ID + " TEXT, "
 				+ Message.REMOTE_MSG_ID + " TEXT, FOREIGN KEY("
 				+ Message.CONVERSATION + ") REFERENCES "
 				+ Conversation.TABLENAME + "(" + Conversation.UUID
@@ -121,11 +122,13 @@ public class DatabaseBackend extends SQLiteOpenHelper {
 			db.execSQL("delete from "+Contact.TABLENAME);
 			db.execSQL("update "+Account.TABLENAME+" set "+Account.ROSTERVERSION+" = NULL");
 		}
-        //TXTR CUSTOM: PINTOKEN COLUMN
-        if (oldVersion < 12 && newVersion >= 12) {
+		if (oldVersion < 12 && newVersion >= 12) {
+			db.execSQL("ALTER TABLE " + Message.TABLENAME + " ADD COLUMN "
+					+ Message.SERVER_MSG_ID + " TEXT");
+        	//TXTR CUSTOM: PINTOKEN COLUMN
             db.execSQL("ALTER TABLE " + Account.TABLENAME + " ADD COLUMN "
                     + Account.PINTOKEN + " TEXT");
-        }
+		}
 	}
 
 	public static synchronized DatabaseBackend getInstance(Context context) {
@@ -228,9 +231,9 @@ public class DatabaseBackend extends SQLiteOpenHelper {
 		return conversation;
 	}
 
-	public void updateConversation(Conversation conversation) {
-		SQLiteDatabase db = this.getWritableDatabase();
-		String[] args = { conversation.getUuid() };
+	public void updateConversation(final Conversation conversation) {
+		final SQLiteDatabase db = this.getWritableDatabase();
+		final String[] args = { conversation.getUuid() };
 		db.update(Conversation.TABLENAME, conversation.getContentValues(),
 				Conversation.UUID + "=?", args);
 	}

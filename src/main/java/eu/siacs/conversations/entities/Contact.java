@@ -17,7 +17,7 @@ import eu.siacs.conversations.xml.Element;
 import eu.siacs.conversations.xmpp.jid.InvalidJidException;
 import eu.siacs.conversations.xmpp.jid.Jid;
 
-public class Contact implements ListItem {
+public class Contact implements ListItem, Blockable {
 	public static final String TABLENAME = "contacts";
 
 	public static final String SYSTEMNAME = "systemname";
@@ -48,8 +48,8 @@ public class Contact implements ListItem {
 	protected Account account;
 
 	public Contact(final String account, final String systemName, final String serverName,
-				   final Jid jid, final int subscription, final String photoUri,
-				   final String systemAccount, final String keys, final String avatar, final Lastseen lastseen, final String groups) {
+			final Jid jid, final int subscription, final String photoUri,
+			final String systemAccount, final String keys, final String avatar, final Lastseen lastseen, final String groups) {
 		this.accountUuid = account;
 		this.systemName = systemName;
 		this.serverName = serverName;
@@ -125,11 +125,10 @@ public class Contact implements ListItem {
 
 	@Override
 	public List<Tag> getTags() {
-		ArrayList<Tag> tags = new ArrayList<Tag>();
-		for (String group : getGroups()) {
+		final ArrayList<Tag> tags = new ArrayList<>();
+		for (final String group : getGroups()) {
 			tags.add(new Tag(group, UIHelper.getColorForName(group)));
 		}
-		int status = getMostAvailableStatus();
 		switch (getMostAvailableStatus()) {
 			case Presences.CHAT:
 			case Presences.ONLINE:
@@ -144,6 +143,9 @@ public class Contact implements ListItem {
 			case Presences.DND:
 				tags.add(new Tag("dnd", 0xffe51c23));
 				break;
+		}
+		if (isBlocked()) {
+			tags.add(new Tag("blocked", 0xff2e2f3b));
 		}
 		return tags;
 	}
@@ -179,7 +181,7 @@ public class Contact implements ListItem {
 	}
 
 	public ContentValues getContentValues() {
-		ContentValues values = new ContentValues();
+		final ContentValues values = new ContentValues();
 		values.put(ACCOUNT, accountUuid);
 		values.put(SYSTEMNAME, systemName);
 		values.put(SERVERNAME, serverName);
@@ -216,11 +218,11 @@ public class Contact implements ListItem {
 		this.presences = pres;
 	}
 
-	public void updatePresence(String resource, int status) {
+	public void updatePresence(final String resource, final int status) {
 		this.presences.updatePresence(resource, status);
 	}
 
-	public void removePresence(String resource) {
+	public void removePresence(final String resource) {
 		this.presences.removePresence(resource);
 	}
 
@@ -269,13 +271,15 @@ public class Contact implements ListItem {
 	}
 
 	public ArrayList<String> getOtrFingerprints() {
-		ArrayList<String> fingerprints = new ArrayList<String>();
+		final ArrayList<String> fingerprints = new ArrayList<String>();
 		try {
 			if (this.keys.has("otr_fingerprints")) {
-				JSONArray prints = this.keys
-						.getJSONArray("otr_fingerprints");
+				final JSONArray prints = this.keys.getJSONArray("otr_fingerprints");
 				for (int i = 0; i < prints.length(); ++i) {
-					fingerprints.add(prints.getString(i));
+					final String print = prints.isNull(i) ? null : prints.getString(i);
+					if (print != null && !print.isEmpty()) {
+						fingerprints.add(prints.getString(i));
+					}
 				}
 			}
 		} catch (final JSONException ignored) {
@@ -338,8 +342,8 @@ public class Contact implements ListItem {
 
 	public boolean showInRoster() {
 		return (this.getOption(Contact.Options.IN_ROSTER) && (!this
-				.getOption(Contact.Options.DIRTY_DELETE)))
-				|| (this.getOption(Contact.Options.DIRTY_PUSH));
+					.getOption(Contact.Options.DIRTY_DELETE)))
+			|| (this.getOption(Contact.Options.DIRTY_PUSH));
 	}
 
 	public void parseSubscriptionFromElement(Element item) {
@@ -429,7 +433,7 @@ public class Contact implements ListItem {
 			if (this.keys.has("otr_fingerprints")) {
 				JSONArray newPrints = new JSONArray();
 				JSONArray oldPrints = this.keys
-						.getJSONArray("otr_fingerprints");
+					.getJSONArray("otr_fingerprints");
 				for (int i = 0; i < oldPrints.length(); ++i) {
 					if (!oldPrints.getString(i).equals(fingerprint)) {
 						newPrints.put(oldPrints.getString(i));
@@ -458,22 +462,40 @@ public class Contact implements ListItem {
 		}
 	}
 
+	@Override
+	public boolean isBlocked() {
+		return getAccount().isBlocked(this);
+	}
+
+	@Override
+	public boolean isDomainBlocked() {
+		return getAccount().isBlocked(this.getJid().toDomainJid());
+	}
+
+	@Override
+	public Jid getBlockedJid() {
+		if (isDomainBlocked()) {
+			return getJid().toDomainJid();
+		} else {
+			return getJid();
+		}
+	}
+
 	public static class Lastseen {
 		public long time;
 		public String presence;
 
 		public Lastseen() {
-			time = 0;
-			presence = null;
+			this(null, 0);
 		}
 
 		public Lastseen(final String presence, final long time) {
-			this.time = time;
 			this.presence = presence;
+			this.time = time;
 		}
 	}
 
-	public class Options {
+	public final class Options {
 		public static final int TO = 0;
 		public static final int FROM = 1;
 		public static final int ASKING = 2;

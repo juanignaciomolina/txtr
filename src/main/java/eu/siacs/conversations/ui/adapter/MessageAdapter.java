@@ -23,8 +23,8 @@ import android.widget.Toast;
 
 import java.util.List;
 
-import eu.siacs.conversations.Config;
 import eu.siacs.conversations.R;
+import eu.siacs.conversations.entities.Account;
 import eu.siacs.conversations.entities.Contact;
 import eu.siacs.conversations.entities.Conversation;
 import eu.siacs.conversations.entities.Downloadable;
@@ -224,10 +224,7 @@ public class MessageAdapter extends ArrayAdapter<Message> {
 		viewHolder.messageBody.setVisibility(View.VISIBLE);
 		if (message.getBody() != null) {
 			if (message.getType() != Message.TYPE_PRIVATE) {
-				String body = Config.PARSE_EMOTICONS ? UIHelper
-						.transformAsciiEmoticons(message.getMergedBody())
-						: message.getMergedBody();
-				viewHolder.messageBody.setText(body);
+				viewHolder.messageBody.setText(message.getMergedBody());
 			} else {
 				String privateMarker;
 				if (message.getStatus() <= Message.STATUS_RECEIVED) {
@@ -271,7 +268,7 @@ public class MessageAdapter extends ArrayAdapter<Message> {
 
 			@Override
 			public void onClick(View v) {
-				startDonwloadable(message);
+				startDownloadable(message);
 			}
 		});
 		viewHolder.download_button.setOnLongClickListener(openContextMenu);
@@ -287,7 +284,7 @@ public class MessageAdapter extends ArrayAdapter<Message> {
 
 			@Override
 			public void onClick(View v) {
-				openDonwloadable(file);
+				openDownloadable(file);
 			}
 		});
 		viewHolder.download_button.setOnLongClickListener(openContextMenu);
@@ -339,8 +336,10 @@ public class MessageAdapter extends ArrayAdapter<Message> {
 
 	@Override
 	public View getView(int position, View view, ViewGroup parent) {
-		final Message item = getItem(position);
-		int type = getItemViewType(position);
+		final Message message = getItem(position);
+		final Conversation conversation = message.getConversation();
+		final Account account = conversation.getAccount();
+		final int type = getItemViewType(position);
 		ViewHolder viewHolder;
 		if (view == null) {
 			viewHolder = new ViewHolder();
@@ -368,7 +367,6 @@ public class MessageAdapter extends ArrayAdapter<Message> {
 						.findViewById(R.id.message_time);
 				viewHolder.indicatorReceived = (ImageView) view
 						.findViewById(R.id.indicator_received);
-				view.setTag(viewHolder);
 				break;
 			case RECEIVED:
 				view = activity.getLayoutInflater().inflate(
@@ -389,28 +387,29 @@ public class MessageAdapter extends ArrayAdapter<Message> {
 						.findViewById(R.id.message_time);
 				viewHolder.indicatorReceived = (ImageView) view
 						.findViewById(R.id.indicator_received);
-				view.setTag(viewHolder);
 				break;
 			case STATUS:
 				view = activity.getLayoutInflater().inflate(
 						R.layout.message_status, parent, false);
 				viewHolder.contact_picture = (ImageView) view
 						.findViewById(R.id.message_photo);
-				view.setTag(viewHolder);
 				break;
 			default:
 				viewHolder = null;
 				break;
 			}
+			view.setTag(viewHolder);
 		} else {
 			viewHolder = (ViewHolder) view.getTag();
+			if (viewHolder == null) {
+				return view;
+			}
 		}
 
 		if (type == STATUS) {
-			if (item.getConversation().getMode() == Conversation.MODE_SINGLE) {
+			if (conversation.getMode() == Conversation.MODE_SINGLE) {
 				viewHolder.contact_picture.setImageBitmap(activity
-						.avatarService().get(
-								item.getConversation().getContact(),
+						.avatarService().get(conversation.getContact(),
 								activity.getPixel(32)));
 				viewHolder.contact_picture.setAlpha(0.5f);
 				viewHolder.contact_picture
@@ -418,8 +417,7 @@ public class MessageAdapter extends ArrayAdapter<Message> {
 
 							@Override
 							public void onClick(View v) {
-								String name = item.getConversation()
-										.getName();
+								String name = conversation.getName();
 								String read = getContext()
 										.getString(
 												R.string.contact_has_read_up_to_this_point,
@@ -440,51 +438,51 @@ public class MessageAdapter extends ArrayAdapter<Message> {
 			}
 			view.setLayoutParams(view.getLayoutParams());
 			return view;
+		} else if (viewHolder.messageBody == null || viewHolder.image == null) {
+			return view; //avoiding weird platform bugs
 		} else if (type == RECEIVED) {
-			Contact contact = item.getContact();
+			Contact contact = message.getContact();
 			if (contact != null) {
 				viewHolder.contact_picture.setImageBitmap(activity.avatarService().get(contact, activity.getPixel(48)));
-			} else if (item.getConversation().getMode() == Conversation.MODE_MULTI) {
-				viewHolder.contact_picture.setImageBitmap(activity.avatarService().get(getDisplayedMucCounterpart(item.getCounterpart()),
+			} else if (conversation.getMode() == Conversation.MODE_MULTI) {
+				viewHolder.contact_picture.setImageBitmap(activity.avatarService().get(getDisplayedMucCounterpart(message.getCounterpart()),
                         activity.getPixel(48)));
 			}
 		} else if (type == SENT) {
-			viewHolder.contact_picture.setImageBitmap(activity.avatarService().get(item.getConversation().getAccount(), activity.getPixel(48)));
+			viewHolder.contact_picture.setImageBitmap(activity.avatarService().get(account, activity.getPixel(48)));
 		}
 
-		if (viewHolder != null && viewHolder.contact_picture != null) {
-			viewHolder.contact_picture
-					.setOnClickListener(new OnClickListener() {
+		viewHolder.contact_picture
+				.setOnClickListener(new OnClickListener() {
 
-						@Override
-						public void onClick(View v) {
-							if (MessageAdapter.this.mOnContactPictureClickedListener != null) {
-								MessageAdapter.this.mOnContactPictureClickedListener
-										.onContactPictureClicked(item);
-							}
-
+					@Override
+					public void onClick(View v) {
+						if (MessageAdapter.this.mOnContactPictureClickedListener != null) {
+							MessageAdapter.this.mOnContactPictureClickedListener
+									.onContactPictureClicked(message);
 						}
-					});
-			viewHolder.contact_picture
-					.setOnLongClickListener(new OnLongClickListener() {
 
-						@Override
-						public boolean onLongClick(View v) {
-							if (MessageAdapter.this.mOnContactPictureLongClickedListener != null) {
-								MessageAdapter.this.mOnContactPictureLongClickedListener
-										.onContactPictureLongClicked(item);
-								return true;
-							} else {
-								return false;
-							}
+					}
+				});
+		viewHolder.contact_picture
+				.setOnLongClickListener(new OnLongClickListener() {
+
+					@Override
+					public boolean onLongClick(View v) {
+						if (MessageAdapter.this.mOnContactPictureLongClickedListener != null) {
+							MessageAdapter.this.mOnContactPictureLongClickedListener
+									.onContactPictureLongClicked(message);
+							return true;
+						} else {
+							return false;
 						}
-					});
-		}
+					}
+				});
 
-		if (item.getDownloadable() != null && item.getDownloadable().getStatus() != Downloadable.STATUS_UPLOADING) {
-			Downloadable d = item.getDownloadable();
+		if (message.getDownloadable() != null && message.getDownloadable().getStatus() != Downloadable.STATUS_UPLOADING) {
+			Downloadable d = message.getDownloadable();
 			if (d.getStatus() == Downloadable.STATUS_DOWNLOADING) {
-				if (item.getType() == Message.TYPE_FILE) {
+				if (message.getType() == Message.TYPE_FILE) {
 					displayInfoMessage(viewHolder,activity.getString(R.string.receiving_file,d.getMimeType(),d.getProgress()));
 				} else {
 					displayInfoMessage(viewHolder,activity.getString(R.string.receiving_image,d.getProgress()));
@@ -492,35 +490,35 @@ public class MessageAdapter extends ArrayAdapter<Message> {
 			} else if (d.getStatus() == Downloadable.STATUS_CHECKING) {
 				displayInfoMessage(viewHolder,activity.getString(R.string.checking_image));
 			} else if (d.getStatus() == Downloadable.STATUS_DELETED) {
-				if (item.getType() == Message.TYPE_FILE) {
+				if (message.getType() == Message.TYPE_FILE) {
 					displayInfoMessage(viewHolder, activity.getString(R.string.file_deleted));
 				} else {
 					displayInfoMessage(viewHolder, activity.getString(R.string.image_file_deleted));
 				}
 			} else if (d.getStatus() == Downloadable.STATUS_OFFER) {
-				if (item.getType() == Message.TYPE_FILE) {
-					displayDownloadableMessage(viewHolder,item,activity.getString(R.string.download_file,d.getMimeType()));
+				if (message.getType() == Message.TYPE_FILE) {
+					displayDownloadableMessage(viewHolder,message,activity.getString(R.string.download_file,d.getMimeType()));
 				} else {
-					displayDownloadableMessage(viewHolder, item,activity.getString(R.string.download_image));
+					displayDownloadableMessage(viewHolder, message,activity.getString(R.string.download_image));
 				}
 			} else if (d.getStatus() == Downloadable.STATUS_OFFER_CHECK_FILESIZE) {
-				displayDownloadableMessage(viewHolder, item,activity.getString(R.string.check_image_filesize));
+				displayDownloadableMessage(viewHolder, message,activity.getString(R.string.check_image_filesize));
 			} else if (d.getStatus() == Downloadable.STATUS_FAILED) {
-				if (item.getType() == Message.TYPE_FILE) {
+				if (message.getType() == Message.TYPE_FILE) {
 					displayInfoMessage(viewHolder, activity.getString(R.string.file_transmission_failed));
 				} else {
 					displayInfoMessage(viewHolder, activity.getString(R.string.image_transmission_failed));
 				}
 			}
-		} else if (item.getType() == Message.TYPE_IMAGE && item.getEncryption() != Message.ENCRYPTION_PGP && item.getEncryption() != Message.ENCRYPTION_DECRYPTION_FAILED) {
-			displayImageMessage(viewHolder, item);
-		} else if (item.getType() == Message.TYPE_FILE && item.getEncryption() != Message.ENCRYPTION_PGP && item.getEncryption() != Message.ENCRYPTION_DECRYPTION_FAILED) {
-			if (item.getImageParams().width > 0) {
-				displayImageMessage(viewHolder,item);
+		} else if (message.getType() == Message.TYPE_IMAGE && message.getEncryption() != Message.ENCRYPTION_PGP && message.getEncryption() != Message.ENCRYPTION_DECRYPTION_FAILED) {
+			displayImageMessage(viewHolder, message);
+		} else if (message.getType() == Message.TYPE_FILE && message.getEncryption() != Message.ENCRYPTION_PGP && message.getEncryption() != Message.ENCRYPTION_DECRYPTION_FAILED) {
+			if (message.getImageParams().width > 0) {
+				displayImageMessage(viewHolder,message);
 			} else {
-				displayOpenableMessage(viewHolder, item);
+				displayOpenableMessage(viewHolder, message);
 			}
-		} else if (item.getEncryption() == Message.ENCRYPTION_PGP) {
+		} else if (message.getEncryption() == Message.ENCRYPTION_PGP) {
 			if (activity.hasPgp()) {
 				displayInfoMessage(viewHolder,activity.getString(R.string.encrypted_message));
 			} else {
@@ -537,18 +535,18 @@ public class MessageAdapter extends ArrayAdapter<Message> {
 							});
 				}
 			}
-		} else if (item.getEncryption() == Message.ENCRYPTION_DECRYPTION_FAILED) {
+		} else if (message.getEncryption() == Message.ENCRYPTION_DECRYPTION_FAILED) {
 			displayDecryptionFailed(viewHolder);
 		} else {
-			displayTextMessage(viewHolder, item);
+			displayTextMessage(viewHolder, message);
 		}
 
-		displayStatus(viewHolder, item);
+		displayStatus(viewHolder, message);
 
 		return view;
 	}
 
-	public void startDonwloadable(Message message) {
+	public void startDownloadable(Message message) {
 		Downloadable downloadable = message.getDownloadable();
 		if (downloadable != null) {
 			if (!downloadable.start()) {
@@ -558,7 +556,7 @@ public class MessageAdapter extends ArrayAdapter<Message> {
 		}
 	}
 
-	public void openDonwloadable(DownloadableFile file) {
+	public void openDownloadable(DownloadableFile file) {
 		if (!file.exists()) {
 			Toast.makeText(activity,R.string.file_deleted,Toast.LENGTH_SHORT).show();
 			return;

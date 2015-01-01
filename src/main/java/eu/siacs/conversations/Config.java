@@ -18,7 +18,9 @@ public final class Config {
 
 	public static final int MESSAGE_MERGE_WINDOW = 20;
 
-	public static final boolean PARSE_EMOTICONS = false;
+	public static final int PAGE_SIZE = 50;
+	public static final int MAX_NUM_PAGES = 3;
+
 	public static final int  PROGRESS_UI_UPDATE_INTERVAL = 750;
 
 	public static final boolean NO_PROXY_LOOKUP = false; //useful to debug ibb
@@ -27,6 +29,9 @@ public final class Config {
     public static final String APIURL = "http://api.droidko.com/";
     public static final int DISMISSCOUNTDOWNLOCK = 5000; //in miliseconds
     public static final String PINDOMAIN = "droidko.com";
+	public static final long MILLISECONDS_IN_DAY = 24 * 60 * 60 * 1000;
+	public static final long MAM_MAX_CATCHUP =  MILLISECONDS_IN_DAY / 2;
+	public static final int MAM_MAX_MESSAGES = 500;
 
 	private Config() {
 

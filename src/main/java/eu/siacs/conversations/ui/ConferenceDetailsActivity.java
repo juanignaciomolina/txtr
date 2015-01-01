@@ -27,13 +27,16 @@ import java.util.List;
 
 import eu.siacs.conversations.R;
 import eu.siacs.conversations.crypto.PgpEngine;
+import eu.siacs.conversations.entities.Account;
+import eu.siacs.conversations.entities.Bookmark;
 import eu.siacs.conversations.entities.Contact;
 import eu.siacs.conversations.entities.Conversation;
 import eu.siacs.conversations.entities.MucOptions.User;
+import eu.siacs.conversations.services.XmppConnectionService.OnMucRosterUpdate;
 import eu.siacs.conversations.services.XmppConnectionService.OnConversationUpdate;
 import eu.siacs.conversations.xmpp.stanzas.MessagePacket;
 
-public class ConferenceDetailsActivity extends XmppActivity implements OnConversationUpdate {
+public class ConferenceDetailsActivity extends XmppActivity implements OnConversationUpdate, OnMucRosterUpdate {
 	public static final String ACTION_VIEW_MUC = "view_muc";
 	private Conversation mConversation;
 	private OnClickListener inviteListener = new OnClickListener() {
@@ -97,6 +100,17 @@ public class ConferenceDetailsActivity extends XmppActivity implements OnConvers
 	}
 
 	@Override
+	public void onMucRosterUpdate() {
+		runOnUiThread(new Runnable() {
+
+			@Override
+			public void run() {
+				populateView();
+			}
+		});
+	}
+
+	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_muc_details);
@@ -110,8 +124,10 @@ public class ConferenceDetailsActivity extends XmppActivity implements OnConvers
 		mMoreDetails.setVisibility(View.GONE);
 		mInviteButton = (Button) findViewById(R.id.invite);
 		mInviteButton.setOnClickListener(inviteListener);
-		getActionBar().setHomeButtonEnabled(true);
-		getActionBar().setDisplayHomeAsUpEnabled(true);
+		if (getActionBar() != null) {
+			getActionBar().setHomeButtonEnabled(true);
+			getActionBar().setDisplayHomeAsUpEnabled(true);
+		}
 		mEditNickButton.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -141,13 +157,19 @@ public class ConferenceDetailsActivity extends XmppActivity implements OnConvers
 						@Override
 						public void onValueEdited(String value) {
 							MessagePacket packet = xmppConnectionService
-									.getMessageGenerator().conferenceSubject(
-											mConversation, value);
+								.getMessageGenerator().conferenceSubject(
+										mConversation, value);
 							xmppConnectionService.sendMessagePacket(
 									mConversation.getAccount(), packet);
 						}
 					});
 				}
+				break;
+			case R.id.action_save_as_bookmark:
+				saveAsBookmark();
+				break;
+			case R.id.action_delete_bookmark:
+				deleteBookmark();
 				break;
 		}
 		return super.onOptionsItemSelected(menuItem);
@@ -169,10 +191,25 @@ public class ConferenceDetailsActivity extends XmppActivity implements OnConvers
 	@Override
 	protected String getShareableUri() {
 		if (mConversation != null) {
-			return "xmpp:" + mConversation.getContactJid().toBareJid().toString() + "?join";
+			return "xmpp:" + mConversation.getJid().toBareJid().toString() + "?join";
 		} else {
 			return "";
 		}
+	}
+
+	@Override
+	public boolean onPrepareOptionsMenu(Menu menu) {
+		MenuItem menuItemSaveBookmark = menu.findItem(R.id.action_save_as_bookmark);
+		MenuItem menuItemDeleteBookmark = menu.findItem(R.id.action_delete_bookmark);
+		Account account = mConversation.getAccount();
+		if (account.hasBookmarkFor(mConversation.getJid().toBareJid())) {
+			menuItemSaveBookmark.setVisible(false);
+			menuItemDeleteBookmark.setVisible(true);
+		} else {
+			menuItemDeleteBookmark.setVisible(false);
+			menuItemSaveBookmark.setVisible(true);
+		}
+		return true;
 	}
 
 	@Override
@@ -219,9 +256,29 @@ public class ConferenceDetailsActivity extends XmppActivity implements OnConvers
 
 	protected void startConversation(User user) {
 		if (user.getJid() != null) {
-			Conversation conversation = xmppConnectionService.findOrCreateConversation(this.mConversation.getAccount(),user.getJid(),false);
+			Conversation conversation = xmppConnectionService.findOrCreateConversation(this.mConversation.getAccount(),user.getJid().toBareJid(),false);
 			switchToConversation(conversation);
 		}
+	}
+
+	protected void saveAsBookmark() {
+		Account account = mConversation.getAccount();
+		Bookmark bookmark = new Bookmark(account, mConversation.getJid().toBareJid());
+		if (!mConversation.getJid().isBareJid()) {
+			bookmark.setNick(mConversation.getJid().getResourcepart());
+		}
+		bookmark.setAutojoin(true);
+		account.getBookmarks().add(bookmark);
+		xmppConnectionService.pushBookmarks(account);
+		mConversation.setBookmark(bookmark);
+	}
+
+	protected void deleteBookmark() {
+		Account account = mConversation.getAccount();
+		Bookmark bookmark = mConversation.getBookmark();
+		bookmark.unregisterConversation();
+		account.getBookmarks().remove(bookmark);
+		xmppConnectionService.pushBookmarks(account);
 	}
 
 	@Override
@@ -231,7 +288,7 @@ public class ConferenceDetailsActivity extends XmppActivity implements OnConvers
 		}
 		if (uuid != null) {
 			this.mConversation = xmppConnectionService
-					.findConversationByUuid(uuid);
+				.findConversationByUuid(uuid);
 			if (this.mConversation != null) {
 				populateView();
 			}
@@ -240,11 +297,11 @@ public class ConferenceDetailsActivity extends XmppActivity implements OnConvers
 
 	private void populateView() {
 		mAccountJid.setText(getString(R.string.using_account, mConversation
-				.getAccount().getJid().toBareJid()));
+					.getAccount().getJid().toBareJid()));
 		mYourPhoto.setImageBitmap(avatarService().get(
-				mConversation.getAccount(), getPixel(48)));
+					mConversation.getAccount(), getPixel(48)));
 		setTitle(mConversation.getName());
-		mFullJid.setText(mConversation.getContactJid().toBareJid().toString());
+		mFullJid.setText(mConversation.getJid().toBareJid().toString());
 		mYourNick.setText(mConversation.getMucOptions().getActualNick());
 		mRoleAffiliaton = (TextView) findViewById(R.id.muc_role);
 		if (mConversation.getMucOptions().online()) {
@@ -281,7 +338,7 @@ public class ConferenceDetailsActivity extends XmppActivity implements OnConvers
 			registerForContextMenu(view);
 			view.setTag(user);
 			TextView name = (TextView) view
-					.findViewById(R.id.contact_display_name);
+				.findViewById(R.id.contact_display_name);
 			TextView key = (TextView) view.findViewById(R.id.key);
 			TextView role = (TextView) view.findViewById(R.id.contact_jid);
 			if (user.getPgpKeyId() != 0) {
@@ -313,6 +370,7 @@ public class ConferenceDetailsActivity extends XmppActivity implements OnConvers
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
 	private void setListItemBackgroundOnView(View view) {
 		int sdk = android.os.Build.VERSION.SDK_INT;
@@ -332,7 +390,7 @@ public class ConferenceDetailsActivity extends XmppActivity implements OnConvers
 				try {
 					startIntentSenderForResult(intent.getIntentSender(), 0,
 							null, 0, 0, 0);
-				} catch (SendIntentException e) {
+				} catch (SendIntentException ignored) {
 
 				}
 			}

@@ -40,7 +40,6 @@ run your own XMPP server for you and your friends. These XEP's are:
 
 * XEP-0065: SOCKS5 Bytestreams (or mod_proxy65). Will be used to transfer
   files if both parties are behind a firewall (NAT).
-* XEP-0138: Stream Compression saves bandwidth
 * XEP-0163: Personal Eventing Protocol for avatars
 * XEP-0198: Stream Management allows XMPP to survive small network outages and
   changes of the underlying TCP connection.
@@ -48,9 +47,14 @@ run your own XMPP server for you and your friends. These XEP's are:
   your desktop client and thus allows you to switch seamlessly from your mobile
   client to your desktop client and back within one conversation.
 * XEP-0237: Roster Versioning mainly to save bandwidth on poor mobile connections
-* XEP-0352: Client State Indication let the server know whether or not
+* XEP-0313: Message Archive Management synchronize message history with the
+  server. Catch up with messages that were sent while Conversations was
+  offline.
+* XEP-0352: Client State Indication lets the server know whether or not
   Conversations is in the background. Allows the server to save bandwidth by
   withholding unimportant packages.
+* XEP-0191: Blocking command lets you blacklist spammers or block contacts
+  without removing them from your roster.
 
 ## Team
 
@@ -67,6 +71,7 @@ run your own XMPP server for you and your friends. These XEP's are:
 * [Alethea Butler](https://github.com/alethea)
 * [M. Dietrich](https://github.com/emdete)
 * [betheg](https://github.com/betheg)
+* [Sam Whited](https://github.com/SamWhited)
 
 #### Logo
 * [Ilia Rostovtsev](https://github.com/qooob) (Progress)
@@ -82,6 +87,7 @@ run your own XMPP server for you and your friends. These XEP's are:
 * [Jelmer Vernooij](https://github.com/jelmer) (Dutch)
 * [Anders Sandblad](https://github.com/andersruneson) (Swedish)
 * [Aizaz AZ](http://www.linkedin.com/in/aizazhaider) (Chinese)
+* [Jaroslav Lichtblau] (https://github.com/svetlemodry) (Czech)
 
 ## FAQ
 
@@ -94,7 +100,7 @@ software developer you can check out the sources from GitHub and use ant to
 build your apk file.
 
 The more convenient way — which not only gives you automatic updates but also
-supports the further development of Conversations - is to buy the App in the
+supports the further development of Conversations — is to buy the App in the
 Google [Play Store](https://play.google.com/store/apps/details?id=eu.siacs.conversations).
 
 #### I don't have a Google Account but I would still like to make a contribution
@@ -131,8 +137,7 @@ those please contact your admin and have them read
 
 #### Conversations doesn't work for me. Where can I get help?
 
-You can join our conference room on
-[conversations@conference.siacs.eu](xmpp:conversations@conference.siacs.eu?join)
+You can join our conference room on `conversations@conference.siacs.eu`.
 A lot of people in there are able to answer basic questions about the usage of
 Conversations or can provide you with tips on running your own XMPP server. If
 you found a bug or your app crashes please read the Developer / Report Bugs
