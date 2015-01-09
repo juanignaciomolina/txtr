@@ -78,16 +78,7 @@ run your own XMPP server for you and your friends. These XEP's are:
 * [Diego Turtulici](http://efesto.eigenlab.org/~diesys) (Original)
 
 #### Translations
-
-* [Sergio Cárdenas](https://github.com/kruks23) (Spanish)
-* [Benoit Bouvarel](https://github.com/BenoitBouvarel) (French)
-* [Daniel Gultsch](https://github.com/iNPUTmice) (German)
-* [Aitor Beriain](https://github.com/beriain) (Basque)
-* [Ilia Rostovtsev](https://github.com/qooob) (Russian)
-* [Jelmer Vernooij](https://github.com/jelmer) (Dutch)
-* [Anders Sandblad](https://github.com/andersruneson) (Swedish)
-* [Aizaz AZ](http://www.linkedin.com/in/aizazhaider) (Chinese)
-* [Jaroslav Lichtblau] (https://github.com/svetlemodry) (Czech)
+Translations are managed on [Transifex](https://www.transifex.com/projects/p/conversations/)
 
 ## FAQ
 
@@ -284,6 +275,9 @@ Make sure to have ANDROID_HOME point to your Android SDK
     git clone https://github.com/siacs/Conversations.git
     cd Conversations
     ./gradlew build
+
+
+[![Build Status](https://travis-ci.org/siacs/Conversations.svg?branch=development)](https://travis-ci.org/siacs/Conversations)
 
 ### How do I update/add external libraries?
 

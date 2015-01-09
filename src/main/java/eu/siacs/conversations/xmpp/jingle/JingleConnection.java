@@ -75,7 +75,7 @@ public class JingleConnection implements Downloadable {
 
 		@Override
 		public void onIqPacketReceived(Account account, IqPacket packet) {
-			if (packet.getType() == IqPacket.TYPE_ERROR) {
+			if (packet.getType() == IqPacket.TYPE.ERROR) {
 				fail();
 			}
 		}
@@ -191,10 +191,10 @@ public class JingleConnection implements Downloadable {
 		}
 		IqPacket response;
 		if (returnResult) {
-			response = packet.generateResponse(IqPacket.TYPE_RESULT);
+			response = packet.generateResponse(IqPacket.TYPE.RESULT);
 
 		} else {
-			response = packet.generateResponse(IqPacket.TYPE_ERROR);
+			response = packet.generateResponse(IqPacket.TYPE.ERROR);
 		}
 		account.getXmppConnection().sendIqPacket(response, null);
 	}
@@ -280,7 +280,7 @@ public class JingleConnection implements Downloadable {
 			Element fileNameElement = fileOffer.findChild("name");
 			if (fileNameElement != null) {
 				String[] filename = fileNameElement.getContent()
-						.toLowerCase(Locale.US).split("\\.");
+						.toLowerCase(Locale.US).toLowerCase().split("\\.");
 				if (Arrays.asList(VALID_IMAGE_EXTENSIONS).contains(
 						filename[filename.length - 1])) {
 					message.setType(Message.TYPE_IMAGE);
@@ -396,58 +396,48 @@ public class JingleConnection implements Downloadable {
 		mJingleStatus = JINGLE_STATUS_ACCEPTED;
 		this.mStatus = Downloadable.STATUS_DOWNLOADING;
 		mXmppConnectionService.updateConversationUi();
-		this.mJingleConnectionManager.getPrimaryCandidate(this.account,
-				new OnPrimaryCandidateFound() {
+		this.mJingleConnectionManager.getPrimaryCandidate(this.account, new OnPrimaryCandidateFound() {
+			@Override
+			public void onPrimaryCandidateFound(boolean success, final JingleCandidate candidate) {
+				final JinglePacket packet = bootstrapPacket("session-accept");
+				final Content content = new Content(contentCreator,contentName);
+				content.setFileOffer(fileOffer);
+				content.setTransportId(transportId);
+				if (success && candidate != null && !equalCandidateExists(candidate)) {
+					final JingleSocks5Transport socksConnection = new JingleSocks5Transport(
+							JingleConnection.this,
+							candidate);
+					connections.put(candidate.getCid(), socksConnection);
+					socksConnection.connect(new OnTransportConnected() {
 
-					@Override
-					public void onPrimaryCandidateFound(boolean success,
-							final JingleCandidate candidate) {
-						final JinglePacket packet = bootstrapPacket("session-accept");
-						final Content content = new Content(contentCreator,
-								contentName);
-						content.setFileOffer(fileOffer);
-						content.setTransportId(transportId);
-						if ((success) && (!equalCandidateExists(candidate))) {
-							final JingleSocks5Transport socksConnection = new JingleSocks5Transport(
-									JingleConnection.this, candidate);
-							connections.put(candidate.getCid(), socksConnection);
-							socksConnection.connect(new OnTransportConnected() {
-
-								@Override
-								public void failed() {
-									Log.d(Config.LOGTAG,
-											"connection to our own primary candidate failed");
-									content.socks5transport().setChildren(
-											getCandidatesAsElements());
-									packet.setContent(content);
-									sendJinglePacket(packet);
-									connectNextCandidate();
-								}
-
-								@Override
-								public void established() {
-									Log.d(Config.LOGTAG,
-											"connected to primary candidate");
-									mergeCandidate(candidate);
-									content.socks5transport().setChildren(
-											getCandidatesAsElements());
-									packet.setContent(content);
-									sendJinglePacket(packet);
-									connectNextCandidate();
-								}
-							});
-						} else {
-							Log.d(Config.LOGTAG,
-									"did not find a primary candidate for ourself");
-							content.socks5transport().setChildren(
-									getCandidatesAsElements());
+						@Override
+						public void failed() {
+							Log.d(Config.LOGTAG,"connection to our own primary candidate failed");
+							content.socks5transport().setChildren(getCandidatesAsElements());
 							packet.setContent(content);
 							sendJinglePacket(packet);
 							connectNextCandidate();
 						}
-					}
-				});
 
+						@Override
+						public void established() {
+							Log.d(Config.LOGTAG, "connected to primary candidate");
+							mergeCandidate(candidate);
+							content.socks5transport().setChildren(getCandidatesAsElements());
+							packet.setContent(content);
+							sendJinglePacket(packet);
+							connectNextCandidate();
+						}
+					});
+				} else {
+					Log.d(Config.LOGTAG,"did not find a primary candidate for ourself");
+					content.socks5transport().setChildren(getCandidatesAsElements());
+					packet.setContent(content);
+					sendJinglePacket(packet);
+					connectNextCandidate();
+				}
+			}
+		});
 	}
 
 	private JinglePacket bootstrapPacket(String action) {
@@ -479,16 +469,13 @@ public class JingleConnection implements Downloadable {
 		Content content = packet.getJingleContent();
 		if (content.hasSocks5Transport()) {
 			if (content.socks5transport().hasChild("activated")) {
-				if ((this.transport != null)
-						&& (this.transport instanceof JingleSocks5Transport)) {
+				if ((this.transport != null) && (this.transport instanceof JingleSocks5Transport)) {
 					onProxyActivated.success();
 				} else {
-					String cid = content.socks5transport()
-							.findChild("activated").getAttribute("cid");
+					String cid = content.socks5transport().findChild("activated").getAttribute("cid");
 					Log.d(Config.LOGTAG, "received proxy activated (" + cid
 							+ ")prior to choosing our own transport");
-					JingleSocks5Transport connection = this.connections
-							.get(cid);
+					JingleSocks5Transport connection = this.connections.get(cid);
 					if (connection != null) {
 						connection.setActivated(true);
 					} else {
@@ -552,7 +539,7 @@ public class JingleConnection implements Downloadable {
 					Log.d(Config.LOGTAG, "candidate "
 							+ connection.getCandidate().getCid()
 							+ " was our proxy. going to activate");
-					IqPacket activation = new IqPacket(IqPacket.TYPE_SET);
+					IqPacket activation = new IqPacket(IqPacket.TYPE.SET);
 					activation.setTo(connection.getCandidate().getJid());
 					activation.query("http://jabber.org/protocol/bytestreams")
 							.setAttribute("sid", this.getSessionId());
@@ -564,7 +551,7 @@ public class JingleConnection implements Downloadable {
 								@Override
 								public void onIqPacketReceived(Account account,
 										IqPacket packet) {
-									if (packet.getType() == IqPacket.TYPE_ERROR) {
+									if (packet.getType() == IqPacket.TYPE.ERROR) {
 										onProxyActivated.failed();
 									} else {
 										onProxyActivated.success();
@@ -707,8 +694,7 @@ public class JingleConnection implements Downloadable {
 
 	private void receiveSuccess() {
 		this.mJingleStatus = JINGLE_STATUS_FINISHED;
-		this.mXmppConnectionService.markMessage(this.message,
-				Message.STATUS_SEND);
+		this.mXmppConnectionService.markMessage(this.message,Message.STATUS_SEND_RECEIVED);
 		this.disconnectSocks5Connections();
 		if (this.transport != null && this.transport instanceof JingleInbandTransport) {
 			this.transport.disconnect();

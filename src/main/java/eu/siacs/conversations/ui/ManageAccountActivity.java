@@ -24,21 +24,25 @@ public class ManageAccountActivity extends XmppActivity implements OnAccountUpda
 
 	protected Account selectedAccount = null;
 
-	protected List<Account> accountList = new ArrayList<Account>();
+	protected final List<Account> accountList = new ArrayList<>();
 	protected ListView accountListView;
 	protected AccountAdapter mAccountAdapter;
-		@Override
-		public void onAccountUpdate() {
+
+	@Override
+	public void onAccountUpdate() {
+		synchronized (this.accountList) {
 			accountList.clear();
 			accountList.addAll(xmppConnectionService.getAccounts());
-			runOnUiThread(new Runnable() {
-
-				@Override
-				public void run() {
-					mAccountAdapter.notifyDataSetChanged();
-				}
-			});
 		}
+		runOnUiThread(new Runnable() {
+
+			@Override
+			public void run() {
+				invalidateOptionsMenu();
+				mAccountAdapter.notifyDataSetChanged();
+			}
+		});
+	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -89,6 +93,14 @@ public class ManageAccountActivity extends XmppActivity implements OnAccountUpda
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.manageaccounts, menu);
+		MenuItem enableAll = menu.findItem(R.id.action_enable_all);
+		if (!accountsLeftToEnable()) {
+			enableAll.setVisible(false);
+		}
+		MenuItem disableAll = menu.findItem(R.id.action_disable_all);
+		if (!accountsLeftToDisable()) {
+			disableAll.setVisible(false);
+		}
 		return true;
 	}
 
@@ -121,13 +133,19 @@ public class ManageAccountActivity extends XmppActivity implements OnAccountUpda
             case R.id.action_new_pin:
                 startActivity(new Intent(getApplicationContext(),
                         CreatePinActivity.class));
-            break;
-		case R.id.action_add_account:
-			startActivity(new Intent(getApplicationContext(),
-					EditAccountActivity.class));
-			break;
-		default:
-			break;
+            	break;
+			case R.id.action_add_account:
+				startActivity(new Intent(getApplicationContext(),
+						EditAccountActivity.class));
+				break;
+			case R.id.action_disable_all:
+				disableAllAccounts();
+				break;
+			case R.id.action_enable_all:
+				enableAllAccounts();
+				break;
+			default:
+				break;
 		}
 		return super.onOptionsItemSelected(item);
 	}
@@ -158,6 +176,56 @@ public class ManageAccountActivity extends XmppActivity implements OnAccountUpda
 				PublishProfilePictureActivity.class);
 		intent.putExtra("account", account.getJid().toString());
 		startActivity(intent);
+	}
+
+	private void disableAllAccounts() {
+		List<Account> list = new ArrayList<>();
+		synchronized (this.accountList) {
+			for (Account account : this.accountList) {
+				if (!account.isOptionSet(Account.OPTION_DISABLED)) {
+					list.add(account);
+				}
+			}
+		}
+		for(Account account : list) {
+			disableAccount(account);
+		}
+	}
+
+	private boolean accountsLeftToDisable() {
+		synchronized (this.accountList) {
+			for (Account account : this.accountList) {
+				if (!account.isOptionSet(Account.OPTION_DISABLED)) {
+					return true;
+				}
+			}
+			return false;
+		}
+	}
+
+	private boolean accountsLeftToEnable() {
+		synchronized (this.accountList) {
+			for (Account account : this.accountList) {
+				if (account.isOptionSet(Account.OPTION_DISABLED)) {
+					return true;
+				}
+			}
+			return false;
+		}
+	}
+
+	private void enableAllAccounts() {
+		List<Account> list = new ArrayList<>();
+		synchronized (this.accountList) {
+			for (Account account : this.accountList) {
+				if (account.isOptionSet(Account.OPTION_DISABLED)) {
+					list.add(account);
+				}
+			}
+		}
+		for(Account account : list) {
+			enableAccount(account);
+		}
 	}
 
 	private void disableAccount(Account account) {
