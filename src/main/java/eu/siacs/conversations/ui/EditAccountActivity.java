@@ -37,7 +37,7 @@ import eu.siacs.conversations.xmpp.pep.Avatar;
 
 public class EditAccountActivity extends XmppActivity implements OnAccountUpdate, XmppConnectionService.OnAccountPasswordChanged {
 
-	private AutoCompleteTextView mAccountJid;
+	protected AutoCompleteTextView mAccountJid;
 	private EditText mPassword;
 	private EditText mPasswordConfirm;
 	private CheckBox mRegisterNew;
@@ -61,7 +61,7 @@ public class EditAccountActivity extends XmppActivity implements OnAccountUpdate
 	private ImageButton mOtrFingerprintToClipboardButton;
 
 	private Jid jidToEdit;
-	private Account mAccount;
+	protected Account mAccount;
 
 	private boolean mFetchingAvatar = false;
 	private boolean mChangingPassword = false;

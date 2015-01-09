@@ -36,7 +36,6 @@ import eu.siacs.conversations.entities.Account;
 import eu.siacs.conversations.entities.Contact;
 import eu.siacs.conversations.entities.ListItem;
 import eu.siacs.conversations.ui.adapter.ListItemAdapter;
-import eu.siacs.conversations.utils.Validator;
 import eu.siacs.conversations.xmpp.jid.InvalidJidException;
 import eu.siacs.conversations.xmpp.jid.Jid;
 
@@ -190,40 +189,39 @@ public class DismissPinActivity extends XmppActivity implements ApiAsyncTask.Tas
                         if (!xmppConnectionServiceBound) {
                             return;
                         }
-                        if (Validator.isValidJid(jid.getText().toString())) {
-                            final Jid accountJid;
-                            try {
-                                accountJid = Jid.fromString((String) spinner
-                                        .getSelectedItem());
-                            } catch (final InvalidJidException e) {
-                                return;
-                            }
-                            final Jid contactJid;
-                            try {
-                                contactJid = Jid.fromString(jid.getText().toString());
-                            } catch (final InvalidJidException e) {
-                                return;
-                            }
-                            Account account = xmppConnectionService
-                                    .findAccountByJid(accountJid);
-                            if (account == null) {
-                                dialog.dismiss();
-                                return;
-                            }
-                            Contact contact = account.getRoster().getContact(contactJid);
-                            if (contact.showInRoster()) {
-                                dialog.dismiss(); //In case the PIN is already in the account
-                                Toast toast = Toast.makeText(getApplicationContext(), "PIN already in the account", Toast.LENGTH_SHORT);
-                                toast.show();
-                            } else {
-                                contact.addOtrFingerprint(fingerprint);
-                                xmppConnectionService.createContact(contact);
-                                dialog.dismiss();
-                                Toast toast = Toast.makeText(getApplicationContext(), "PIN cloned", Toast.LENGTH_SHORT);
-                                toast.show();
-                            }
-                        } else { //Should never happen
+                        final Jid accountJid;
+                        try {
+                            accountJid = Jid.fromString((String) spinner
+                                    .getSelectedItem());
+                        } catch (final InvalidJidException e) {
                             Toast toast = Toast.makeText(getApplicationContext(), "Error: Invalid PIN", Toast.LENGTH_SHORT);
+                            toast.show();
+                            return;
+                        }
+                        final Jid contactJid;
+                        try {
+                            contactJid = Jid.fromString(jid.getText().toString());
+                        } catch (final InvalidJidException e) {
+                            Toast toast = Toast.makeText(getApplicationContext(), "Error: Invalid PIN", Toast.LENGTH_SHORT);
+                            toast.show();
+                            return;
+                        }
+                        Account account = xmppConnectionService
+                                .findAccountByJid(accountJid);
+                        if (account == null) {
+                            dialog.dismiss();
+                            return;
+                        }
+                        Contact contact = account.getRoster().getContact(contactJid);
+                        if (contact.showInRoster()) {
+                            dialog.dismiss(); //In case the PIN is already in the account
+                            Toast toast = Toast.makeText(getApplicationContext(), "PIN already in the account", Toast.LENGTH_SHORT);
+                            toast.show();
+                        } else {
+                            contact.addOtrFingerprint(fingerprint);
+                            xmppConnectionService.createContact(contact);
+                            dialog.dismiss();
+                            Toast toast = Toast.makeText(getApplicationContext(), "PIN cloned", Toast.LENGTH_SHORT);
                             toast.show();
                         }
                     }

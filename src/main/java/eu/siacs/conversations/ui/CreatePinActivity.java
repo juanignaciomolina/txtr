@@ -27,7 +27,6 @@ import eu.siacs.conversations.Config;
 import eu.siacs.conversations.R;
 import eu.siacs.conversations.api.ApiAsyncTask;
 import eu.siacs.conversations.entities.Account;
-import eu.siacs.conversations.utils.Validator;
 import eu.siacs.conversations.xmpp.jid.InvalidJidException;
 import eu.siacs.conversations.xmpp.jid.Jid;
 
@@ -96,20 +95,15 @@ public class CreatePinActivity extends EditAccountActivity implements ApiAsyncTa
 
         String pinJidString = pinCode+"@"+pinHost;
 
-        //Check point: Should never happen
-        if (!Validator.isValidJid(pinJidString)) {
+        Jid jid;
+        try {
+            jid = Jid.fromString(pinJidString);
+        } catch (final InvalidJidException e) { //Check point: Should never happen
             Toast toast = Toast.makeText(
                     getApplicationContext(),
                     "Error: Not a valid PIN",
                     Toast.LENGTH_SHORT);
             toast.show();
-            return;
-        }
-        Jid jid;
-        try {
-            jid = Jid.fromString(pinJidString);
-        } catch (final InvalidJidException e) {
-            // TODO: Handle this error?
             return;
         }
         try {
