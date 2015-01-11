@@ -8,7 +8,7 @@
         android:title="@string/new_pin"/>
 	<item
 		android:id="@+id/action_add_account"
-		android:icon="@drawable/ic_action_add_person"
+		android:icon="@drawable/ic_action_link"
 		android:showAsAction="always"
 		android:title="@string/action_add_account"/>
 	<item

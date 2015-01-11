@@ -8,7 +8,8 @@
     <string name="action_contact_details">Detalles del contacto</string>
     <string name="action_muc_details">Detalles de conversación en grupo</string>
     <string name="action_secure">Conversación segura</string>
-    <string name="action_add_account">Añadir cuenta</string>
+    <string name="action_add_account">Vincular cuenta existente</string>
+    <string name="action_add_account_txtr">Nuevo PIN</string>
     <string name="action_edit_contact">Editar contacto</string>
     <string name="action_delete_contact">Eliminar contacto de la lista</string>
     <string name="action_add_phone_book">Añadir a contactos del teléfono</string>

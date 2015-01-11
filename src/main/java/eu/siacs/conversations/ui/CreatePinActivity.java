@@ -381,6 +381,9 @@ public class CreatePinActivity extends EditAccountActivity implements ApiAsyncTa
 	@Override
 	protected void onStart() {
 		super.onStart();
+        if (getActionBar() != null) {
+            getActionBar().setTitle(R.string.action_add_account_txtr);
+        }
 	}
 
 	@Override
