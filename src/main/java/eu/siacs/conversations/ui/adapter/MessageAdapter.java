@@ -22,6 +22,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.makeramen.RoundedImageView;
+
 import java.util.List;
 
 import eu.siacs.conversations.Config;
@@ -355,7 +357,7 @@ public class MessageAdapter extends ArrayAdapter<Message> {
 						R.layout.message_sent, parent, false);
 				viewHolder.message_box = (LinearLayout) view
 						.findViewById(R.id.message_box);
-				viewHolder.contact_picture = (ImageView) view
+				viewHolder.contact_picture = (RoundedImageView) view
 						.findViewById(R.id.message_photo);
 				viewHolder.download_button = (Button) view
 						.findViewById(R.id.download_button);

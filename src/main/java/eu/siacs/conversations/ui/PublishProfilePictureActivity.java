@@ -9,8 +9,10 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.makeramen.RoundedImageView;
+
 import eu.siacs.conversations.R;
 import eu.siacs.conversations.entities.Account;
 import eu.siacs.conversations.utils.PhoneHelper;
@@ -22,7 +24,7 @@ public class PublishProfilePictureActivity extends XmppActivity {
 
 	private static final int REQUEST_CHOOSE_FILE = 0xac23;
 
-	private ImageView avatar;
+	private RoundedImageView avatar;
 	private TextView accountTextView;
 	private TextView hintOrWarning;
 	private TextView secondaryHint;
@@ -89,7 +91,7 @@ public class PublishProfilePictureActivity extends XmppActivity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_publish_profile_picture);
-		this.avatar = (ImageView) findViewById(R.id.account_image);
+		this.avatar = (RoundedImageView) findViewById(R.id.account_image);
 		this.cancelButton = (Button) findViewById(R.id.cancel_button);
 		this.publishButton = (Button) findViewById(R.id.publish_button);
 		this.accountTextView = (TextView) findViewById(R.id.account);
