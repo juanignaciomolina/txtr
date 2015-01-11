@@ -1,24 +1,23 @@
 package eu.siacs.conversations.ui.adapter;
 
-import java.util.List;
-
-import eu.siacs.conversations.Config;
-import eu.siacs.conversations.R;
-import eu.siacs.conversations.entities.ListItem;
-import eu.siacs.conversations.ui.XmppActivity;
-import eu.siacs.conversations.xmpp.jid.Jid;
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.makeramen.RoundedImageView;
+
+import java.util.List;
+
+import eu.siacs.conversations.R;
+import eu.siacs.conversations.entities.ListItem;
+import eu.siacs.conversations.ui.XmppActivity;
+import eu.siacs.conversations.xmpp.jid.Jid;
 
 public class ListItemAdapter extends ArrayAdapter<ListItem> {
 
@@ -53,7 +52,7 @@ public class ListItemAdapter extends ArrayAdapter<ListItem> {
 		}
 		TextView tvName = (TextView) view.findViewById(R.id.contact_display_name);
 		TextView tvJid = (TextView) view.findViewById(R.id.contact_jid);
-		ImageView picture = (ImageView) view.findViewById(R.id.contact_photo);
+        RoundedImageView picture = (RoundedImageView) view.findViewById(R.id.contact_photo);
 		LinearLayout tagLayout = (LinearLayout) view.findViewById(R.id.tags);
 
 		List<ListItem.Tag> tags = item.getTags();

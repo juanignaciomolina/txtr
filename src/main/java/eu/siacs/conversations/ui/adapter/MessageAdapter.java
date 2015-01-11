@@ -363,7 +363,7 @@ public class MessageAdapter extends ArrayAdapter<Message> {
 						.findViewById(R.id.download_button);
 				viewHolder.indicator = (ImageView) view
 						.findViewById(R.id.security_indicator);
-				viewHolder.image = (ImageView) view
+				viewHolder.image = (RoundedImageView) view
 						.findViewById(R.id.message_image);
 				viewHolder.messageBody = (TextView) view
 						.findViewById(R.id.message_body);

@@ -5,8 +5,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.makeramen.RoundedImageView;
 
 import java.util.List;
 
@@ -35,7 +36,7 @@ public class AccountAdapter extends ArrayAdapter<Account> {
 		//jid.setText(account.getJid().toBareJid().toString()); //Original
         jid.setText(account.getJid().toPin());                  //TXTR CUSTOM
         TextView statusView = (TextView) view.findViewById(R.id.account_status);
-		ImageView imageView = (ImageView) view.findViewById(R.id.account_image);
+        RoundedImageView imageView = (RoundedImageView) view.findViewById(R.id.account_image);
 		imageView.setImageBitmap(activity.avatarService().get(account,
 				activity.getPixel(48)));
         statusView.setText(getContext().getString(account.getStatus().getReadableId()));

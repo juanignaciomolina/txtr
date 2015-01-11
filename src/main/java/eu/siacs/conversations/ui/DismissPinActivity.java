@@ -22,6 +22,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.makeramen.RoundedImageView;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -62,7 +64,7 @@ public class DismissPinActivity extends XmppActivity implements ApiAsyncTask.Tas
     private ImageView mOkIcon;
     private ImageView mErrorIcon;
     private ImageView mWarningIcon;
-    private ImageView mAvatar;
+    private RoundedImageView mAvatar;
     private RelativeLayout mLoadingPanel;
     private Button mSaveButton;
     private Button mCancelButton;
@@ -442,7 +444,7 @@ public class DismissPinActivity extends XmppActivity implements ApiAsyncTask.Tas
         this.mOkIcon = (ImageView) findViewById(R.id.ok_icon);
         this.mErrorIcon = (ImageView) findViewById(R.id.error_icon);
         this.mWarningIcon = (ImageView) findViewById(R.id.warning_icon);
-        this.mAvatar = (ImageView) findViewById(R.id.dismiss_avatar);
+        this.mAvatar = (RoundedImageView) findViewById(R.id.dismiss_avatar);
         this.mSaveButton = (Button) findViewById(R.id.save_button);
         this.mCancelButton = (Button) findViewById(R.id.cancel_button);
         this.mSaveButton.setOnClickListener(this.mSaveButtonClickListener);
