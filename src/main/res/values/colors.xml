@@ -20,6 +20,7 @@
     <color name="transparent" type="color">#00000000</color>
     <color name="bg_gray_1" type="color">#ffe1e1e1</color>
     <color name="bg_gray_2" type="color">#ffd7d7d7</color>
+    <color name="bg_gray_2_overlay70" type="color">#b3d7d7d7</color>
     <color name="bg_black_overlay30" type="color">#4d000000</color>
     <color name="bg_black_overlay20" type="color">#33000000</color>
     <color name="bg_black_overlay70" type="color">#b3000000</color>

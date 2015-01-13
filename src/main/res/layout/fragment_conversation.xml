@@ -27,7 +27,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
-        android:background="@color/bg_black_overlay70"
+        android:background="@color/bg_gray_2_overlay70"
         android:paddingLeft="3dp"
         android:paddingRight="3dp"
         android:paddingBottom="2dp">
