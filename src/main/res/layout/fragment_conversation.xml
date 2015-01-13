@@ -3,23 +3,23 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/secondarybackground" >
+    android:background="@drawable/bg_rainbow" >
 
-    <ListView
-        android:id="@+id/messages_view"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/snackbar"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:background="@drawable/bg_rainbow"
-        android:divider="@null"
-        android:dividerHeight="0dp"
-        android:listSelector="@android:color/transparent"
-        android:stackFromBottom="true"
-        android:transcriptMode="normal"
-        tools:listitem="@layout/message_sent" >
-    </ListView>
+        <ListView
+            android:id="@+id/messages_view"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/snackbar"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:background="@color/bg_black_overlay20"
+            android:divider="@null"
+            android:dividerHeight="0dp"
+            android:listSelector="@android:color/transparent"
+            android:stackFromBottom="true"
+            android:transcriptMode="normal"
+            tools:listitem="@layout/message_sent" >
+        </ListView>
 
     <RelativeLayout
         android:id="@+id/textsend"
@@ -27,7 +27,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
-        android:background="@color/bg_gray_2"
+        android:background="@color/bg_black_overlay70"
         android:paddingLeft="3dp"
         android:paddingRight="3dp"
         android:paddingBottom="2dp">
@@ -60,7 +60,7 @@
             android:layout_height="wrap_content"
             android:layout_toRightOf="@+id/pictureSendButton"
             android:layout_toLeftOf="@id/textSendButton"
-            android:background="@color/bg_gray_2"
+            android:background="@color/transparent"
             android:ems="10"
             android:imeOptions="flagNoExtractUi|actionSend"
             android:inputType="textShortMessage|textMultiLine|textCapSentences"
@@ -70,7 +70,7 @@
             android:paddingLeft="8dp"
             android:paddingRight="8dp"
             android:paddingTop="12dp"
-            android:textColor="@color/primarytext" >
+            android:textColor="@color/white" >
 
             <requestFocus />
         </eu.siacs.conversations.ui.EditMessage>
