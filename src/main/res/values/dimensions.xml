@@ -2,4 +2,5 @@
 <resources>
     <dimen name="TextBig">20sp</dimen>
     <dimen name="TextMedium">14sp</dimen>
+    <dimen name="TextMessage">16sp</dimen>
 </resources>

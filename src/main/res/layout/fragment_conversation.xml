@@ -12,7 +12,7 @@
         android:layout_above="@+id/snackbar"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:background="@color/secondarybackground"
+        android:background="@drawable/bg_rainbow"
         android:divider="@null"
         android:dividerHeight="0dp"
         android:listSelector="@android:color/transparent"
@@ -27,15 +27,40 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
-        android:background="@color/primarybackground" >
+        android:background="@color/bg_gray_2"
+        android:paddingLeft="3dp"
+        android:paddingRight="3dp"
+        android:paddingBottom="2dp">
+
+        <ImageButton
+            android:id="@+id/pictureSendButton"
+            android:layout_width="38dp"
+            android:layout_height="38dp"
+            android:padding="6dp"
+            android:scaleType="centerInside"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/roundedbox"
+            android:src="@drawable/ic_action_camera" />
+
+        <ImageButton
+            android:id="@+id/textSendButton"
+            android:layout_width="38dp"
+            android:layout_height="38dp"
+            android:padding="6dp"
+            android:scaleType="centerInside"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/roundedbox"
+            android:src="@drawable/ic_action_send_now_offline" />
 
         <eu.siacs.conversations.ui.EditMessage
             android:id="@+id/textinput"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_toLeftOf="@+id/textSendButton"
-            android:background="@color/primarybackground"
+            android:layout_toRightOf="@+id/pictureSendButton"
+            android:layout_toLeftOf="@id/textSendButton"
+            android:background="@color/bg_gray_2"
             android:ems="10"
             android:imeOptions="flagNoExtractUi|actionSend"
             android:inputType="textShortMessage|textMultiLine|textCapSentences"
@@ -50,14 +75,6 @@
             <requestFocus />
         </eu.siacs.conversations.ui.EditMessage>
 
-        <ImageButton
-            android:id="@+id/textSendButton"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:background="?android:selectableItemBackground"
-            android:src="@drawable/ic_action_send_now_offline" />
     </RelativeLayout>
 
     <RelativeLayout
