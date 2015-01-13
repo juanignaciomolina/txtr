@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg_rainbow" >
+    android:background="@drawable/london" >
 
         <ListView
             android:id="@+id/messages_view"
@@ -70,7 +70,7 @@
             android:paddingLeft="8dp"
             android:paddingRight="8dp"
             android:paddingTop="12dp"
-            android:textColor="@color/white" >
+            android:textColor="@color/primarytext" >
 
             <requestFocus />
         </eu.siacs.conversations.ui.EditMessage>
