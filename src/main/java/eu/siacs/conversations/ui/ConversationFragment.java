@@ -100,6 +100,7 @@ public class ConversationFragment extends Fragment {
 	protected Contact contact;
 	private EditMessage mEditMessage;
 	private ImageButton mSendButton;
+    private ImageButton mSendPicture; //TXTR CUSTOM
 	private RelativeLayout snackbar;
 	private TextView snackbarMessage;
 	private TextView snackbarAction;
@@ -231,6 +232,15 @@ public class ConversationFragment extends Fragment {
 			sendMessage();
 		}
 	};
+    //TXTR CUSTOM
+    private OnClickListener mSendPictureListener = new OnClickListener() {
+
+        @Override
+        public void onClick(View v) {
+            ConversationActivity conversationActivity = (ConversationActivity) getActivity();
+            conversationActivity.attachFile(ConversationActivity.ATTACHMENT_CHOICE_TAKE_PHOTO);
+        }
+    };
 	private OnClickListener clickToMuc = new OnClickListener() {
 
 		@Override
@@ -328,6 +338,10 @@ public class ConversationFragment extends Fragment {
 
 		mSendButton = (ImageButton) view.findViewById(R.id.textSendButton);
 		mSendButton.setOnClickListener(this.mSendButtonListener);
+
+        //TXTR CUSTOM
+        mSendPicture = (ImageButton)view.findViewById(R.id.pictureSendButton);
+        mSendPicture.setOnClickListener(this.mSendPictureListener);
 
 		snackbar = (RelativeLayout) view.findViewById(R.id.snackbar);
 		snackbarMessage = (TextView) view.findViewById(R.id.snackbar_message);

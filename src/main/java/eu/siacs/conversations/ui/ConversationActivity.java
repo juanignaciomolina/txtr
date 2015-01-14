@@ -57,7 +57,7 @@ public class ConversationActivity extends XmppActivity
 	public static final int REQUEST_DECRYPT_PGP = 0x0202;
 	public static final int REQUEST_ENCRYPT_MESSAGE = 0x0207;
 	private static final int ATTACHMENT_CHOICE_CHOOSE_IMAGE = 0x0301;
-	private static final int ATTACHMENT_CHOICE_TAKE_PHOTO = 0x0302;
+	public static final int ATTACHMENT_CHOICE_TAKE_PHOTO = 0x0302; //TXTR CUSTOM
 	private static final int ATTACHMENT_CHOICE_CHOOSE_FILE = 0x0303;
 	private static final int ATTACHMENT_CHOICE_RECORD_VOICE = 0x0304;
 	private static final String STATE_OPEN_CONVERSATION = "state_open_conversation";
@@ -372,7 +372,7 @@ public class ConversationActivity extends XmppActivity
 		});
 	}
 
-	private void attachFile(final int attachmentChoice) {
+	public void attachFile(final int attachmentChoice) {
 		final Conversation conversation = getSelectedConversation();
 		if (conversation.getNextEncryption(forceEncryption()) == Message.ENCRYPTION_PGP) {
 			if (hasPgp()) {
