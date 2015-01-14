@@ -77,6 +77,13 @@
 
     </RelativeLayout>
 
+    <ImageView
+        android:layout_width="fill_parent"
+        android:layout_height="2dp"
+        android:id="@+id/image_textsend_divider"
+        android:background="@color/divider"
+        android:layout_above="@id/textsend"/>
+
     <RelativeLayout
         android:id="@+id/snackbar"
         android:layout_width="fill_parent"

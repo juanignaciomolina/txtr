@@ -16,11 +16,53 @@
         android:id="@+id/message_photo"
         android:layout_width="32dp"
         android:layout_height="32dp"
-        android:layout_alignParentLeft="true"
+        android:layout_centerHorizontal="true"
         android:layout_alignParentTop="true"
-        android:layout_marginRight="-1.5dp"
-        android:padding="0dp"
         android:scaleType="fitXY"
         android:src="@drawable/ic_profile" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/image_up_left"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="10dp"
+        android:layout_toLeftOf="@id/message_photo"
+        android:layout_toStartOf="@id/message_photo"
+        android:src="@drawable/ic_action_up" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/image_up_right"
+        android:src="@drawable/ic_action_up"
+        android:layout_marginLeft="10dp"
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@+id/message_photo"
+        android:layout_toEndOf="@+id/message_photo" />
+
+    <ImageView
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:id="@+id/image_bar_left"
+        android:background="@color/white"
+        android:alpha="0.50"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_centerVertical="true"
+        android:layout_toLeftOf="@+id/image_up_left"
+        android:layout_toStartOf="@+id/image_up_left" />
+
+    <ImageView
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:id="@+id/image_bar_right"
+        android:background="@color/white"
+        android:alpha="0.50"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@+id/image_up_right"
+        android:layout_toEndOf="@+id/image_up_right" />
 
 </RelativeLayout>
