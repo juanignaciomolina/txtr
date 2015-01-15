@@ -18,6 +18,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView;
@@ -100,12 +102,15 @@ public class ConversationFragment extends Fragment {
 	protected Contact contact;
 	private EditMessage mEditMessage;
 	private ImageButton mSendButton;
-    private ImageButton mSendPicture; //TXTR CUSTOM
 	private RelativeLayout snackbar;
 	private TextView snackbarMessage;
 	private TextView snackbarAction;
 	private boolean messagesLoaded = true;
 	private Toast messageLoaderToast;
+
+    //TXTR CUSTOM
+    private ImageButton mSendPicture;
+    private Animation anim_vanish;
 
 	private OnScrollListener mOnScrollListener = new OnScrollListener() {
 
@@ -230,6 +235,7 @@ public class ConversationFragment extends Fragment {
 		@Override
 		public void onClick(View v) {
 			sendMessage();
+            v.startAnimation(anim_vanish); //TXTR CUSTOM
 		}
 	};
     //TXTR CUSTOM
@@ -239,6 +245,7 @@ public class ConversationFragment extends Fragment {
         public void onClick(View v) {
             ConversationActivity conversationActivity = (ConversationActivity) getActivity();
             conversationActivity.attachFile(ConversationActivity.ATTACHMENT_CHOICE_TAKE_PHOTO);
+            v.startAnimation(anim_vanish); //TXTR CUSTOM
         }
     };
 	private OnClickListener clickToMuc = new OnClickListener() {
@@ -342,6 +349,7 @@ public class ConversationFragment extends Fragment {
         //TXTR CUSTOM
         mSendPicture = (ImageButton)view.findViewById(R.id.pictureSendButton);
         mSendPicture.setOnClickListener(this.mSendPictureListener);
+        anim_vanish = AnimationUtils.loadAnimation(getActivity().getApplicationContext(), R.anim.vanish_button);
 
 		snackbar = (RelativeLayout) view.findViewById(R.id.snackbar);
 		snackbarMessage = (TextView) view.findViewById(R.id.snackbar_message);

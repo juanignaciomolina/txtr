@@ -343,7 +343,7 @@ public class MessageAdapter extends ArrayAdapter<Message> {
 	}
 
 	@Override
-	public View getView(int position, View view, ViewGroup parent) {
+	public View getView(final int position, View view, ViewGroup parent) {
 		final Message message = getItem(position);
 		final Conversation conversation = message.getConversation();
 		final Account account = conversation.getAccount();
@@ -560,8 +560,15 @@ public class MessageAdapter extends ArrayAdapter<Message> {
 		displayStatus(viewHolder, message);
 
         //TODO TXTR CUSTOM
-        Animation animation = AnimationUtils.loadAnimation(getContext(), (position > lastPosition) ? R.anim.up_from_bottom : R.anim.down_from_top);
-        view.startAnimation(animation);
+        final View finalView = view;
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Animation animation = AnimationUtils.loadAnimation(getContext(), (position > lastPosition) ? R.anim.up_from_bottom : R.anim.down_from_top);
+                finalView.startAnimation(animation);
+            }
+        });
+
         lastPosition = position;
 
 		return view;
