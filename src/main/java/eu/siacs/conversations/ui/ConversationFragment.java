@@ -398,7 +398,11 @@ public class ConversationFragment extends Fragment {
 					}
 				}
 			});
+		//TODO TXTR CUSTOM: WORK IN PROGRESS
 		messagesView.setAdapter(messageListAdapter);
+        //SwingBottomInAnimationAdapter animationAdapter = new SwingBottomInAnimationAdapter(messageListAdapter);
+        //animationAdapter.setAbsListView(messagesView);
+        //messagesView.setAdapter(animationAdapter);
 
 		registerForContextMenu(messagesView);
 
@@ -562,6 +566,11 @@ public class ConversationFragment extends Fragment {
 	}
 
 	public void reInit(Conversation conversation) {
+        //TODO TXTR CUSTOM: WORK IN PROGRESS
+        //messagesView.setAdapter(messageListAdapter);
+        //SwingBottomInAnimationAdapter animationAdapter = new SwingBottomInAnimationAdapter(messageListAdapter);
+        //animationAdapter.setAbsListView(messagesView);
+        //messagesView.setAdapter(animationAdapter);
 		if (conversation == null) {
 			return;
 		}

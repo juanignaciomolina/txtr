@@ -153,6 +153,7 @@ public class ConversationActivity extends XmppActivity
 
 		listView = (ListView) findViewById(R.id.list);
 		this.listAdapter = new ConversationAdapter(this, conversationList);
+
 		listView.setAdapter(this.listAdapter);
 
 		if (getActionBar() != null) {

@@ -15,6 +15,8 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -45,6 +47,8 @@ public class MessageAdapter extends ArrayAdapter<Message> {
 	private static final int RECEIVED = 1;
 	private static final int STATUS = 2;
 	private static final int NULL = 3;
+
+    private int lastPosition = -1; //TXTR CUSTOM
 
 	private ConversationActivity activity;
 
@@ -554,6 +558,11 @@ public class MessageAdapter extends ArrayAdapter<Message> {
 		}
 
 		displayStatus(viewHolder, message);
+
+        //TODO TXTR CUSTOM
+        Animation animation = AnimationUtils.loadAnimation(getContext(), (position > lastPosition) ? R.anim.up_from_bottom : R.anim.down_from_top);
+        view.startAnimation(animation);
+        lastPosition = position;
 
 		return view;
 	}
