@@ -31,7 +31,7 @@ dependencies {
 	compile project(':libs:minidns')
 	compile project(':libs:openpgp-api-lib')
 	compile project(':libs:MemorizingTrustManager')
-	compile 'com.android.support:support-v13:19.1.0'
+	compile 'com.android.support:support-v13:21.0.3'
 	compile 'org.bouncycastle:bcprov-jdk15on:1.50'
 	compile 'net.java:otr4j:0.21'
 	compile 'org.gnu.inet:libidn:1.15'
@@ -39,6 +39,8 @@ dependencies {
 	compile 'com.google.zxing:android-integration:3.1.0'
     //TXTR CUSTOM DEPENDENCIES
     compile 'com.makeramen:roundedimageview:1.5.0'
+    compile 'com.github.gabrielemariotti.cards:cardslib-core:2.0.1'
+    compile 'com.github.gabrielemariotti.cards:cardslib-cards:2.0.1'
 }
 
 android {
