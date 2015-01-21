@@ -10,6 +10,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -29,6 +31,10 @@ import eu.siacs.conversations.api.ApiAsyncTask;
 import eu.siacs.conversations.entities.Account;
 import eu.siacs.conversations.xmpp.jid.InvalidJidException;
 import eu.siacs.conversations.xmpp.jid.Jid;
+import it.gmariotti.cardslib.library.internal.Card;
+import it.gmariotti.cardslib.library.internal.CardExpand;
+import it.gmariotti.cardslib.library.internal.CardHeader;
+import it.gmariotti.cardslib.library.view.CardViewNative;
 
 public class CreatePinActivity extends EditAccountActivity implements ApiAsyncTask.TaskCallbacks {
 
@@ -48,6 +54,7 @@ public class CreatePinActivity extends EditAccountActivity implements ApiAsyncTa
     private boolean pinSelected = false;
     private int nAttempts = 0;
     static final int MAX_ATTEMPTS = 3;
+    private Animation anim_rotate;
 
     private static final String TAG_TASK_FRAGMENT = "task_api_createpin";
     private ApiAsyncTask mTaskFragment;
@@ -135,6 +142,7 @@ public class CreatePinActivity extends EditAccountActivity implements ApiAsyncTa
             if (!waitingForJSON) {
                 if (!pinSelected) {
                     startJSONRequest(Config.APIURL + "?method=pinRequest&output=json");
+                    v.startAnimation(anim_rotate);
                 }
                 else {
                     mSaveButton.performClick();
@@ -262,6 +270,34 @@ public class CreatePinActivity extends EditAccountActivity implements ApiAsyncTa
 		super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.activity_create_pin);
+
+        //TODO WORK IN PROGRESS
+        //Create a Card
+        Card card = new Card(getApplicationContext());
+
+        //Create a CardHeader
+        CardHeader header = new CardHeader(getApplicationContext());
+        //Set the header title
+        //header.setTitle(getString(R.string.app_name));
+
+        //Add Header to card
+        card.addCardHeader(header);
+
+        //This provide a simple (and useless) expand area
+        CardExpand expand = new CardExpand(getApplicationContext());
+
+        //Set inner title in Expand Area
+        expand.setTitle(getString(R.string.app_name));
+
+        //Add expand to a card
+        card.addCardExpand(expand);
+
+        //Set card in the cardView
+        CardViewNative cardView = (CardViewNative) findViewById(R.id.carddemo);
+        cardView.setCard(card);
+        //TODO END
+
+        anim_rotate = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.rotate_popup360);
 
         this.mLoadingPanel = (RelativeLayout) findViewById(R.id.loadingPanel);
         this.mReloadLayout = (LinearLayout) findViewById(R.id.reload_layout);
