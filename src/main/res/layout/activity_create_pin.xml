@@ -12,7 +12,7 @@
         android:layout_alignParentTop="true" >
 
             <it.gmariotti.cardslib.library.view.CardViewNative
-                android:id="@+id/carddemo"
+                android:id="@+id/card_createpin"
                 card:card_layout_resourceID="@layout/card_createpin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

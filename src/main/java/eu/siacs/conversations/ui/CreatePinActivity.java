@@ -293,7 +293,7 @@ public class CreatePinActivity extends EditAccountActivity implements ApiAsyncTa
         card.addCardExpand(expand);
 
         //Set card in the cardView
-        CardViewNative cardView = (CardViewNative) findViewById(R.id.carddemo);
+        CardViewNative cardView = (CardViewNative) findViewById(R.id.card_createpin);
         cardView.setCard(card);
         //TODO END
 
