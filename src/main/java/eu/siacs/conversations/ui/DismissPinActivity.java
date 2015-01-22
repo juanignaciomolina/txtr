@@ -40,6 +40,8 @@ import eu.siacs.conversations.entities.ListItem;
 import eu.siacs.conversations.ui.adapter.ListItemAdapter;
 import eu.siacs.conversations.xmpp.jid.InvalidJidException;
 import eu.siacs.conversations.xmpp.jid.Jid;
+import it.gmariotti.cardslib.library.internal.Card;
+import it.gmariotti.cardslib.library.view.CardViewNative;
 
 public class DismissPinActivity extends XmppActivity implements ApiAsyncTask.TaskCallbacks {
 
@@ -397,6 +399,12 @@ public class DismissPinActivity extends XmppActivity implements ApiAsyncTask.Tas
 		super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.activity_dismiss_pin);
+
+        //Create a Card
+        Card card = new Card(getApplicationContext());
+        //Set card in the cardView
+        CardViewNative cardView = (CardViewNative) findViewById(R.id.card_dismisspin);
+        cardView.setCard(card);
 
         //Important: the XML layout was splitted in two files, activity_dismiss_pin.xml
         //and dismiss_header.xml because you can't have two scrollables nested.
