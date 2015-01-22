@@ -458,4 +458,8 @@
 	<string name="pref_input_options">Input options</string>
 	<string name="pref_enter_is_send">Enter is send</string>
 	<string name="pref_enter_is_send_summary">Use enter key to send message</string>
+    <string name="card_createpin_ready">PIN created and ready to chat</string>
+    <string name="card_createpin_share">Share this PIN\'s with anybody</string>
+    <string name="card_createpin_dispose">Dispose it whenever you want</string>
+    <string name="card_createpin_loggingin">Logging in...</string>
 </resources>
