@@ -29,11 +29,11 @@ import eu.siacs.conversations.Config;
 import eu.siacs.conversations.R;
 import eu.siacs.conversations.api.ApiAsyncTask;
 import eu.siacs.conversations.entities.Account;
+import eu.siacs.conversations.ui.cards.CreatePinExpandCard;
 import eu.siacs.conversations.xmpp.jid.InvalidJidException;
 import eu.siacs.conversations.xmpp.jid.Jid;
 import it.gmariotti.cardslib.library.internal.Card;
-import it.gmariotti.cardslib.library.internal.CardExpand;
-import it.gmariotti.cardslib.library.internal.CardHeader;
+import it.gmariotti.cardslib.library.internal.ViewToClickToExpand;
 import it.gmariotti.cardslib.library.view.CardViewNative;
 
 public class CreatePinActivity extends EditAccountActivity implements ApiAsyncTask.TaskCallbacks {
@@ -55,6 +55,7 @@ public class CreatePinActivity extends EditAccountActivity implements ApiAsyncTa
     private int nAttempts = 0;
     static final int MAX_ATTEMPTS = 3;
     private Animation anim_rotate;
+    private Card card;
 
     private static final String TAG_TASK_FRAGMENT = "task_api_createpin";
     private ApiAsyncTask mTaskFragment;
@@ -133,6 +134,9 @@ public class CreatePinActivity extends EditAccountActivity implements ApiAsyncTa
         mAccount.setOption(Account.OPTION_REGISTER, false);
         mAccount.setPintoken(pinToken); //TXTR CUSTOM FIELD
         xmppConnectionService.createAccount(mAccount);
+
+        //Expand card with the selected PIN's information
+        card.doExpand();
     }
 
     private OnClickListener mReloadButtonClickListener = new OnClickListener() {
@@ -271,31 +275,21 @@ public class CreatePinActivity extends EditAccountActivity implements ApiAsyncTa
 
 		setContentView(R.layout.activity_create_pin);
 
-        //TODO WORK IN PROGRESS
         //Create a Card
-        Card card = new Card(getApplicationContext());
-
-        //Create a CardHeader
-        CardHeader header = new CardHeader(getApplicationContext());
-        //Set the header title
-        //header.setTitle(getString(R.string.app_name));
-
-        //Add Header to card
-        card.addCardHeader(header);
+        card = new Card(getApplicationContext());
 
         //This provide a simple (and useless) expand area
-        CardExpand expand = new CardExpand(getApplicationContext());
-
-        //Set inner title in Expand Area
-        expand.setTitle(getString(R.string.app_name));
+        CreatePinExpandCard expand = new CreatePinExpandCard(getApplicationContext());
 
         //Add expand to a card
         card.addCardExpand(expand);
 
+        ViewToClickToExpand viewToClickToExpand = ViewToClickToExpand.builder().enableForExpandAction();
+        card.setViewToClickToExpand(viewToClickToExpand);
+
         //Set card in the cardView
         CardViewNative cardView = (CardViewNative) findViewById(R.id.card_createpin);
         cardView.setCard(card);
-        //TODO END
 
         anim_rotate = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.rotate_popup360);
 
