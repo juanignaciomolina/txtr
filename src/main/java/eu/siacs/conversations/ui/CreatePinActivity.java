@@ -55,6 +55,7 @@ public class CreatePinActivity extends EditAccountActivity implements ApiAsyncTa
     private int nAttempts = 0;
     static final int MAX_ATTEMPTS = 3;
     private Animation anim_rotate;
+    private Animation anim_bounce;
     private Card card;
 
     private static final String TAG_TASK_FRAGMENT = "task_api_createpin";
@@ -292,6 +293,7 @@ public class CreatePinActivity extends EditAccountActivity implements ApiAsyncTa
         cardView.setCard(card);
 
         anim_rotate = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.rotate_popup360);
+        anim_bounce = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.bounce_scale);
 
         this.mLoadingPanel = (RelativeLayout) findViewById(R.id.loadingPanel);
         this.mReloadLayout = (LinearLayout) findViewById(R.id.reload_layout);
@@ -388,6 +390,7 @@ public class CreatePinActivity extends EditAccountActivity implements ApiAsyncTa
                             jsonPin.getString("host"),
                             jsonPin.getString("pintoken"));
                 }
+                else mPin.startAnimation(anim_bounce);
             }
             else if (nAttempts < MAX_ATTEMPTS) { //Check that the same PIN is not being tried too many times
                 nAttempts++;
