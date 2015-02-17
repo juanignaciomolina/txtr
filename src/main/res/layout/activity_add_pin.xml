@@ -54,19 +54,18 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:hint="@string/pin_example"
-                    android:inputType="textCapCharacters"
+                    android:inputType="textCapCharacters|textNoSuggestions"
                     android:maxLength="8"
                     android:textColor="@color/primarytext"
                     android:textColorHint="@color/secondarytext"
-                    android:textIsSelectable="true"
-                    android:textSize="@dimen/TextImportant"
+                    android:textSize="28sp"
                     android:background="@color/transparent"
                     android:layout_gravity="center" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="16dp"
                     android:hint="@string/pin_access_password"
                     android:textColor="@color/primarytext"
                     android:textColorHint="@color/secondarytext"
