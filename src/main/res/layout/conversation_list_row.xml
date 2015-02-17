@@ -36,6 +36,7 @@
 
         <LinearLayout
             android:id="@+id/conversation_lastwrapper"
+            android:paddingRight="24dp"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/conversation_name"
@@ -57,6 +58,7 @@
                 android:layout_height="36dp"
                 android:background="@color/primarytext"
                 android:scaleType="centerCrop" />
+
         </LinearLayout>
 
         <TextView
@@ -68,6 +70,21 @@
             android:gravity="right"
             android:textColor="@color/secondarytext"
             android:textSize="?attr/TextSizeInfo" />
+
+        <com.makeramen.RoundedImageView
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            app:riv_corner_radius="3dip"
+            app:riv_border_width="0dip"
+            app:riv_border_color="@color/secondarytext"
+            android:id="@+id/conversation_account_image"
+            android:layout_alignRight="@id/conversation_lastwrapper"
+            android:layout_alignTop="@id/conversation_lastwrapper"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_profile"
+            android:gravity="center" />
+
     </RelativeLayout>
 
 </RelativeLayout>
