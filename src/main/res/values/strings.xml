@@ -462,4 +462,6 @@
     <string name="card_createpin_share">Share this PIN\'s with anybody</string>
     <string name="card_createpin_dispose">Dispose it whenever you want</string>
     <string name="card_createpin_loggingin">Logging in...</string>
+    <string name="pin_example">ABCD1234</string>
+    <string name="pin_access_password">Access password</string>
 </resources>
