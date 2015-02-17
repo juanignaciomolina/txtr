@@ -279,7 +279,7 @@ public class CreatePinActivity extends EditAccountActivity implements ApiAsyncTa
         //Create a Card
         card = new Card(getApplicationContext());
 
-        //This provide a simple (and useless) expand area
+        //This provide a custom CreatePinExpandCard expand area
         CreatePinExpandCard expand = new CreatePinExpandCard(getApplicationContext());
 
         //Add expand to a card

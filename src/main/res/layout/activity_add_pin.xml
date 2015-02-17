@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:card="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/secondarybackground" >
+    android:background="@color/secondarybackground">
 
     <ScrollView
         android:layout_width="fill_parent"
@@ -11,87 +12,15 @@
         android:layout_above="@+id/button_bar"
         android:layout_alignParentTop="true" >
 
-        <LinearLayout
+        <it.gmariotti.cardslib.library.view.CardViewNative
+            android:id="@+id/card_addpin"
+            card:card_layout_resourceID="@layout/card_addpin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" >
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="12dp"
+            android:layout_marginTop="12dp"/>
 
-            <LinearLayout
-                android:id="@+id/editor"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="8dp"
-                android:background="@drawable/infocard_border"
-                android:orientation="vertical"
-                android:padding="16dp">
-
-                <ImageView
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/imageView"
-                    android:src="@drawable/ic_add_pin"
-                    android:layout_gravity="center"
-                    android:minHeight="84dp"
-                    android:padding="8dp"
-                    android:scaleType="fitCenter" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:hint="@string/pin"
-                    android:textColor="@color/primarytext"
-                    android:textColorHint="@color/secondarytext"
-                    android:textSize="?attr/TextSizeHeadline"
-                    android:textIsSelectable="false"
-                    android:gravity="clip_horizontal|center|clip_vertical"
-                    android:layout_gravity="center"
-                    android:textStyle="bold" />
-
-                <EditText
-                    android:id="@+id/account_jid"
-                    android:layout_marginTop="4dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/pin_example"
-                    android:inputType="textCapCharacters|textNoSuggestions"
-                    android:maxLength="8"
-                    android:textColor="@color/primarytext"
-                    android:textColorHint="@color/secondarytext"
-                    android:textSize="28sp"
-                    android:background="@color/transparent"
-                    android:layout_gravity="center" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:hint="@string/pin_access_password"
-                    android:textColor="@color/primarytext"
-                    android:textColorHint="@color/secondarytext"
-                    android:textSize="?attr/TextSizeHeadline"
-                    android:textIsSelectable="false"
-                    android:gravity="clip_horizontal|center|clip_vertical"
-                    android:layout_gravity="center"
-                    android:textStyle="bold" />
-
-                <EditText
-                    android:id="@+id/account_password"
-                    android:layout_marginTop="4dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/password"
-                    android:maxLength="32"
-                    android:inputType="textPassword"
-                    android:textColor="@color/primarytext"
-                    android:textColorHint="@color/secondarytext"
-                    android:textSize="@dimen/TextImportant"
-                    android:background="@color/transparent"
-                    android:layout_gravity="center" />
-
-            </LinearLayout>
-
-        </LinearLayout>
     </ScrollView>
 
     <LinearLayout

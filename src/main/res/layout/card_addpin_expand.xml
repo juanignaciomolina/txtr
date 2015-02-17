@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- This is the InnerContent of Expand/Collapse Area -->
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/card_createpin_loggingin"
+        android:id="@+id/tv_card_createpin_4"
+        style="@style/card.expand_simple_title"
+        android:textSize="16sp"
+        android:layout_gravity="center"
+        android:textStyle="bold|italic"/>
+
+</LinearLayout>

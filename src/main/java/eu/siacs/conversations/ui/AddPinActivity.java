@@ -13,9 +13,13 @@ import eu.siacs.conversations.Config;
 import eu.siacs.conversations.R;
 import eu.siacs.conversations.entities.Account;
 import eu.siacs.conversations.ui.adapter.KnownHostsAdapter;
+import eu.siacs.conversations.ui.cards.AddPinExpandCard;
 import eu.siacs.conversations.xmpp.jid.InvalidJidException;
 import eu.siacs.conversations.xmpp.jid.Jid;
 import eu.siacs.conversations.xmpp.pep.Avatar;
+import it.gmariotti.cardslib.library.internal.Card;
+import it.gmariotti.cardslib.library.internal.ViewToClickToExpand;
+import it.gmariotti.cardslib.library.view.CardViewNative;
 
 /**
  * Created by JuanIgnacio on 22/01/2015.
@@ -29,6 +33,8 @@ public class AddPinActivity extends EditAccountActivity  {
 
     private Jid jidToEdit;
     protected Account mAccount;
+
+    private Card card;
 
     private boolean mFetchingAvatar = false;
     private boolean mWaitingForLogin = false;
@@ -47,15 +53,19 @@ public class AddPinActivity extends EditAccountActivity  {
             final Jid jid;
             if (!mWaitingForLogin) {
                 try {
+                    //Check that a domain has not been inputted, if it has, remove it. The 'official' domain is concatenated latter
+                    if (mAccountJid.getText().toString().contains("@")) mAccountJid.setText(mAccountJid.getText().toString().split("@",2)[0]);
                     jid = Jid.fromString(mAccountJid.getText().toString() + "@" + Config.PINDOMAIN);
                 } catch (final InvalidJidException e) {
                     mAccountJid.setError(getString(R.string.invalid_jid));
                     mAccountJid.requestFocus();
+                    card.doCollapse();
                     return;
                 }
                 if (jid.isDomainJid()) {
                     mAccountJid.setError(getString(R.string.invalid_jid));
                     mAccountJid.requestFocus();
+                    card.doCollapse();
                     return;
                 }
                 final String password = mPassword.getText().toString();
@@ -70,11 +80,15 @@ public class AddPinActivity extends EditAccountActivity  {
                     mAccount.setOption(Account.OPTION_REGISTER, false);
                     xmppConnectionService.updateAccount(mAccount);
                     mWaitingForLogin = true;
+                    //Expand card with the selected PIN's information
+                    card.doExpand();
+                    hideKeyboard(); //This is a XmppActivity method
                 } else {
                     try {
                         if (xmppConnectionService.findAccountByJid(Jid.fromString(mAccountJid.getText().toString())) != null) {
                             mAccountJid.setError(getString(R.string.account_already_exists));
                             mAccountJid.requestFocus();
+                            card.doCollapse();
                             return;
                         }
                     } catch (final InvalidJidException e) {
@@ -86,6 +100,9 @@ public class AddPinActivity extends EditAccountActivity  {
                     mAccount.setOption(Account.OPTION_REGISTER, false);
                     xmppConnectionService.createAccount(mAccount);
                     mWaitingForLogin = true;
+                    //Expand card with the selected PIN's information
+                    card.doExpand();
+                    hideKeyboard(); //This is a XmppActivity method
                 }
             }
 
@@ -222,6 +239,23 @@ public class AddPinActivity extends EditAccountActivity  {
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_pin);
+
+        //Create a Card
+        card = new Card(getApplicationContext());
+
+        //This provide a custom CreatePinExpandCard expand area
+        AddPinExpandCard expand = new AddPinExpandCard(getApplicationContext());
+
+        //Add expand to a card
+        card.addCardExpand(expand);
+
+        ViewToClickToExpand viewToClickToExpand = ViewToClickToExpand.builder().enableForExpandAction();
+        card.setViewToClickToExpand(viewToClickToExpand);
+
+        //Set card in the cardView
+        CardViewNative cardView = (CardViewNative) findViewById(R.id.card_addpin);
+        cardView.setCard(card);
+
         this.mAccountJid = (EditText) findViewById(R.id.account_jid);
         this.mAccountJid.addTextChangedListener(this.mTextWatcher);
         this.mPassword = (EditText) findViewById(R.id.account_password);
@@ -264,7 +298,9 @@ public class AddPinActivity extends EditAccountActivity  {
             this.mAccountJid.setError(getString(this.mAccount.getStatus().getReadableId()));
             this.mAccountJid.requestFocus();
             this.mWaitingForLogin = false;
+            card.doCollapse();
             updateSaveButton();
         }
     }
+
 }
