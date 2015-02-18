@@ -37,6 +37,7 @@
         <LinearLayout
             android:id="@+id/conversation_lastwrapper"
             android:paddingRight="32dp"
+            android:paddingLeft="18dp"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/conversation_name"
@@ -84,6 +85,15 @@
             android:scaleType="centerCrop"
             android:src="@drawable/ic_profile"
             android:gravity="center" />
+
+        <ImageView
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:layout_marginTop="4dp"
+            android:id="@+id/conversation_status_icon"
+            android:src="@drawable/ic_msg_received_read"
+            android:layout_alignLeft="@id/conversation_lastwrapper"
+            android:layout_alignTop="@id/conversation_lastwrapper"/>
 
     </RelativeLayout>
 

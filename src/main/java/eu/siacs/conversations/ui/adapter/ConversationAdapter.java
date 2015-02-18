@@ -69,14 +69,53 @@ public class ConversationAdapter extends ArrayAdapter<Conversation> {
 			.findViewById(R.id.conversation_lastupdate);
 		ImageView imagePreview = (ImageView) view
 			.findViewById(R.id.conversation_lastimage);
+        ImageView msgIcon = (ImageView) view
+                .findViewById(R.id.conversation_status_icon);
+
 
 		Message message = conversation.getLatestMessage();
 
 		if (!conversation.isRead()) {
 			convName.setTypeface(null, Typeface.BOLD);
+            activity.getApplicationContext().getResources().getDrawable(R.drawable.ic_msg_received);
 		} else {
 			convName.setTypeface(null, Typeface.NORMAL);
 		}
+
+        //TODO TXTR CUSTOM: Status icon for the latest message
+        switch (conversation.getLatestMessage().getStatus()) {
+            case 0: //STATUS_RECEIVED
+                if (conversation.isRead()) {
+                    msgIcon.setImageDrawable(activity.getApplicationContext().getResources().getDrawable(R.drawable.ic_msg_received_read));
+                }else {
+                    msgIcon.setImageDrawable(activity.getApplicationContext().getResources().getDrawable(R.drawable.ic_msg_received));
+                }
+                break;
+            case 1: //STATUS_UNSEND
+                msgIcon.setImageDrawable(activity.getApplicationContext().getResources().getDrawable(R.drawable.ic_msg_unsend));
+                break;
+            case 2: //STATUS_SEND
+                msgIcon.setImageDrawable(activity.getApplicationContext().getResources().getDrawable(R.drawable.ic_msg_send));
+                break;
+            case 3: //STATUS_SEND_FAILED
+                msgIcon.setImageDrawable(activity.getApplicationContext().getResources().getDrawable(R.drawable.ic_msg_error));
+                break;
+            case 5: //STATUS_WAITING
+                msgIcon.setImageDrawable(activity.getApplicationContext().getResources().getDrawable(R.drawable.ic_msg_waiting));
+                break;
+            case 6: //STATUS_OFFERED
+                msgIcon.setImageDrawable(activity.getApplicationContext().getResources().getDrawable(R.drawable.ic_msg_offered));
+                break;
+            case 7: //STATUS_SEND_RECEIVED
+                msgIcon.setImageDrawable(activity.getApplicationContext().getResources().getDrawable(R.drawable.ic_msg_send_received));
+                break;
+            case 8: //STATUS_SEND_DISPLAYED
+                msgIcon.setImageDrawable(activity.getApplicationContext().getResources().getDrawable(R.drawable.ic_msg_send_displayed));
+                break;
+            default:
+                msgIcon.setImageDrawable(activity.getApplicationContext().getResources().getDrawable(R.drawable.ic_msg_received_read));
+                break;
+        }
 
 		if (message.getType() == Message.TYPE_IMAGE || message.getType() == Message.TYPE_FILE
 				|| message.getDownloadable() != null) {
@@ -156,22 +195,25 @@ public class ConversationAdapter extends ArrayAdapter<Conversation> {
 		mTimestamp.setText(UIHelper.readableTimeDifference(getContext(),
 					conversation.getLatestMessage().getTimeSent()));
 
+
+        //TODO: TXTR CUSTOM
         RoundedImageView profilePicture = (RoundedImageView) view
 			.findViewById(R.id.conversation_image);
 		profilePicture.setImageBitmap(activity.avatarService().get(
 					conversation, activity.getPixel(56)));
 
-
-
-        //TODO: TXTR CUSTOM
         RoundedImageView accountPicture = (RoundedImageView) view
                 .findViewById(R.id.conversation_account_image);
         accountPicture.setImageBitmap(activity.avatarService().get(
                 conversation.getAccount(), activity.getPixel(24)));
 
+
+
         //Determine a border color for the account image (to prevent confusion when two accounts have the same image)
         profilePicture.setBorderColor(conversation.getAccount().getAccountColor());
         accountPicture.setBorderColor(conversation.getAccount().getAccountColor());
+
+
 		return view;
 	}
 
