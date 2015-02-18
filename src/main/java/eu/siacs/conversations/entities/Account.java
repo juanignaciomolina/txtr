@@ -2,6 +2,7 @@ package eu.siacs.conversations.entities;
 
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.os.SystemClock;
 
 import net.java.otr4j.crypto.OtrCryptoEngineImpl;
@@ -36,7 +37,15 @@ public class Account extends AbstractEntity {
 	public static final String ROSTERVERSION = "rosterversion";
 	public static final String KEYS = "keys";
 	public static final String AVATAR = "avatar";
+    //TODO TXTR CUSTOM
     public static final String PINTOKEN = "pintoken";
+    public static final String ROWPOS = "rowpos";
+
+    public static final String COLOR_RED = "#ffc0392b";
+    public static final String COLOR_YELLOW = "#fff1c40f";
+    public static final String COLOR_BLUE = "#ff3498db";
+    public static final String COLOR_GREEN = "#ff27ae60";
+    public static final String COLOR_PURPLE = "#ff8e44ad";
 
 	public static final String PINNED_MECHANISM_KEY = "pinned_mechanism";
 
@@ -118,6 +127,7 @@ public class Account extends AbstractEntity {
 	protected JSONObject keys = new JSONObject();
 	protected String avatar;
     protected String pintoken;
+    protected int rowpos;
 	protected boolean online = false;
 	private OtrEngine otrEngine = null;
 	private XmppConnection xmppConnection = null;
@@ -133,12 +143,12 @@ public class Account extends AbstractEntity {
 
 	public Account(final Jid jid, final String password) {
 		this(java.util.UUID.randomUUID().toString(), jid,
-				password, 0, null, "", null, null);
+				password, 0, null, "", null, null, 0);
 	}
 
 	public Account(final String uuid, final Jid jid,
 			final String password, final int options, final String rosterVersion, final String keys,
-			final String avatar, final String pintoken) {
+			final String avatar, final String pintoken, final int rowpos) {
 		this.uuid = uuid;
 		this.jid = jid;
 		if (jid.isBareJid()) {
@@ -154,6 +164,7 @@ public class Account extends AbstractEntity {
 		}
 		this.avatar = avatar;
         this.pintoken = pintoken;
+        this.rowpos = rowpos;
 	}
 
 	public static Account fromCursor(final Cursor cursor) {
@@ -170,7 +181,8 @@ public class Account extends AbstractEntity {
 				cursor.getString(cursor.getColumnIndex(ROSTERVERSION)),
 				cursor.getString(cursor.getColumnIndex(KEYS)),
 				cursor.getString(cursor.getColumnIndex(AVATAR)),
-                cursor.getString(cursor.getColumnIndex(PINTOKEN)));
+                cursor.getString(cursor.getColumnIndex(PINTOKEN)),
+                cursor.getPosition());
 	}
 
 	public boolean isOptionSet(final int option) {
@@ -381,6 +393,29 @@ public class Account extends AbstractEntity {
     }
 
     public String getPintoken() { return this.pintoken; }
+
+    public int getRowpos() { return this.rowpos;}
+
+    //TODO TXTR CUSTOM
+    //Determine a color for the account (to visually distinguish different accounts)
+    public int getAccountColor () { return getAccountColor(getRowpos());}
+
+    public int getAccountColor(int rowpos) {
+        switch (rowpos) {
+            case 0:
+                return Color.parseColor(COLOR_RED);
+            case 1:
+                return Color.parseColor(COLOR_YELLOW);
+            case 2:
+                return Color.parseColor(COLOR_BLUE);
+            case 3:
+                return Color.parseColor(COLOR_GREEN);
+            case 4:
+                return Color.parseColor(COLOR_PURPLE);
+            default:
+                return getAccountColor(getRowpos() - 5);
+        }
+    }
 
     public void activateGracePeriod() {
 		this.mEndGracePeriod = SystemClock.elapsedRealtime()

@@ -161,13 +161,18 @@ public class ConversationAdapter extends ArrayAdapter<Conversation> {
 		profilePicture.setImageBitmap(activity.avatarService().get(
 					conversation, activity.getPixel(56)));
 
+
+
         //TODO: TXTR CUSTOM
         RoundedImageView accountPicture = (RoundedImageView) view
                 .findViewById(R.id.conversation_account_image);
         accountPicture.setImageBitmap(activity.avatarService().get(
                 conversation.getAccount(), activity.getPixel(24)));
 
-
+        //Determine a border color for the account image (to prevent confusion when two accounts have the same image)
+        profilePicture.setBorderColor(conversation.getAccount().getAccountColor());
+        accountPicture.setBorderColor(conversation.getAccount().getAccountColor());
 		return view;
 	}
+
 }
