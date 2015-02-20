@@ -1,28 +1,28 @@
-# Conversations
+# TXTR
 
-Conversations: the very last word in instant messaging
-
-[![Google Play](http://developer.android.com/images/brand/en_generic_rgb_wo_45.png)](https://play.google.com/store/apps/details?id=eu.siacs.conversations)
+TXTR: Light accounts and messaging made simple
 
 ![screenshots](https://raw.githubusercontent.com/siacs/Conversations/master/screenshots.png)
 
-## Design principles
+## Design principles and service characteristics
 
+* Provide super fast XMPP accounts creation
 * Be as beautiful and easy to use as possible without sacrificing security or
   privacy
 * Rely on existing, well established protocols (XMPP)
 * Do not require a Google Account or specifically Google Cloud Messaging (GCM)
 * Require as few permissions as possible
+* Keep users info requirements as low as possible
 
 ## Features
 
 * End-to-end encryption with either [OTR](https://otr.cypherpunks.ca/) or [OpenPGP](http://www.openpgp.org/about_openpgp/)
-* Sending and receiving images
+* Sending and receiving images and files
 * Indication when your contact has read your message
 * Intuitive UI that follows Android Design guidelines
 * Pictures / Avatars for your Contacts
-* Syncs with desktop client
-* Conferences (with support for bookmarks)
+* Syncs with desktop client and other mobile sessions
+* Conferences / Group chat
 * Address book integration
 * Multiple accounts / unified inbox
 * Very low impact on battery life
@@ -30,11 +30,12 @@ Conversations: the very last word in instant messaging
 
 ### XMPP Features
 
-Conversations works with every XMPP server out there. However XMPP is an
+TXTR is a fork of the Conversations project (see below), therefore it 
+works with every XMPP server out there. However XMPP is an
 extensible protocol. These extensions are standardized as well in so called
 XEP's. Conversations supports a couple of these to make the overall user
 experience better. There is a chance that your current XMPP server does not
-support these extensions; therefore to get the most out of Conversations you
+support these extensions; therefore to get the most out of TXTR you
 should consider either switching to an XMPP server that does or — even better —
 run your own XMPP server for you and your friends. These XEP's are:
 
@@ -56,100 +57,42 @@ run your own XMPP server for you and your friends. These XEP's are:
 * XEP-0191: Blocking command lets you blacklist spammers or block contacts
   without removing them from your roster.
 
-## Team
+### Base code
 
-#### Head of Development
+TXTR uses the Conversations project by Daniel Gultsch as a base code
 
-* [Daniel Gultsch](https://github.com/inputmice)
-
-#### Code Contributions
-
-(In order of appearance)
-
-* [Rene Treffer](https://github.com/rtreffer)
-* [Andreas Straub](https://github.com/strb)
-* [Alethea Butler](https://github.com/alethea)
-* [M. Dietrich](https://github.com/emdete)
-* [betheg](https://github.com/betheg)
-* [Sam Whited](https://github.com/SamWhited)
-
-#### Logo
-* [Ilia Rostovtsev](https://github.com/qooob) (Progress)
-* [Diego Turtulici](http://efesto.eigenlab.org/~diesys) (Original)
-
-#### Translations
-Translations are managed on [Transifex](https://www.transifex.com/projects/p/conversations/)
+* [Original Repository](https://github.com/siacs/Conversations)
 
 ## FAQ
 
 ### General
 
-#### How do I install Conversations?
+#### How do I install TXTR?
 
-Conversations is entirely open source and licensed under GPLv3. So if you are a
-software developer you can check out the sources from GitHub and use ant to
-build your apk file.
-
-The more convenient way — which not only gives you automatic updates but also
-supports the further development of Conversations — is to buy the App in the
-Google [Play Store](https://play.google.com/store/apps/details?id=eu.siacs.conversations).
-
-#### I don't have a Google Account but I would still like to make a contribution
-
-I accept donations over PayPal, Bitcoin and Flattr. For donations via PayPal you
-can use the email address `donate@siacs.eu` or the button below.
-
-[![Donate with PayPal](https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=CW3SYT3KG5PDL)
-
-**Disclaimer:** I'm not a huge fan of PayPal and their business policies. For
-larger contributions please get in touch with me beforehand and we can talk
-about bank transfer (SEPA).
-
-My Bitcoin Address is: `1NxSU1YxYzJVDpX1rcESAA3NJki7kRgeeu`
-
-
-[![Flattr this!](http://api.flattr.com/button/flattr-badge-large.png)](https://flattr.com/submit/auto?user_id=inputmice&url=http%3A%2F%2Fconversations.siacs.eu&title=Conversations&tags=github&category=software)
+TXTR is still under heavy development and it's not available in any app store right now. However,
+you can import this project in Android Studio and compile it by yourself. Gradle is requiered though.
 
 #### How do I create an account?
 
-XMPP, like email, is a federated protocol which means that there is not one
-company you can create an 'official XMPP account' with. Instead there are
-hundreds, or even thousands, of provider out there. To find one use a web search
-engine of your choice. Or maybe your university has one. Or you can run your
-own. Or ask a friend to run one. Once you've found one, you can use
-Conversations to create an account. Just select 'register new account on server'
-within the create account dialog.
+Press the "+" button on the Action Bar, wait for the server to provide you with an available PIN 
+(it should take less than 2 seconds over Wi-Fi) and then press continue. You will be prompted to
+upload an optional profile picture.
 
 #### Where can I set up a custom hostname / port
-Conversations will automatically look up the SRV records for your domain name
-which can point to any hostname port combination. If your server doesn’t provide
-those please contact your admin and have them read
-[this](http://prosody.im/doc/dns#srv_records)
+Take a look inside the Config class in the project, you can modify the behavior of many features that way,
+including the server associate domain name.
 
-#### Conversations doesn't work for me. Where can I get help?
+#### TXTR doesn't work for me and/or I found a bug. Where can I get help?
 
-You can join our conference room on `conversations@conference.siacs.eu`.
-A lot of people in there are able to answer basic questions about the usage of
-Conversations or can provide you with tips on running your own XMPP server. If
-you found a bug or your app crashes please read the Developer / Report Bugs
-section of this document.
 
-#### I need professional support with Conversations or setting up my server
+Please report any issue to our [issue tracker][issues]. If your app crashes please
+provide a stack trace. If you are experiencing misbehaviour please provide
+detailed steps to reproduce. Always mention whether you are running the latest
+Play Store version or the current HEAD. If you are having problems connecting to
+your XMPP server your file transfer doesn’t work as expected please always
+include a logcat debug output with your issue (see above).
 
-I'm available for hire. Contact me at `inputmice@siacs.eu`.
-
-#### How does the address book integration work?
-
-The address book integration was designed to protect your privacy. Conversations
-neither uploads contacts from your address book to your server nor fills your
-address book with unnecessary contacts from your online roster. If you manually
-add a Jabber ID to your phones address book Conversations will use the name and
-the profile picture of this contact. To make the process of adding Jabber IDs to
-your address book easier you can click on the profile picture in the contact
-details within Conversations. This will start an "add to address book" intent
-with the JID as the payload. This doesn't require Conversations to have write
-permissions on your address book but also doesn't require you to copy/paste a
-JID from one app to another.
+[issues]: https://github.com/juanignaciomolina/txtr/issues
 
 #### I get 'delivery failed' on my messages
 
@@ -196,35 +139,15 @@ priorities to route OTR messages isn't practical either because they are not
 changeable on the fly. Metrics like last active client (the client which sent
 the last message) are much better.
 
-Unfortunately these modern replacements for legacy XMPP features are not widely
-adopted. However Conversations should be an instant messenger for the future and
-instead of making Conversations compatible with the past we should work on
-implementing new, improved technologies and getting them into other XMPP clients
-as well.
-
 Making these status and priority optional isn't a solution either because
-Conversations is trying to get rid of old behaviours and set an example for
-other clients.
+TXTR is trying to get rid of old behaviours and set an example for
+other messaging services.
 
 #### Conversations is missing a certain feature
 
-I'm open for new feature suggestions. You can use the [issue tracker][issues] on
-GitHub.  Please take some time to browse through the issues to see if someone
-else already suggested it. Be assured that I read each and every ticket. If I
-like it I will leave it open until it's implemented. If I don't like it I will
-close it (usually with a short comment). If I don't comment on an feature
-request that's probably a good sign because this means I agree with you.
-Commenting with +1 on either open or closed issues won't change my mind, nor
-will it accelerate the development.
-
-#### You closed my feature request but I want it really really badly
-
-Just write it yourself and send me a pull request. If I like it I will happily
-merge it if I don't at least you and like minded people get to enjoy it.
-
-#### I need a feature and I need it now!
-
-I am available for hire. Contact me via XMPP: `inputmice@siacs.eu`
+Community ideas are much aprecciated in the development of TXTR. 
+You can use the [issue tracker][issues] on GitHub to let us know of any improvement you can imagine. 
+Please take some time to browse through the issues to see if someone else already suggested it. 
 
 ### Security
 
@@ -237,7 +160,7 @@ cases, (message carbons to multiple clients) be more flexible.
 #### How do I use OpenPGP
 
 Before you continue reading you should note that the OpenPGP support in
-Conversations is experimental. This is not because it will make the app unstable
+TXTR is experimental. This is not because it will make the app unstable
 but because the fundamental concepts of PGP aren't ready for widespread use.
 The way PGP works is that you trust Key IDs instead of JID's or email addresses.
 So in theory your contact list should consist of Public-Key-IDs instead of
@@ -256,65 +179,35 @@ manage accounts and choose renew PGP announcement from the contextual menu.
 For conferences the only supported encryption method is OpenPGP (OTR does not
 work with multiple participants). Every participant has to announce their
 OpenPGP key (see answer above). If you would like to send encrypted messages to
-a conference you have to make sure that you have every participant's public key
-in your OpenKeychain. Right now there is no check in Conversations to ensure
-that. You have to take care of that yourself. Go to the conference details and
+a group chat you have to make sure that you have every participant's public key
+in your OpenKeychain. Right now there is no check in TXTR to ensure that. 
+You have to take care of that yourself. Go to the conference details and
 touch every key id (The hexadecimal number below a contact). This will send you
 to OpenKeychain which will assist you on adding the key.  This works best in
 very small conferences with contacts you are already using OpenPGP with. This
-feature is regarded experimental. Conversations is the only client that uses
+feature is regarded experimental. The base project Conversations is the only client that uses
 XEP-0027 with conferences. (The XEP neither specifically allows nor disallows
 this.)
 
 ### Development
 
-#### How do I build Conversations
+#### How do I build TXTR without and IDE such as Android Studio or Eclipse with ADT?
 
 Make sure to have ANDROID_HOME point to your Android SDK
 
-    git clone https://github.com/siacs/Conversations.git
-    cd Conversations
+    git clone https://github.com/juanignaciomolina/txtr.git
+    cd txtr
     ./gradlew build
 
 
 [![Build Status](https://travis-ci.org/siacs/Conversations.svg?branch=development)](https://travis-ci.org/siacs/Conversations)
 
-### How do I update/add external libraries?
+#### How do I debug TXTR
 
-If the library you want to update is in Maven Central or JCenter (or has its own
-Maven repo), add it or update its version in `build.gradle`. If the library is
-in the `libs/` directory, you can update it using a subtree merge by doing the
-following (using `minidns` as an example):
-
-    git remote add minidns https://github.com/rtreffer/minidns.git
-    git fetch minidns
-    git merge -s subtree minidns master
-
-To add a new dependency to the `libs/` directory (replacing "name", "branch" and
-"url" as necessary):
-
-    git remote add name url
-    git merge -s ours --no-commit name/branch
-    git read-tree --prefix=libs/name -u name/branch
-    git commit -m "Subtree merged in name"
-
-#### How do I debug Conversations
-
-If something goes wrong Conversations usually exposes very little information in
+If something goes wrong TXTR usually exposes very little information in
 the UI (other than the fact that something didn't work). However with adb
-(android debug bridge) you squeeze some more information out of Conversations.
+(android debug bridge) you squeeze some more information out of Conversations (and TXTR of course).
 These information are especially useful if you are experiencing trouble with
 your connection or with file transfer.
 
     adb -d logcat -v time -s conversations
-
-#### I found a bug
-
-Please report it to our [issue tracker][issues]. If your app crashes please
-provide a stack trace. If you are experiencing misbehaviour please provide
-detailed steps to reproduce. Always mention whether you are running the latest
-Play Store version or the current HEAD. If you are having problems connecting to
-your XMPP server your file transfer doesn’t work as expected please always
-include a logcat debug output with your issue (see above).
-
-[issues]: https://github.com/siacs/Conversations/issues
