@@ -199,9 +199,6 @@ Make sure to have ANDROID_HOME point to your Android SDK
     cd txtr
     ./gradlew build
 
-
-[![Build Status](https://travis-ci.org/siacs/Conversations.svg?branch=development)](https://travis-ci.org/siacs/Conversations)
-
 #### How do I debug TXTR
 
 If something goes wrong TXTR usually exposes very little information in
