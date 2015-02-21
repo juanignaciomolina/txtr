@@ -2,7 +2,7 @@
 
 TXTR: Light accounts and messaging made simple
 
-![screenshots](https://raw.githubusercontent.com/siacs/Conversations/master/screenshots.png)
+![screenshots](https://raw.githubusercontent.com/juanignaciomolina/txtr/master/art/Composed_image.png)
 
 ## Design principles and service characteristics
 
