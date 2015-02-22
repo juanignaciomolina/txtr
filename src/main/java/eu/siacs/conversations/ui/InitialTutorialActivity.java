@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v13.app.FragmentStatePagerAdapter;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.NavUtils;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
@@ -81,13 +80,8 @@ public class InitialTutorialActivity extends FragmentActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
 
-            case android.R.id.home:
-                if (mPager.getCurrentItem() > 0) mPager.setCurrentItem(mPager.getCurrentItem() - 1);
-                else NavUtils.navigateUpTo(this, new Intent(this, CreatePinActivity.class));
-                return true;
-
             case R.id.menu_action_finish:
-                NavUtils.navigateUpTo(this, new Intent(this, CreatePinActivity.class));
+                startActivity(new Intent(this, CreatePinActivity.class));
                 return true;
 
             case R.id.menu_action_previous:
