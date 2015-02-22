@@ -438,7 +438,7 @@ public class ConversationActivity extends XmppActivity
 			startActivity(new Intent(this, StartConversationActivity.class));
 			return true;
         } else if (item.getItemId() == R.id.action_new_pin) {
-            startActivity(new Intent(this, CreatePinActivity.class));
+            startActivity(new Intent(this, InitialTutorialActivity.class)); //TODO TEST
             return true;
 		} else if (getSelectedConversation() != null) {
 			switch (item.getItemId()) {

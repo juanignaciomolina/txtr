@@ -47,14 +47,23 @@ public class InitialTutorialFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout containing a title and body text.
+        // Inflate the right layout depending on which step the user is
         ViewGroup rootView = (ViewGroup) inflater
-                .inflate(R.layout.fragment_initial_tutorial, container, false);
+                .inflate(selectStepLayout(mPageNumber), container, false);
 
         // Set the title view to show the page number.
         ((TextView) rootView.findViewById(android.R.id.text1)).setText("Page: " + ( mPageNumber + 1 ));
 
         return rootView;
+    }
+
+    private int selectStepLayout(int step) {
+        switch (step) {
+            case 0: return R.layout.fragment_tutorial_step_1;
+            case 1: return R.layout.fragment_tutorial_step_2;
+            case 2: return R.layout.fragment_tutorial_step_3;
+            default: return R.layout.fragment_tutorial_step_1;
+        }
     }
 
     /**
