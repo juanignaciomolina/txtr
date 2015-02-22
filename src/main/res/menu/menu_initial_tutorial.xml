@@ -1,0 +1,14 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="eu.siacs.conversations.ui.InitialTutorialActivity">
+    <!-- Adds an item to the list. -->
+    <item android:id="@+id/menu_action_previous"
+        android:title="Anterior"
+        android:showAsAction="ifRoom|withText" />
+    <item android:id="@+id/menu_action_next"
+        android:title="Siguiente"
+        android:showAsAction="ifRoom|withText" />
+    <item android:id="@+id/menu_action_finish"
+        android:title="Terminar"
+        android:showAsAction="ifRoom|withText" />
+</menu>
