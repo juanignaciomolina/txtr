@@ -1,17 +1,19 @@
 package eu.siacs.conversations.ui;
 
 import android.app.Fragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import eu.siacs.conversations.R;
 
 /**
  * Created by Juan on 21/02/2015.
  */
-public class InitialTutorialFragment extends Fragment {
+public class InitialTutorialFragment extends Fragment implements View.OnClickListener {
 
     /**
      * The argument key for the page number this fragment represents.
@@ -49,8 +51,20 @@ public class InitialTutorialFragment extends Fragment {
         // Inflate the right layout depending on which step the user is
         ViewGroup rootView = (ViewGroup) inflater
                 .inflate(selectStepLayout(mPageNumber), container, false);
-
         return rootView;
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        if(mPageNumber == 4) {
+
+            final Button button_new_account = (Button) getActivity().findViewById(R.id.button_new_account);
+            button_new_account.setOnClickListener(this);
+            final Button button_link_account = (Button) getActivity().findViewById(R.id.button_link_account);
+            button_link_account.setOnClickListener(this);
+        }
     }
 
     private int selectStepLayout(int step) {
@@ -64,10 +78,28 @@ public class InitialTutorialFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onClick(View v) {
+
+        switch(v.getId()){
+
+            case R.id.button_new_account:
+                startActivity(new Intent(getActivity(), CreatePinActivity.class));
+                break;
+
+            case R.id.button_link_account:
+                startActivity(new Intent(getActivity(), AddPinActivity.class));
+                break;
+        }
+    }
+
     /**
      * Returns the page number represented by this fragment object.
      */
     public int getPageNumber() {
         return mPageNumber;
     }
+
+
+
 }

@@ -14,6 +14,8 @@
     <color name="divider">#1f000000</color>
     <color name="white" type="color">#ffffffff</color>
     <color name="red" type="color">#ffe51c23</color>
+    <color name="blue" type="color">#ff3498db</color>
+    <color name="dark_blue" type="color">#ff2980b9</color>
     <color name="orange" type="color">#ffff9800</color>
     <color name="green" type="color">#ff259b24</color>
     <color name="black" type="color">#ff000000</color>
