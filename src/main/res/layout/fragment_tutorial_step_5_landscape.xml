@@ -1,0 +1,134 @@
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/tutorial_step_2">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="@color/bg_black_overlay30">
+
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="1">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/step_image"
+                android:src="@drawable/plus_chain_512px"
+                android:layout_gravity="center"
+                android:scaleType="centerInside" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp"
+                android:layout_gravity="center">
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="@string/tutorial_step_5_header"
+                    android:id="@+id/text_slogan"
+                    android:textStyle="bold"
+                    android:textColor="@color/white"
+                    style="@style/text_shadow"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"/>
+
+                <TextView
+                    android:layout_marginTop="8dp"
+                    android:paddingLeft="16dp"
+                    android:paddingRight="16dp"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="@string/tutorial_step_5_info_1"
+                    android:id="@+id/step_info_1"
+                    android:gravity="center"
+                    android:textColor="@color/white"
+                    style="@style/text_shadow"
+                    android:layout_below="@+id/text_slogan"
+                    android:layout_toRightOf="@+id/step_image"
+                    android:layout_toEndOf="@+id/step_image" />
+
+                <RelativeLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/step_info_1"
+                    android:layout_toEndOf="@id/step_image"
+                    android:id="@+id/layout_new">
+
+                    <Button
+                        android:layout_marginTop="12dp"
+                        android:padding="12dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/tutorial_step_5_button_new_account"
+                        android:id="@+id/button_new_account"
+                        android:layout_centerHorizontal="true"
+                        android:background="@drawable/flat_selector"
+                        android:textColor="@color/white"
+                        android:maxWidth="156dp"
+                        />
+                </RelativeLayout>
+
+                <TextView
+                    android:layout_marginTop="8dp"
+                    android:paddingLeft="16dp"
+                    android:paddingRight="16dp"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="@string/tutorial_step_5_info_2"
+                    android:id="@+id/step_info_2"
+                    android:gravity="center"
+                    android:textColor="@color/white"
+                    style="@style/text_shadow"
+                    android:layout_below="@+id/layout_new"
+                    android:layout_toRightOf="@+id/step_image"
+                    android:layout_toEndOf="@+id/step_image"/>
+
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/step_info_2"
+                android:layout_toEndOf="@id/step_image"
+                android:id="@+id/layout_link">
+
+                    <Button
+                        android:layout_marginTop="-8dp"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/tutorial_step_5_button_link_account"
+                        android:id="@+id/button_link_account"
+                        android:layout_centerHorizontal="true"
+                        android:background="@color/transparent"
+                        android:textColor="@color/orange"
+                        android:textStyle="bold"
+                        android:textSize="@dimen/TextImportant"
+                        style="@style/text_shadow"/>
+            </RelativeLayout>
+
+
+            </RelativeLayout>
+
+        </FrameLayout>
+    </LinearLayout>
+
+</FrameLayout>

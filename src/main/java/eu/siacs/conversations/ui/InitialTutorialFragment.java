@@ -80,25 +80,25 @@ public class InitialTutorialFragment extends Fragment implements View.OnClickLis
                 if (getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
                     return R.layout.fragment_tutorial_step_2;
                 else
-                    return R.layout.fragment_tutorial_step_2;
+                    return R.layout.fragment_tutorial_step_2_landscape;
 
             case 2:
                 if (getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
                     return R.layout.fragment_tutorial_step_3;
                 else
-                    return R.layout.fragment_tutorial_step_3;
+                    return R.layout.fragment_tutorial_step_3_landscape;
 
             case 3:
                 if (getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
                     return R.layout.fragment_tutorial_step_4;
                 else
-                    return R.layout.fragment_tutorial_step_4;
+                    return R.layout.fragment_tutorial_step_4_landscape;
 
             case 4:
                 if (getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
                     return R.layout.fragment_tutorial_step_5;
                 else
-                    return R.layout.fragment_tutorial_step_5;
+                    return R.layout.fragment_tutorial_step_5_landscape;
 
             default: return R.layout.fragment_tutorial_step_1;
         }
