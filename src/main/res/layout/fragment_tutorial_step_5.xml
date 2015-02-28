@@ -3,7 +3,7 @@
     android:id="@+id/content"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/tutorial_step_3">
+    android:background="@drawable/tutorial_step_5">
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -21,7 +21,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="Leve your PIN behind"
+                android:text="Start TXTING now!"
                 android:id="@+id/text_slogan"
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true"
@@ -33,7 +33,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/step_image"
-                android:src="@drawable/leave_512px"
+                android:src="@drawable/plus_chain_512px"
                 android:layout_centerHorizontal="true"
                 android:layout_gravity="center"
                 android:layout_above="@id/text_slogan"
@@ -43,7 +43,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Delete any account whenever you want. No strings attached."
+                android:text="Create a new PIN now"
                 android:id="@+id/step_info_1"
                 android:layout_below="@+id/text_slogan"
                 android:layout_centerHorizontal="true"
@@ -51,17 +51,35 @@
                 android:layout_marginTop="24dp"
                 android:textColor="@color/white" />
 
+            <Button
+                android:layout_marginTop="8dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="New Account"
+                android:id="@+id/button_new_account"
+                android:layout_below="@id/step_info_1"
+                android:layout_centerHorizontal="true" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Sometimes you don't wanna keep in touch forever. It's OK, just delete your PIN and be gone with that"
+                android:text="or use an existing one"
                 android:id="@+id/step_info_2"
-                android:layout_below="@+id/step_info_1"
+                android:layout_below="@+id/button_new_account"
                 android:layout_centerHorizontal="true"
                 android:gravity="center"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="24dp"
                 android:textColor="@color/white" />
+
+            <Button
+                android:layout_marginTop="8dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Link account"
+                android:id="@+id/button_link_account"
+                android:layout_below="@id/step_info_2"
+                android:layout_centerHorizontal="true" />
 
 
         </RelativeLayout>

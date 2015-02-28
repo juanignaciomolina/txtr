@@ -1,28 +1,71 @@
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/content"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/green">
+    android:background="@drawable/tutorial_step_2">
 
-    <!-- Dummy content. -->
-    <LinearLayout android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp">
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/bg_black_overlay30">
 
-        <TextView android:id="@android:id/text1"
-            style="?android:textAppearanceLarge"
-            android:textStyle="bold"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp" />
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="16dp"
+            android:layout_gravity="center">
 
-        <TextView style="?android:textAppearanceMedium"
-            android:lineSpacingMultiplier="1.2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="PASO 2" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Instant account creation"
+                android:id="@+id/text_slogan"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:textStyle="bold"
+                android:textColor="@color/white"
+                android:layout_marginTop="16dp" />
 
-    </LinearLayout>
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/step_image"
+                android:src="@drawable/plus_512px"
+                android:layout_centerHorizontal="true"
+                android:layout_gravity="center"
+                android:layout_above="@id/text_slogan"
+                android:scaleType="centerInside" />
 
-</ScrollView>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="You don't have to provide any data, just push the plus button and get a new PIN"
+                android:id="@+id/step_info_1"
+                android:layout_below="@+id/text_slogan"
+                android:layout_centerHorizontal="true"
+                android:gravity="center"
+                android:layout_marginTop="24dp"
+                android:textColor="@color/white" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Accounts are activated instantly, give anybody you wanna talk to your PIN and start the conversation"
+                android:id="@+id/step_info_2"
+                android:layout_below="@+id/step_info_1"
+                android:layout_centerHorizontal="true"
+                android:gravity="center"
+                android:layout_marginTop="8dp"
+                android:textColor="@color/white" />
+
+
+        </RelativeLayout>
+
+    </FrameLayout>
+
+</FrameLayout>

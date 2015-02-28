@@ -3,7 +3,7 @@
     android:id="@+id/content"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/tutorial_step_3">
+    android:background="@drawable/tutorial_step_4">
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -21,7 +21,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="Leve your PIN behind"
+                android:text="Share your PIN"
                 android:id="@+id/text_slogan"
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true"
@@ -33,7 +33,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/step_image"
-                android:src="@drawable/leave_512px"
+                android:src="@drawable/friends_512px"
                 android:layout_centerHorizontal="true"
                 android:layout_gravity="center"
                 android:layout_above="@id/text_slogan"
@@ -43,7 +43,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Delete any account whenever you want. No strings attached."
+                android:text="Share your PIN with friends and all of them will have synchronized accounts"
                 android:id="@+id/step_info_1"
                 android:layout_below="@+id/text_slogan"
                 android:layout_centerHorizontal="true"
@@ -54,10 +54,22 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Sometimes you don't wanna keep in touch forever. It's OK, just delete your PIN and be gone with that"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="If you send a message your friend will see it, and if your friend sends a message you will see it too"
                 android:id="@+id/step_info_2"
                 android:layout_below="@+id/step_info_1"
+                android:layout_centerHorizontal="true"
+                android:gravity="center"
+                android:layout_marginTop="8dp"
+                android:textColor="@color/white" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="Furthermore, if someone sends a message to that PIN, both your friend and you will see it. Besides, the other person won't know if your PIN is shared"
+                android:id="@+id/step_info_3"
+                android:layout_below="@+id/step_info_2"
                 android:layout_centerHorizontal="true"
                 android:gravity="center"
                 android:layout_marginTop="8dp"

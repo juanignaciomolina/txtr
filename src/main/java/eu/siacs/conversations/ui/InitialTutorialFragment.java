@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import eu.siacs.conversations.R;
 
@@ -51,9 +50,6 @@ public class InitialTutorialFragment extends Fragment {
         ViewGroup rootView = (ViewGroup) inflater
                 .inflate(selectStepLayout(mPageNumber), container, false);
 
-        // Set the title view to show the page number.
-        ((TextView) rootView.findViewById(android.R.id.text1)).setText("Page: " + ( mPageNumber + 1 ));
-
         return rootView;
     }
 
@@ -62,6 +58,8 @@ public class InitialTutorialFragment extends Fragment {
             case 0: return R.layout.fragment_tutorial_step_1;
             case 1: return R.layout.fragment_tutorial_step_2;
             case 2: return R.layout.fragment_tutorial_step_3;
+            case 3: return R.layout.fragment_tutorial_step_4;
+            case 4: return R.layout.fragment_tutorial_step_5;
             default: return R.layout.fragment_tutorial_step_1;
         }
     }
