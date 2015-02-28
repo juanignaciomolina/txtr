@@ -464,5 +464,21 @@
     <string name="pin_access_password">Access password</string>
     <string name="title_activity_initial_tutorial">InitialTutorialActivity</string>
     <string name="hello_world">Hello world!</string>
+    <string name="app_slogan">Be more than yourself</string>
+    <string name="tutorial_step_2_header">Instant account creation</string>
+    <string name="tutorial_step_2_info_1">You don\'t have to provide any data, just push the plus button and get a new PIN</string>
+    <string name="tutorial_step_2_info_2">Accounts are activated instantly, give anybody you wanna talk to your PIN and start the conversation</string>
+    <string name="tutorial_step_3_header">Leve your PIN behind</string>
+    <string name="tutorial_step_3_info_1">Delete any account whenever you want. No strings attached.</string>
+    <string name="tutorial_step_3_info_2">Sometimes you don\'t wanna keep in touch forever. It\'s OK, just delete your PIN and be gone with that</string>
+    <string name="tutorial_step_4_header">Share your PIN</string>
+    <string name="tutorial_step_4_info_1">Share your PIN with friends and all of them will have synchronized accounts</string>
+    <string name="tutorial_step_4_info_2">If you send a message your friend will see it, and if your friend sends a message you will see it too</string>
+    <string name="tutorial_step_4_info_3">Furthermore, if someone sends a message to that PIN, both your friend and you will see it. Besides, the other person won\'t know if your PIN is shared</string>
+    <string name="tutorial_step_5_header">Start TXTING now!</string>
+    <string name="tutorial_step_5_info_1">Create a new PIN now</string>
+    <string name="tutorial_step_5_info_2">or use an existing one</string>
+    <string name="tutorial_step_5_button_new_account">New Account</string>
+    <string name="tutorial_step_5_button_link_account">Link account</string>
 
 </resources>

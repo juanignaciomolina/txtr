@@ -2,6 +2,7 @@ package eu.siacs.conversations.ui;
 
 import android.app.Fragment;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -69,11 +70,36 @@ public class InitialTutorialFragment extends Fragment implements View.OnClickLis
 
     private int selectStepLayout(int step) {
         switch (step) {
-            case 0: return R.layout.fragment_tutorial_step_1;
-            case 1: return R.layout.fragment_tutorial_step_2;
-            case 2: return R.layout.fragment_tutorial_step_3;
-            case 3: return R.layout.fragment_tutorial_step_4;
-            case 4: return R.layout.fragment_tutorial_step_5;
+            case 0:
+                if (getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
+                    return R.layout.fragment_tutorial_step_1;
+                else
+                    return R.layout.fragment_tutorial_step_1;
+
+            case 1:
+                if (getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
+                    return R.layout.fragment_tutorial_step_2;
+                else
+                    return R.layout.fragment_tutorial_step_2;
+
+            case 2:
+                if (getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
+                    return R.layout.fragment_tutorial_step_3;
+                else
+                    return R.layout.fragment_tutorial_step_3;
+
+            case 3:
+                if (getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
+                    return R.layout.fragment_tutorial_step_4;
+                else
+                    return R.layout.fragment_tutorial_step_4;
+
+            case 4:
+                if (getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
+                    return R.layout.fragment_tutorial_step_5;
+                else
+                    return R.layout.fragment_tutorial_step_5;
+
             default: return R.layout.fragment_tutorial_step_1;
         }
     }
