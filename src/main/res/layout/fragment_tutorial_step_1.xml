@@ -34,7 +34,8 @@
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true"
                 android:textStyle="bold"
-                android:textColor="@color/white" />
+                android:textColor="@color/white"
+                style="@style/text_shadow"/>
 
             <ImageView
                 android:layout_width="230dp"

@@ -4,4 +4,7 @@
     <dimen name="TextMedium">14sp</dimen>
     <dimen name="TextMessage">16sp</dimen>
     <dimen name="TextImportant">16sp</dimen>
+
+    <dimen name="btn_corner_radius">4dp</dimen>
+    <dimen name="btn_layer_padding">3dp</dimen>
 </resources>

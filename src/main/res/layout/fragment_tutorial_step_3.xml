@@ -27,7 +27,8 @@
                 android:layout_centerVertical="true"
                 android:textStyle="bold"
                 android:textColor="@color/white"
-                android:layout_marginTop="16dp" />
+                android:layout_marginTop="16dp"
+                style="@style/text_shadow"/>
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -49,7 +50,8 @@
                 android:layout_centerHorizontal="true"
                 android:gravity="center"
                 android:layout_marginTop="24dp"
-                android:textColor="@color/white" />
+                android:textColor="@color/white"
+                style="@style/text_shadow"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -61,7 +63,8 @@
                 android:layout_centerHorizontal="true"
                 android:gravity="center"
                 android:layout_marginTop="8dp"
-                android:textColor="@color/white" />
+                android:textColor="@color/white"
+                style="@style/text_shadow"/>
 
 
         </RelativeLayout>
