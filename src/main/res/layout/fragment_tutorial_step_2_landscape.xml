@@ -20,7 +20,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/step_image"
-                android:src="@drawable/plus_512px"
+                android:src="@drawable/tutorial_step_2_img"
                 android:layout_gravity="center"
                 android:scaleType="centerInside"
                 android:layout_centerVertical="true"
