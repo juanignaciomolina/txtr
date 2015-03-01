@@ -468,7 +468,7 @@
     <string name="tutorial_step_2_header">Instant account creation</string>
     <string name="tutorial_step_2_info_1">You don\'t have to provide any data, just push the plus button and get a new PIN</string>
     <string name="tutorial_step_2_info_2">Accounts are activated instantly, give anybody you wanna talk to your PIN and start the conversation</string>
-    <string name="tutorial_step_3_header">Leve your PIN behind</string>
+    <string name="tutorial_step_3_header">Leave your PIN behind</string>
     <string name="tutorial_step_3_info_1">Delete any account whenever you want. No strings attached.</string>
     <string name="tutorial_step_3_info_2">Sometimes you don\'t wanna keep in touch forever. It\'s OK, just delete your PIN and be gone with that</string>
     <string name="tutorial_step_4_header">Share your PIN</string>
