@@ -2,8 +2,14 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/content"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/tutorial_step_2">
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/img_background"
+        android:src="@drawable/tutorial_step_4"
+        android:scaleType="centerCrop" />
 
     <LinearLayout
         android:orientation="horizontal"

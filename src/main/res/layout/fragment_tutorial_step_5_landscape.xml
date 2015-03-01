@@ -2,8 +2,14 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/content"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/tutorial_step_2">
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/img_background"
+        android:src="@drawable/tutorial_step_5"
+        android:scaleType="centerCrop" />
 
     <LinearLayout
         android:orientation="horizontal"
@@ -63,15 +69,12 @@
                     android:gravity="center"
                     android:textColor="@color/white"
                     style="@style/text_shadow"
-                    android:layout_below="@+id/text_slogan"
-                    android:layout_toRightOf="@+id/step_image"
-                    android:layout_toEndOf="@+id/step_image" />
+                    android:layout_below="@+id/text_slogan"/>
 
                 <RelativeLayout
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/step_info_1"
-                    android:layout_toEndOf="@id/step_image"
                     android:id="@+id/layout_new">
 
                     <Button
@@ -100,15 +103,12 @@
                     android:gravity="center"
                     android:textColor="@color/white"
                     style="@style/text_shadow"
-                    android:layout_below="@+id/layout_new"
-                    android:layout_toRightOf="@+id/step_image"
-                    android:layout_toEndOf="@+id/step_image"/>
+                    android:layout_below="@+id/layout_new"/>
 
             <RelativeLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/step_info_2"
-                android:layout_toEndOf="@id/step_image"
                 android:id="@+id/layout_link">
 
                     <Button
