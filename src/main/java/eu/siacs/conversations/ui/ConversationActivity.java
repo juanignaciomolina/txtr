@@ -438,7 +438,7 @@ public class ConversationActivity extends XmppActivity
 			startActivity(new Intent(this, StartConversationActivity.class));
 			return true;
         } else if (item.getItemId() == R.id.action_new_pin) {
-            startActivity(new Intent(this, InitialTutorialActivity.class)); //TODO TEST
+            startActivity(new Intent(this, CreatePinActivity.class));
             return true;
 		} else if (getSelectedConversation() != null) {
 			switch (item.getItemId()) {
@@ -787,7 +787,7 @@ public class ConversationActivity extends XmppActivity
 		this.xmppConnectionService.getNotificationService().setIsInForeground(true);
 		updateConversationList();
 		if (xmppConnectionService.getAccounts().size() == 0) {
-			startActivity(new Intent(this, EditAccountActivity.class));
+			startActivity(new Intent(this, InitialTutorialActivity.class)); //If there are no accounts, start the tutorial
 		} else if (conversationList.size() <= 0) {
 			startActivity(new Intent(this, StartConversationActivity.class));
 			finish();
