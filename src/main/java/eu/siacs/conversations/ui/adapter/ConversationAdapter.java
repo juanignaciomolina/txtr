@@ -73,6 +73,7 @@ public class ConversationAdapter extends ArrayAdapter<Conversation> {
                 .findViewById(R.id.conversation_status_icon);
 
 
+
 		Message message = conversation.getLatestMessage();
 
 		if (!conversation.isRead()) {
