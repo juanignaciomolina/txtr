@@ -18,6 +18,7 @@
     <color name="dark_blue" type="color">#ff2980b9</color>
     <color name="orange" type="color">#ffff9800</color>
     <color name="green" type="color">#ff259b24</color>
+    <color name="purple" type="color">#ff8e44ad</color>
     <color name="black" type="color">#ff000000</color>
     <color name="transparent" type="color">#00000000</color>
     <color name="bg_gray_1" type="color">#ffe1e1e1</color>
