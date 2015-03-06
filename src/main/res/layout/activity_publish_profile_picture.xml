@@ -18,7 +18,7 @@
             xmlns:app="http://schemas.android.com/apk/res-auto"
             app:riv_corner_radius="3dip"
             app:riv_border_width="1dip"
-            app:riv_border_color="@color/secondarytext"
+            app:riv_border_color="@color/imageborder"
             android:id="@+id/account_image"
             android:layout_width="194dp"
             android:layout_height="194dp" />
@@ -91,20 +91,24 @@
 
         <TextView
             android:id="@+id/account"
-            android:layout_width="wrap_content"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:textColor="@color/primarytext"
-            android:textSize="?attr/TextSizeHeadline" />
+            android:textSize="28sp"
+            android:text="testtesttest"
+            android:textAllCaps="true"
+            android:gravity="center"/>
 
         <TextView
             android:id="@+id/hint_or_warning"
-            android:layout_width="wrap_content"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:minLines="3"
             android:text="@string/publish_avatar_explanation"
             android:textColor="@color/primarytext"
-            android:textSize="?attr/TextSizeBody" />
+            android:textSize="?attr/TextSizeBody"
+            android:gravity="center"/>
     </LinearLayout>
 
 </RelativeLayout>

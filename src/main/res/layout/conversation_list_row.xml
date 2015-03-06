@@ -105,7 +105,7 @@
 
         <com.makeramen.RoundedImageView
             xmlns:app="http://schemas.android.com/apk/res-auto"
-            app:riv_corner_radius="3dip"
+            app:riv_corner_radius="12dip"
             app:riv_border_width="1dip"
             app:riv_border_color="@color/secondarytext"
             android:id="@+id/conversation_account_image"

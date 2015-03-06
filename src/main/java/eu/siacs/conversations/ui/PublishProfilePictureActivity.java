@@ -189,7 +189,7 @@ public class PublishProfilePictureActivity extends XmppActivity {
 				} else {
 					loadImageIntoPreview(avatarUri);
 				}
-				this.accountTextView.setText(this.account.getJid().toBareJid().toString());
+				this.accountTextView.setText(getString(R.string.pin) + ": " + this.account.getJid().getLocalpart().toString()); //TODO TXTR CUSTOM
 			}
 		}
 

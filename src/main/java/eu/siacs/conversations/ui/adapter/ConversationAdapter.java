@@ -71,7 +71,8 @@ public class ConversationAdapter extends ArrayAdapter<Conversation> {
 			.findViewById(R.id.conversation_lastimage);
         ImageView msgIcon = (ImageView) view
                 .findViewById(R.id.conversation_status_icon);
-
+        RoundedImageView msgIconBg = (RoundedImageView) view
+                .findViewById(R.id.conversation_status_bg);
 
 
 		Message message = conversation.getLatestMessage();
@@ -88,30 +89,39 @@ public class ConversationAdapter extends ArrayAdapter<Conversation> {
             case 0: //STATUS_RECEIVED
                 if (conversation.isRead()) {
                     msgIcon.setImageDrawable(activity.getApplicationContext().getResources().getDrawable(R.drawable.ic_msg_received_read));
+                    msgIconBg.setImageDrawable(activity.getApplicationContext().getResources().getDrawable(R.drawable.primary_bg));
                 }else {
                     msgIcon.setImageDrawable(activity.getApplicationContext().getResources().getDrawable(R.drawable.ic_msg_received));
+                    msgIconBg.setImageDrawable(activity.getApplicationContext().getResources().getDrawable(R.drawable.brightred_bg));
                 }
                 break;
             case 1: //STATUS_UNSEND
                 msgIcon.setImageDrawable(activity.getApplicationContext().getResources().getDrawable(R.drawable.ic_msg_unsend));
+                msgIconBg.setImageDrawable(activity.getApplicationContext().getResources().getDrawable(R.drawable.purple_bg));
                 break;
             case 2: //STATUS_SEND
                 msgIcon.setImageDrawable(activity.getApplicationContext().getResources().getDrawable(R.drawable.ic_msg_send));
+                msgIconBg.setImageDrawable(activity.getApplicationContext().getResources().getDrawable(R.drawable.darkblue_bg));
                 break;
             case 3: //STATUS_SEND_FAILED
                 msgIcon.setImageDrawable(activity.getApplicationContext().getResources().getDrawable(R.drawable.ic_msg_error));
+                msgIconBg.setImageDrawable(activity.getApplicationContext().getResources().getDrawable(R.drawable.asphalt_bg));
                 break;
             case 5: //STATUS_WAITING
                 msgIcon.setImageDrawable(activity.getApplicationContext().getResources().getDrawable(R.drawable.ic_msg_waiting));
+                msgIconBg.setImageDrawable(activity.getApplicationContext().getResources().getDrawable(R.drawable.orange_bg));
                 break;
             case 6: //STATUS_OFFERED
                 msgIcon.setImageDrawable(activity.getApplicationContext().getResources().getDrawable(R.drawable.ic_msg_offered));
+                msgIconBg.setImageDrawable(activity.getApplicationContext().getResources().getDrawable(R.drawable.orange_bg));
                 break;
             case 7: //STATUS_SEND_RECEIVED
                 msgIcon.setImageDrawable(activity.getApplicationContext().getResources().getDrawable(R.drawable.ic_msg_send_received));
+                msgIconBg.setImageDrawable(activity.getApplicationContext().getResources().getDrawable(R.drawable.blue_bg));
                 break;
             case 8: //STATUS_SEND_DISPLAYED
                 msgIcon.setImageDrawable(activity.getApplicationContext().getResources().getDrawable(R.drawable.ic_msg_send_displayed));
+                msgIconBg.setImageDrawable(activity.getApplicationContext().getResources().getDrawable(R.drawable.emerald_bg));
                 break;
             default:
                 msgIcon.setImageDrawable(activity.getApplicationContext().getResources().getDrawable(R.drawable.ic_msg_received_read));
