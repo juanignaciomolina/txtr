@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.makeramen.RoundedImageView;
@@ -30,6 +31,7 @@ public class PublishProfilePictureActivity extends XmppActivity {
 	private TextView secondaryHint;
 	private Button cancelButton;
 	private Button publishButton;
+    private ProgressBar progressBar;
 
 	private Uri avatarUri;
 	private Uri defaultUri;
@@ -97,12 +99,15 @@ public class PublishProfilePictureActivity extends XmppActivity {
 		this.accountTextView = (TextView) findViewById(R.id.account);
 		this.hintOrWarning = (TextView) findViewById(R.id.hint_or_warning);
 		this.secondaryHint = (TextView) findViewById(R.id.secondary_hint);
+        this.progressBar = (ProgressBar) findViewById(R.id.publish_progressBar);
+        this.progressBar.setVisibility(View.GONE);
 		this.publishButton.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
 				if (avatarUri != null) {
 					publishButton.setText(R.string.publishing);
+                    progressBar.setVisibility(View.VISIBLE);
 					disablePublishButton();
 					xmppConnectionService.publishAvatar(account, avatarUri,
 							avatarPublication);
