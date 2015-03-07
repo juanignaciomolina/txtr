@@ -5,44 +5,6 @@
     android:background="@color/primarybackground" >
 
     <LinearLayout
-        android:id="@+id/account_image_wrapper"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="8dp"
-        android:layout_marginTop="24dp">
-        <!--android:background="@drawable/message_border" -->
-
-        <com.makeramen.RoundedImageView
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-            app:riv_corner_radius="3dip"
-            app:riv_border_width="1dip"
-            app:riv_border_color="@color/imageborder"
-            android:id="@+id/account_image"
-            android:layout_width="194dp"
-            android:layout_height="194dp" />
-    </LinearLayout>
-
-    <TextView
-        android:id="@+id/hint"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/account_image_wrapper"
-        android:layout_centerHorizontal="true"
-        android:text="@string/touch_to_choose_picture"
-        android:textColor="@color/secondarytext" />
-
-    <TextView
-        android:id="@+id/secondary_hint"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/hint"
-        android:layout_centerHorizontal="true"
-        android:text="@string/or_long_press_for_default"
-        android:textColor="@color/secondarytext" />
-
-    <LinearLayout
         android:id="@+id/button_bar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -77,17 +39,24 @@
             android:textColor="@color/secondarytext" />
     </LinearLayout>
 
+    <TextView
+        android:id="@+id/hint_or_warning"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:minLines="3"
+        android:text="@string/publish_avatar_explanation"
+        android:textColor="@color/primarytext"
+        android:textSize="?attr/TextSizeBody"
+        android:gravity="center"
+        android:layout_above="@id/button_bar"/>
+
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="fill_parent"
-        android:layout_above="@+id/button_bar"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:layout_below="@+id/secondary_hint"
-        android:gravity="center_vertical"
         android:orientation="vertical"
-        android:paddingLeft="8dp"
-        android:paddingRight="8dp" >
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:weightSum="6"
+        android:paddingTop="8dp"
+        android:layout_above="@id/hint_or_warning">
 
         <TextView
             android:id="@+id/account"
@@ -97,18 +66,46 @@
             android:textSize="28sp"
             android:text="testtesttest"
             android:textAllCaps="true"
-            android:gravity="center"/>
+            android:gravity="center"
+            android:layout_weight="1"
+            android:layout_margin="4dp"/>
 
-        <TextView
-            android:id="@+id/hint_or_warning"
+        <com.makeramen.RoundedImageView
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            app:riv_corner_radius="5dip"
+            app:riv_border_width="3dip"
+            app:riv_border_color="@color/imageborder"
+            android:id="@+id/account_image"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:minLines="3"
-            android:text="@string/publish_avatar_explanation"
-            android:textColor="@color/primarytext"
-            android:textSize="?attr/TextSizeBody"
-            android:gravity="center"/>
+            android:scaleType="fitCenter"
+            android:layout_weight="5"
+            android:src="@drawable/ic_profile"/>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp">
+
+            <TextView
+                android:id="@+id/hint"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/touch_to_choose_picture"
+                android:textColor="@color/secondarytext"/>
+
+            <TextView
+                android:id="@+id/secondary_hint"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/or_long_press_for_default"
+                android:textColor="@color/secondarytext"/>
+
+        </LinearLayout>
+
     </LinearLayout>
 
 </RelativeLayout>
