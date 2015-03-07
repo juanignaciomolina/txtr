@@ -30,6 +30,7 @@ import org.openintents.openpgp.util.OpenPgpUtils;
 
 import java.util.List;
 
+import eu.siacs.conversations.Config;
 import eu.siacs.conversations.R;
 import eu.siacs.conversations.crypto.PgpEngine;
 import eu.siacs.conversations.entities.Account;
@@ -292,13 +293,23 @@ public class ContactDetailsActivity extends XmppActivity implements OnAccountUpd
 					contact.lastseen.time));
 
 		if (contact.getPresences().size() > 1) {
-			contactJidTv.setText(contact.getJid() + " ("
-					+ contact.getPresences().size() + ")");
+            if (contact.getJid().getDomainpart().equals(Config.PINDOMAIN))
+                contactJidTv.setText(contact.getJid().toPin() + " ("
+                        + contact.getPresences().size() + ")");
+            else contactJidTv.setText(contact.getJid().toBareJid().toString() + " ("
+                    + contact.getPresences().size() + ")");
 		} else {
-			contactJidTv.setText(contact.getJid().toString());
+            if (contact.getJid().getDomainpart().equals(Config.PINDOMAIN))
+                contactJidTv.setText(contact.getJid().toPin());
+            else contactJidTv.setText(contact.getJid().toBareJid().toString());
 		}
+        if (contact.getAccount().getJid().getDomainpart().equals(Config.PINDOMAIN))
+            accountJidTv.setText(getString(R.string.using_account, contact
+                    .getAccount().getJid().toPin()));
+        else accountJidTv.setText(getString(R.string.using_account, contact
+                .getAccount().getJid().toBareJid()));
 		accountJidTv.setText(getString(R.string.using_account, contact
-					.getAccount().getJid().toBareJid()));
+					.getAccount().getJid().getLocalpart().toUpperCase()));
 		prepareContactBadge(badge, contact);
 		if (contact.getSystemAccount() == null) {
 			badge.setOnClickListener(onBadgeClick);
