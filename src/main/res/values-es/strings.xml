@@ -388,4 +388,5 @@
     <string name="outcast">Rechazado</string>
     <string name="member">Miembro</string>
     <string name="advanced_mode">Modo avanzado</string>
+    <string name="contact_add_to_phonebook">Agregar al teléfono</string>
 </resources>

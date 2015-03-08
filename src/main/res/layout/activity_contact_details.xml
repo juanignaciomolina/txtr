@@ -16,11 +16,15 @@
             android:background="@drawable/infocard_border"
             android:padding="16dp" >
 
-            <QuickContactBadge
+            <com.makeramen.RoundedImageView
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                app:riv_corner_radius="3dip"
+                app:riv_border_width="1dip"
+                app:riv_border_color="@color/imageborder"
                 android:id="@+id/details_contact_badge"
+                android:layout_alignParentTop="true"
                 android:layout_width="72dp"
                 android:layout_height="72dp"
-                android:layout_alignParentTop="true"
                 android:scaleType="centerCrop" />
 
             <LinearLayout
@@ -78,6 +82,17 @@
                     android:text="@string/receive_presence_updates"
                     android:textColor="@color/primarytext"
                     android:textSize="?attr/TextSizeBody" />
+
+                <Button
+                    style="?android:attr/buttonStyleSmall"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/contact_add_to_phonebook"
+                    android:id="@+id/button_addtel"
+                    android:background="@color/transparent"
+                    android:textSize="?attr/TextSizeInfo"
+                    android:textStyle="bold"
+                    android:textColor="@color/accent"/>
             </LinearLayout>
 
             <TextView
@@ -90,6 +105,7 @@
                 android:text="@string/using_account"
                 android:textColor="@color/secondarytext"
                 android:textSize="?attr/TextSizeInfo" />
+
         </RelativeLayout>
 
         <LinearLayout

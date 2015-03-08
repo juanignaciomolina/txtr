@@ -480,5 +480,6 @@
     <string name="tutorial_step_5_info_2">or use an existing one</string>
     <string name="tutorial_step_5_button_new_account">New Account</string>
     <string name="tutorial_step_5_button_link_account">Link account</string>
+    <string name="contact_add_to_phonebook">Add to phone book</string>
 
 </resources>

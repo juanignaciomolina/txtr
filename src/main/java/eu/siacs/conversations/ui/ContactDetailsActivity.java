@@ -18,13 +18,16 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.QuickContactBadge;
 import android.widget.TextView;
+
+import com.makeramen.RoundedImageView;
 
 import org.openintents.openpgp.util.OpenPgpUtils;
 
@@ -103,7 +106,8 @@ public class ContactDetailsActivity extends XmppActivity implements OnAccountUpd
 	private TextView lastseen;
 	private CheckBox send;
 	private CheckBox receive;
-	private QuickContactBadge badge;
+    private Button addTelContact;
+	private RoundedImageView accountImage;
 	private LinearLayout keys;
 	private LinearLayout tags;
 	private boolean showDynamicTags;
@@ -122,7 +126,7 @@ public class ContactDetailsActivity extends XmppActivity implements OnAccountUpd
 		}
 	};
 
-	private OnClickListener onBadgeClick = new OnClickListener() {
+	private OnClickListener onAddTelClick = new OnClickListener() {
 
 		@Override
 		public void onClick(View v) {
@@ -136,6 +140,25 @@ public class ContactDetailsActivity extends XmppActivity implements OnAccountUpd
 			builder.create().show();
 		}
 	};
+
+    private OnClickListener onAccountImageClick = new OnClickListener() {
+
+        @Override
+        public void onClick(View v) {
+            displayAccountImageDialog();
+        }
+    };
+
+    protected void displayAccountImageDialog () {
+        if (contact != null) {
+            ImageView view = new ImageView(this);
+            view.setImageBitmap(avatarService().get(contact, getPixel(256)));
+            view.setPadding(8,4,8,4);
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setView(view);
+            builder.create().show();
+        }
+    }
 
 	@Override
 	public void onRosterUpdate() {
@@ -188,7 +211,8 @@ public class ContactDetailsActivity extends XmppActivity implements OnAccountUpd
 		lastseen = (TextView) findViewById(R.id.details_lastseen);
 		send = (CheckBox) findViewById(R.id.details_send_presence);
 		receive = (CheckBox) findViewById(R.id.details_receive_presence);
-		badge = (QuickContactBadge) findViewById(R.id.details_contact_badge);
+        addTelContact = (Button) findViewById(R.id.button_addtel);
+		accountImage = (RoundedImageView) findViewById(R.id.details_contact_badge);
 		keys = (LinearLayout) findViewById(R.id.details_contact_keys);
 		tags = (LinearLayout) findViewById(R.id.tags);
 		if (getActionBar() != null) {
@@ -310,10 +334,15 @@ public class ContactDetailsActivity extends XmppActivity implements OnAccountUpd
                 .getAccount().getJid().toBareJid()));
 		accountJidTv.setText(getString(R.string.using_account, contact
 					.getAccount().getJid().getLocalpart().toUpperCase()));
-		prepareContactBadge(badge, contact);
+        accountImage.setImageBitmap(avatarService().get(contact, getPixel(72)));
 		if (contact.getSystemAccount() == null) {
-			badge.setOnClickListener(onBadgeClick);
+			accountImage.setOnClickListener(onAccountImageClick); //TODO MOD THIS
+            addTelContact.setVisibility(View.VISIBLE);
+            addTelContact.setOnClickListener(onAddTelClick);
 		}
+        else {
+            addTelContact.setVisibility(View.GONE);
+        }
 
 		keys.removeAllViews();
 		boolean hasKeys = false;
@@ -385,15 +414,6 @@ public class ContactDetailsActivity extends XmppActivity implements OnAccountUpd
 				tags.addView(tv);
 			}
 		}
-	}
-
-	private void prepareContactBadge(QuickContactBadge badge, Contact contact) {
-		if (contact.getSystemAccount() != null) {
-			String[] systemAccount = contact.getSystemAccount().split("#");
-			long id = Long.parseLong(systemAccount[0]);
-			badge.assignContactUri(Contacts.getLookupUri(id, systemAccount[1]));
-		}
-		badge.setImageBitmap(avatarService().get(contact, getPixel(72)));
 	}
 
 	protected void confirmToDeleteFingerprint(final String fingerprint) {
