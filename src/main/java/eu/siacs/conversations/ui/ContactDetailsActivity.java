@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender.SendIntentException;
 import android.content.SharedPreferences;
+import android.graphics.Point;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -151,8 +152,12 @@ public class ContactDetailsActivity extends XmppActivity implements OnAccountUpd
 
     protected void displayAccountImageDialog () {
         if (contact != null) {
+            Point size = new Point();
+            getWindowManager().getDefaultDisplay().getSize(size);
+            final int dimen = (size.x < size.y ? size.x : size.y);
             ImageView view = new ImageView(this);
-            view.setImageBitmap(avatarService().get(contact, getPixel(256)));
+            view.setImageBitmap(avatarService().get(contact, getPixel(dimen)));
+            view.setScaleType(ImageView.ScaleType.CENTER_CROP);
             view.setPadding(8,4,8,4);
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setView(view);
