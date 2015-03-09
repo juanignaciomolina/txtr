@@ -9,6 +9,8 @@ public interface ListItem extends Comparable<ListItem> {
 
 	public Jid getJid();
 
+    public Account getAccount();
+
 	public List<Tag> getTags();
 
 	public final class Tag {

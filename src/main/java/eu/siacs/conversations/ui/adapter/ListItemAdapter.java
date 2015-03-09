@@ -14,6 +14,7 @@ import com.makeramen.RoundedImageView;
 
 import java.util.List;
 
+import eu.siacs.conversations.Config;
 import eu.siacs.conversations.R;
 import eu.siacs.conversations.entities.ListItem;
 import eu.siacs.conversations.ui.XmppActivity;
@@ -53,6 +54,7 @@ public class ListItemAdapter extends ArrayAdapter<ListItem> {
 		TextView tvName = (TextView) view.findViewById(R.id.contact_display_name);
 		TextView tvJid = (TextView) view.findViewById(R.id.contact_jid);
         RoundedImageView picture = (RoundedImageView) view.findViewById(R.id.contact_photo);
+        RoundedImageView account_picture = (RoundedImageView) view.findViewById(R.id.account_photo);
 		LinearLayout tagLayout = (LinearLayout) view.findViewById(R.id.tags);
 
 		List<ListItem.Tag> tags = item.getTags();
@@ -71,13 +73,17 @@ public class ListItemAdapter extends ArrayAdapter<ListItem> {
 		}
 		final Jid jid = item.getJid();
 		if (jid != null) {
-			tvJid.setText(jid.toString());
+            if (jid.getDomainpart().equals(Config.PINDOMAIN)) tvJid.setText(jid.toPin());
+            else tvJid.setText(jid.toString());
 		} else {
 			tvJid.setText("");
 		}
 		tvName.setText(item.getDisplayName());
 		picture.setImageBitmap(activity.avatarService().get(item,
 				activity.getPixel(48)));
+        account_picture.setImageBitmap(activity.avatarService().get(item.getAccount(),
+                activity.getPixel(24)));
+        account_picture.setBorderColor(item.getAccount().getAccountColor());
 		return view;
 	}
 

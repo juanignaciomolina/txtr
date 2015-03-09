@@ -36,8 +36,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:singleLine="true"
-            android:textColor="@color/primarytext"
+            android:textColor="@color/secondarytext"
             android:textSize="?attr/TextSizeBody" />
+
         <LinearLayout
             android:id="@+id/tags"
             android:layout_width="wrap_content"
@@ -54,5 +55,19 @@
             android:typeface="monospace"
             android:visibility="gone" />
     </LinearLayout>
+
+    <com.makeramen.RoundedImageView
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        app:riv_corner_radius="12dip"
+        app:riv_border_width="1dip"
+        app:riv_border_color="@color/imageborder"
+        android:id="@+id/account_photo"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_profile"
+        android:layout_alignBottom="@+id/contact_photo"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
 
 </RelativeLayout>
