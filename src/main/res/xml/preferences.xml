@@ -28,6 +28,12 @@
             android:key="confirm_messages"
             android:summary="@string/pref_confirm_messages_summary"
             android:title="@string/pref_confirm_messages" />
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="indicate_received"
+            android:summary="@string/pref_use_indicate_received_summary"
+            android:title="@string/pref_use_indicate_received" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/pref_notification_settings" >
         <CheckBoxPreference
@@ -130,11 +136,6 @@
 			        android:summary="@string/pref_enter_is_send_summary" />
 	        </PreferenceCategory>
             <PreferenceCategory android:title="@string/pref_expert_options_other" >
-                <CheckBoxPreference
-                    android:defaultValue="true"
-                    android:key="indicate_received"
-                    android:summary="@string/pref_use_indicate_received_summary"
-                    android:title="@string/pref_use_indicate_received" />
                 <CheckBoxPreference
                     android:defaultValue="false"
                     android:key="keep_foreground_service"
