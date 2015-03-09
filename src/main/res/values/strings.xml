@@ -283,8 +283,8 @@
     <string name="pref_expert_options_summary">Please be careful with these</string>
     <string name="title_activity_about">About Conversations</string>
     <string name="pref_about_conversations_summary">Build and licensing information</string>
-    <string name="pref_about_message" translatable="false">            Conversations • the very last word in instant messaging.
-            \n\nCopyright © 2014 Daniel Gultsch
+    <string name="pref_about_message" translatable="false">            TXTR Android Client • The official client for the TXTR service in Android.
+            \n\nCopyright © 2015 Droidko
             \n\nThis program is free software: you can redistribute it and/or modify
             it under the terms of the GNU General Public License as published by
             the Free Software Foundation, either version 3 of the License, or
@@ -295,7 +295,9 @@
             GNU General Public License for more details.
             \n\nYou should have received a copy of the GNU General Public License
             along with this program. If not, see https://www.gnu.org/licenses
-            \n\nDownload the full source code at https://github.com/siacs/Conversations
+            \n\nDownload the full source code at https://github.com/juanignaciomolina/txtr
+            \n\nTXTR Android Client is based on the Conversations open source XMPP client by Daniel Gultsch.
+            \nVisit the project\'s website and download the code at https://github.com/siacs/Conversations
             \n\n\nLibraries
             \n\nhttps://www.bouncycastle.org\n(The MIT License (MIT))
             \n\nhttps://www.gnu.org/software/libidn\n(Apache License, Version 2.0)
@@ -304,7 +306,9 @@
             \n\nhttps://github.com/open-keychain/openkeychain-api-lib\n(Apache License, Version 2.0)
             \n\nhttps://github.com/jitsi/otr4j\n(LGPL-3.0)
             \n\nhttps://developer.android.com/tools/support-library\n(Apache License, Version 2.0)
-            \n\nhttps://github.com/zxing/zxing\n(Apache License, Version 2.0)</string>
+            \n\nhttps://github.com/zxing/zxing\n(Apache License, Version 2.0)
+            \n\nhttps://github.com/vinc3m1/RoundedImageView\n(Apache License, Version 2.0)
+            \n\nhttps://github.com/gabrielemariotti/cardslib\n(Apache License, Version 2.0)</string>
     <string name="title_pref_quiet_hours">Quiet Hours</string>
     <string name="title_pref_quiet_hours_start_time">Start time</string>
     <string name="title_pref_quiet_hours_end_time">End time</string>
