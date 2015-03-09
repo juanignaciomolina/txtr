@@ -26,6 +26,7 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.makeramen.RoundedImageView;
@@ -108,6 +109,7 @@ public class ContactDetailsActivity extends XmppActivity implements OnAccountUpd
 	private CheckBox send;
 	private CheckBox receive;
     private Button addTelContact;
+    private ProgressBar progressImage;
 	private RoundedImageView accountImage;
 	private LinearLayout keys;
 	private LinearLayout tags;
@@ -152,6 +154,7 @@ public class ContactDetailsActivity extends XmppActivity implements OnAccountUpd
 
     protected void displayAccountImageDialog () {
         if (contact != null) {
+            //progressImage.setVisibility(View.VISIBLE);
             Point size = new Point();
             getWindowManager().getDefaultDisplay().getSize(size);
             final int dimen = (size.x < size.y ? size.x : size.y);
@@ -217,6 +220,7 @@ public class ContactDetailsActivity extends XmppActivity implements OnAccountUpd
 		send = (CheckBox) findViewById(R.id.details_send_presence);
 		receive = (CheckBox) findViewById(R.id.details_receive_presence);
         addTelContact = (Button) findViewById(R.id.button_addtel);
+        progressImage = (ProgressBar) findViewById(R.id.progressBar_accountImage);
 		accountImage = (RoundedImageView) findViewById(R.id.details_contact_badge);
 		keys = (LinearLayout) findViewById(R.id.details_contact_keys);
 		tags = (LinearLayout) findViewById(R.id.tags);

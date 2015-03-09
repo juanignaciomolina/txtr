@@ -9,6 +9,14 @@
         android:layout_height="wrap_content"
         android:orientation="vertical" >
 
+        <ProgressBar
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/progressBar_accountImage"
+            android:indeterminate="true"
+            android:visibility="gone"/>
+
         <RelativeLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
@@ -119,6 +127,7 @@
             android:padding="8dp"
             android:showDividers="middle" >
         </LinearLayout>
+
     </LinearLayout>
 
 </ScrollView>
