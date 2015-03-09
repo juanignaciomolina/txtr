@@ -89,7 +89,7 @@
     <string name="send_unencrypted">Enviar sin encriptar</string>
     <string name="decryption_failed">Falló la desencriptación. Tal vez no tengas la clave privada apropiada.</string>
     <string name="openkeychain_required">OpenKeychain</string>
-    <string name="openkeychain_required_long">TXTR utiliza una aplicación de terceros llamada <b>OpenKeychain</b> para encriptar y desencriptar mensajes y gestionar tus claves públicas.\n\nOpenKeychain está publicado bajo licencia GPLv3 y disponible on F-Droid y Google Play.\n\n<small>(Por favor, reinicie Conversations después.)</small></string>
+    <string name="openkeychain_required_long">TXTR utiliza una aplicación de terceros llamada <b>OpenKeychain</b> para encriptar y desencriptar mensajes y gestionar tus claves públicas.\n\nOpenKeychain está publicado bajo licencia GPLv3 y disponible on F-Droid y Google Play.\n\n<small>(Por favor, reinicie TXTR después.)</small></string>
     <string name="restart">Reiniciar</string>
     <string name="install">Instalar</string>
     <string name="offering">ofreciendo&#8230;</string>
@@ -277,7 +277,7 @@
     <string name="pref_enable_legacy_ssl_summary">Habilita soporte SSLv3 para servidores heredados. Advertencia: SSLv3 se considera no seguro.</string>
     <string name="pref_expert_options">Ajustes avanzados</string>
     <string name="pref_expert_options_summary">Por favor, cuidado con estas opciones</string>
-    <string name="title_activity_about">Acerca de Conversations</string>
+    <string name="title_activity_about">Acerca de TXTR</string>
     <string name="pref_about_conversations_summary">Información de compilación y licencia</string>
     <string name="title_pref_quiet_hours">Horario de silencio</string>
     <string name="title_pref_quiet_hours_start_time">Hora de comienzo</string>
@@ -334,7 +334,7 @@
     <string name="verified">Verificado!</string>
     <string name="smp_requested">El contacto solicita verificación SMP</string>
     <string name="no_otr_session_found">¡No se ha encontrado una sesión OTR válida!</string>
-    <string name="conversations_foreground_service">Conversations</string>
+    <string name="conversations_foreground_service">TXTR</string>
     <string name="touch_to_disable">Pulsa para deshabilitar servicio en primer plano</string>
     <string name="pref_keep_foreground_service">Servicio en primer plano</string>
     <string name="pref_keep_foreground_service_summary">Mantener el servicio en primer plano previene que el sistema cierre la conexión</string>

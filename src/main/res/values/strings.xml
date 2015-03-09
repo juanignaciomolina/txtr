@@ -91,7 +91,7 @@
     <string name="send_unencrypted">Send unencrypted</string>
     <string name="decryption_failed">Decryption failed. Maybe you don’t have the proper private key.</string>
     <string name="openkeychain_required">OpenKeychain</string>
-    <string name="openkeychain_required_long">TXTR utilizes a third party app called <b>OpenKeychain</b> to encrypt and decrypt messages and to manage your public keys.\n\nOpenKeychain is licensed under GPLv3 and available on F-Droid and Google Play.\n\n<small>(Please restart Conversations afterwards.)</small></string>
+    <string name="openkeychain_required_long">TXTR utilizes a third party app called <b>OpenKeychain</b> to encrypt and decrypt messages and to manage your public keys.\n\nOpenKeychain is licensed under GPLv3 and available on F-Droid and Google Play.\n\n<small>(Please restart TXTR afterwards.)</small></string>
     <string name="restart">Restart</string>
     <string name="install">Install</string>
     <string name="offering">offering…</string>
@@ -281,7 +281,7 @@
     <string name="pref_enable_legacy_ssl_summary">Enables SSLv3 support for legacy servers. Warning: SSLv3 is considered insecure.</string>
     <string name="pref_expert_options">Expert options</string>
     <string name="pref_expert_options_summary">Please be careful with these</string>
-    <string name="title_activity_about">About Conversations</string>
+    <string name="title_activity_about">About TXTR</string>
     <string name="pref_about_conversations_summary">Build and licensing information</string>
     <string name="pref_about_message" translatable="false">            TXTR Android Client • The official client for the TXTR service in Android.
             \n\nCopyright © 2015 Droidko
@@ -308,7 +308,8 @@
             \n\nhttps://developer.android.com/tools/support-library\n(Apache License, Version 2.0)
             \n\nhttps://github.com/zxing/zxing\n(Apache License, Version 2.0)
             \n\nhttps://github.com/vinc3m1/RoundedImageView\n(Apache License, Version 2.0)
-            \n\nhttps://github.com/gabrielemariotti/cardslib\n(Apache License, Version 2.0)</string>
+            \n\nhttps://github.com/gabrielemariotti/cardslib\n(Apache License, Version 2.0)
+            \n\nhttps://github.com/google/material-design-icons\n(Creative Commons, Version 4.0)</string>
     <string name="title_pref_quiet_hours">Quiet Hours</string>
     <string name="title_pref_quiet_hours_start_time">Start time</string>
     <string name="title_pref_quiet_hours_end_time">End time</string>
@@ -370,7 +371,7 @@
     <string name="verified">Verified!</string>
     <string name="smp_requested">Contact requested SMP verification</string>
     <string name="no_otr_session_found">No valid OTR session has been found!</string>
-    <string name="conversations_foreground_service">Conversations</string>
+    <string name="conversations_foreground_service">TXTR</string>
     <string name="touch_to_disable">Touch to disable foreground service</string>
     <string name="pref_keep_foreground_service">Keep service in foreground</string>
     <string name="pref_keep_foreground_service_summary">Prevents the operating system from killing your connection</string>
