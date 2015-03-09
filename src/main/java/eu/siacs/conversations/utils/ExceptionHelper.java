@@ -1,5 +1,17 @@
 package eu.siacs.conversations.utils;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
+import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
+import android.preference.PreferenceManager;
+import android.text.format.DateUtils;
+import android.util.Log;
+
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -15,18 +27,6 @@ import eu.siacs.conversations.services.XmppConnectionService;
 import eu.siacs.conversations.xmpp.jid.InvalidJidException;
 import eu.siacs.conversations.xmpp.jid.Jid;
 
-import android.app.AlertDialog;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.SharedPreferences;
-import android.content.DialogInterface.OnClickListener;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.PackageManager.NameNotFoundException;
-import android.preference.PreferenceManager;
-import android.text.format.DateUtils;
-import android.util.Log;
-
 public class ExceptionHelper {
 	public static void init(Context context) {
 		if (!(Thread.getDefaultUncaughtExceptionHandler() instanceof ExceptionHandler)) {
@@ -35,7 +35,7 @@ public class ExceptionHelper {
 		}
 	}
 
-	public static void checkForCrash(Context context,
+	public static void checkForCrash(final Context context,
 			final XmppConnectionService service) {
 		try {
 			final SharedPreferences preferences = PreferenceManager
@@ -80,6 +80,7 @@ public class ExceptionHelper {
 			file.close();
 			context.deleteFile("stacktrace.txt");
 			AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            final Context dialogcontext = context;
 			builder.setTitle(context.getString(R.string.crash_report_title));
 			builder.setMessage(context.getText(R.string.crash_report_message));
 			builder.setPositiveButton(context.getText(R.string.send_now),
@@ -94,7 +95,7 @@ public class ExceptionHelper {
                             Conversation conversation = null;
                             try {
                                 conversation = service.findOrCreateConversation(finalAccount,
-                                        Jid.fromString("bugs@siacs.eu"), false);
+                                        Jid.fromString(dialogcontext.getString(R.string.crash_report_account)), false);
                             } catch (final InvalidJidException ignored) {
                             }
                             Message message = new Message(conversation, report
