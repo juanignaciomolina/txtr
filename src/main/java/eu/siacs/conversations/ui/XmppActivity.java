@@ -2,6 +2,7 @@ package eu.siacs.conversations.ui;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
@@ -32,7 +33,9 @@ import android.nfc.NfcEvent;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.text.InputType;
 import android.util.DisplayMetrics;
@@ -96,6 +99,34 @@ public abstract class XmppActivity extends Activity {
 
 	private DisplayMetrics metrics;
 	protected int mTheme;
+	protected boolean mUsingEnterKey = false;
+
+	private long mLastUiRefresh = 0;
+	private Handler mRefreshUiHandler = new Handler();
+	private Runnable mRefreshUiRunnable = new Runnable() {
+		@Override
+		public void run() {
+			mLastUiRefresh = SystemClock.elapsedRealtime();
+			refreshUiReal();
+		}
+	};
+
+
+	protected void refreshUi() {
+		final long diff = SystemClock.elapsedRealtime() - mLastUiRefresh;
+		if (diff > Config.REFRESH_UI_INTERVAL) {
+			mRefreshUiHandler.removeCallbacks(mRefreshUiRunnable);
+			runOnUiThread(mRefreshUiRunnable);
+		} else {
+			final long next = Config.REFRESH_UI_INTERVAL - diff;
+			mRefreshUiHandler.removeCallbacks(mRefreshUiRunnable);
+			mRefreshUiHandler.postDelayed(mRefreshUiRunnable,next);
+		}
+	}
+
+	protected void refreshUiReal() {
+
+	};
 
 	protected interface OnValueEdited {
 		public void onValueEdited(String value);
@@ -299,11 +330,19 @@ public abstract class XmppActivity extends Activity {
 		mColorOrange = getResources().getColor(R.color.orange);
 		mColorGreen = getResources().getColor(R.color.green);
 		mPrimaryColor = getResources().getColor(R.color.primary);
-		mSecondaryBackgroundColor = getResources().getColor(
-				R.color.secondarybackground);
+		mSecondaryBackgroundColor = getResources().getColor(R.color.secondarybackground);
 		this.mTheme = findTheme();
 		setTheme(this.mTheme);
+		this.mUsingEnterKey = usingEnterKey();
 		mUseSubject = getPreferences().getBoolean("use_subject", true);
+		final ActionBar ab = getActionBar();
+		if (ab!=null) {
+			ab.setDisplayHomeAsUpEnabled(true);
+		}
+	}
+
+	protected boolean usingEnterKey() {
+		return getPreferences().getBoolean("display_enter_key", false);
 	}
 
 	protected SharedPreferences getPreferences() {
@@ -392,9 +431,7 @@ public abstract class XmppActivity extends Activity {
 					public void success(Account account) {
 						xmppConnectionService.databaseBackend
 							.updateAccount(account);
-						xmppConnectionService.sendPresencePacket(account,
-								xmppConnectionService.getPresenceGenerator()
-								.sendPresence(account));
+						xmppConnectionService.sendPresence(account);
 						if (conversation != null) {
 							conversation
 								.setNextEncryption(Message.ENCRYPTION_PGP);
@@ -428,9 +465,12 @@ public abstract class XmppActivity extends Activity {
 	}
 
 	protected void showAddToRosterDialog(final Conversation conversation) {
-		final Jid jid = conversation.getJid();
+		showAddToRosterDialog(conversation.getContact());
+	}
+
+	protected void showAddToRosterDialog(final Contact contact) {
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setTitle(jid.toString());
+		builder.setTitle(contact.getJid().toString());
 		builder.setMessage(getString(R.string.not_in_roster));
 		builder.setNegativeButton(getString(R.string.cancel), null);
 		builder.setPositiveButton(getString(R.string.add_contact),
@@ -438,11 +478,10 @@ public abstract class XmppActivity extends Activity {
 
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
-						final Jid jid = conversation.getJid();
-						Account account = conversation.getAccount();
+						final Jid jid = contact.getJid();
+						Account account = contact.getAccount();
 						Contact contact = account.getRoster().getContact(jid);
 						xmppConnectionService.createContact(contact);
-						switchToContactDetails(contact);
 					}
 				});
 		builder.create().show();
@@ -675,6 +714,10 @@ public abstract class XmppActivity extends Activity {
 		return this.mPrimaryColor;
 	}
 
+	public int getOnlineColor() {
+		return this.mColorGreen;
+	}
+	
 	public int getSecondaryBackgroundColor() {
 		return this.mSecondaryBackgroundColor;
 	}

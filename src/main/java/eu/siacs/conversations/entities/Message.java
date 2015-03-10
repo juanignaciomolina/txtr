@@ -8,6 +8,7 @@ import java.net.URL;
 import java.util.Arrays;
 
 import eu.siacs.conversations.Config;
+import eu.siacs.conversations.utils.GeoHelper;
 import eu.siacs.conversations.xmpp.jid.InvalidJidException;
 import eu.siacs.conversations.xmpp.jid.Jid;
 
@@ -36,17 +37,20 @@ public class Message extends AbstractEntity {
 	public static final int TYPE_STATUS = 3;
 	public static final int TYPE_PRIVATE = 4;
 
-	public static String CONVERSATION = "conversationUuid";
-	public static String COUNTERPART = "counterpart";
-	public static String TRUE_COUNTERPART = "trueCounterpart";
-	public static String BODY = "body";
-	public static String TIME_SENT = "timeSent";
-	public static String ENCRYPTION = "encryption";
-	public static String STATUS = "status";
-	public static String TYPE = "type";
-	public static String REMOTE_MSG_ID = "remoteMsgId";
-	public static String SERVER_MSG_ID = "serverMsgId";
-	public static String RELATIVE_FILE_PATH = "relativeFilePath";
+	public static final String CONVERSATION = "conversationUuid";
+	public static final String COUNTERPART = "counterpart";
+	public static final String TRUE_COUNTERPART = "trueCounterpart";
+	public static final String BODY = "body";
+	public static final String TIME_SENT = "timeSent";
+	public static final String ENCRYPTION = "encryption";
+	public static final String STATUS = "status";
+	public static final String TYPE = "type";
+	public static final String REMOTE_MSG_ID = "remoteMsgId";
+	public static final String SERVER_MSG_ID = "serverMsgId";
+	public static final String RELATIVE_FILE_PATH = "relativeFilePath";
+	public static final String ME_COMMAND = "/me ";
+
+
 	public boolean markable = false;
 	protected String conversationUuid;
 	protected Jid counterpart;
@@ -145,10 +149,11 @@ public class Message extends AbstractEntity {
 				cursor.getString(cursor.getColumnIndex(SERVER_MSG_ID)));
 	}
 
-	public static Message createStatusMessage(Conversation conversation) {
+	public static Message createStatusMessage(Conversation conversation, String body) {
 		Message message = new Message();
 		message.setType(Message.TYPE_STATUS);
 		message.setConversation(conversation);
+		message.setBody(body);
 		return message;
 	}
 
@@ -310,12 +315,17 @@ public class Message extends AbstractEntity {
 	public boolean equals(Message message) {
 		if (this.serverMsgId != null && message.getServerMsgId() != null) {
 			return this.serverMsgId.equals(message.getServerMsgId());
+		} else if (this.body == null || this.counterpart == null) {
+			return false;
+		} else if (message.getRemoteMsgId() != null) {
+			return (message.getRemoteMsgId().equals(this.remoteMsgId) || message.getRemoteMsgId().equals(this.uuid))
+					&& this.counterpart.equals(message.getCounterpart())
+					&& this.body.equals(message.getBody());
 		} else {
-			return this.body != null
-				&& this.counterpart != null
-				&& ((this.remoteMsgId != null && this.remoteMsgId.equals(message.getRemoteMsgId()))
-						|| this.uuid.equals(message.getRemoteMsgId())) && this.body.equals(message.getBody())
-				&& this.counterpart.equals(message.getCounterpart());
+			return this.remoteMsgId == null
+					&& this.counterpart.equals(message.getCounterpart())
+					&& this.body.equals(message.getBody())
+					&& Math.abs(this.getTimeSent() - message.getTimeSent()) < Config.PING_TIMEOUT * 500;
 		}
 	}
 
@@ -348,18 +358,55 @@ public class Message extends AbstractEntity {
 	}
 
 	public boolean mergeable(final Message message) {
-		return message != null && (message.getType() == Message.TYPE_TEXT && this.getDownloadable() == null && message.getDownloadable() == null && message.getEncryption() != Message.ENCRYPTION_PGP && this.getType() == message.getType() && this.getStatus() == message.getStatus() && this.getEncryption() == message.getEncryption() && this.getCounterpart() != null && this.getCounterpart().equals(message.getCounterpart()) && (message.getTimeSent() - this.getTimeSent()) <= (Config.MESSAGE_MERGE_WINDOW * 1000) && !message.bodyContainsDownloadable() && !this.bodyContainsDownloadable());
+		return message != null &&
+			(message.getType() == Message.TYPE_TEXT &&
+			 this.getDownloadable() == null &&
+			 message.getDownloadable() == null &&
+			 message.getEncryption() != Message.ENCRYPTION_PGP &&
+			 this.getType() == message.getType() &&
+			 //this.getStatus() == message.getStatus() &&
+			 isStatusMergeable(this.getStatus(),message.getStatus()) &&
+			 this.getEncryption() == message.getEncryption() &&
+			 this.getCounterpart() != null &&
+			 this.getCounterpart().equals(message.getCounterpart()) &&
+			 (message.getTimeSent() - this.getTimeSent()) <= (Config.MESSAGE_MERGE_WINDOW * 1000) &&
+			 !GeoHelper.isGeoUri(message.getBody()) &&
+			 !GeoHelper.isGeoUri(this.body) &&
+			 !message.bodyContainsDownloadable() &&
+			 !this.bodyContainsDownloadable() &&
+			 !message.getBody().startsWith(ME_COMMAND) &&
+			 !this.getBody().startsWith(ME_COMMAND)
+			);
+	}
+
+	private static boolean isStatusMergeable(int a, int b) {
+		return a == b || (
+				( a == Message.STATUS_SEND_RECEIVED && b == Message.STATUS_UNSEND)
+				|| (a == Message.STATUS_SEND_RECEIVED && b == Message.STATUS_SEND)
+				|| (a == Message.STATUS_UNSEND && b == Message.STATUS_SEND)
+				|| (a == Message.STATUS_UNSEND && b == Message.STATUS_SEND_RECEIVED)
+				|| (a == Message.STATUS_SEND && b == Message.STATUS_UNSEND)
+				|| (a == Message.STATUS_SEND && b == Message.STATUS_SEND_RECEIVED)
+		);
 	}
 
 	public String getMergedBody() {
-		Message next = this.next();
+		final Message next = this.next();
 		if (this.mergeable(next)) {
-			return body.trim() + '\n' + next.getMergedBody();
+			return getBody().trim() + '\n' + next.getMergedBody();
 		}
-		return body.trim();
+		return getBody().trim();
+	}
+
+	public boolean hasMeCommand() {
+		return getMergedBody().startsWith(ME_COMMAND);
 	}
 
 	public int getMergedStatus() {
+		final Message next = this.next();
+		if (this.mergeable(next)) {
+			return next.getStatus();
+		}
 		return getStatus();
 	}
 

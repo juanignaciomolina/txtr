@@ -12,10 +12,13 @@
 		<LinearLayout
 			android:layout_width="fill_parent"
 			android:layout_height="wrap_content"
-			android:layout_margin="8dp"
+			android:layout_marginLeft="@dimen/activity_horizontal_margin"
+			android:layout_marginRight="@dimen/activity_horizontal_margin"
+			android:layout_marginTop="@dimen/activity_vertical_margin"
+			android:layout_marginBottom="@dimen/activity_vertical_margin"
 			android:background="@drawable/infocard_border"
 			android:orientation="vertical"
-			android:padding="16dp">
+			android:padding="@dimen/infocard_padding">
 
 			<TextView
 				android:id="@+id/muc_jabberid"
@@ -73,7 +76,7 @@
 					android:layout_centerVertical="true"
 					android:background="?android:selectableItemBackground"
 					android:padding="8dp"
-					android:src="@drawable/ic_action_edit_dark"/>
+					android:src="?attr/icon_edit_dark"/>
 			</RelativeLayout>
 
 			<RelativeLayout
@@ -87,6 +90,8 @@
 				android:layout_centerVertical="true"
 				android:textColor="@color/primarytext"
 				android:textSize="?attr/TextSizeBody"
+				android:layout_alignParentLeft="true"
+				android:layout_toLeftOf="@+id/change_conference_button"
 				/>
 			<ImageButton
 				android:id="@+id/change_conference_button"
@@ -98,7 +103,7 @@
 				android:layout_centerVertical="true"
 				android:background="?android:selectableItemBackground"
 				android:padding="8dp"
-				android:src="@drawable/ic_action_settings"/>
+				android:src="?attr/icon_settings"/>
 				</RelativeLayout>
 
 			<TextView
@@ -116,10 +121,13 @@
 			android:id="@+id/muc_more_details"
 			android:layout_width="fill_parent"
 			android:layout_height="wrap_content"
-			android:layout_margin="8dp"
+			android:layout_marginLeft="@dimen/activity_horizontal_margin"
+			android:layout_marginRight="@dimen/activity_horizontal_margin"
+			android:layout_marginTop="@dimen/activity_vertical_margin"
+			android:layout_marginBottom="@dimen/activity_vertical_margin"
 			android:background="@drawable/infocard_border"
 			android:orientation="vertical"
-			android:padding="8dp">
+			android:padding="@dimen/infocard_padding">
 
 
 			<LinearLayout

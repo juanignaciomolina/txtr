@@ -51,7 +51,7 @@
     <string name="remove_bookmark_text">Would you like to remove %s as a bookmark? The conversation associated with this bookmark will not be removed.</string>
     <string name="register_account">Register new account on server</string>
     <string name="change_password_on_server">Change password on server</string>
-    <string name="share_with">Share with</string>
+    <string name="share_with">Share with…</string>
     <string name="start_conversation">Start Conversation</string>
     <string name="invite_contact">Invite Contact</string>
     <string name="contacts">Contacts</string>
@@ -76,7 +76,6 @@
     <string name="add_contact">Add contact</string>
     <string name="send_failed">delivery failed</string>
     <string name="send_rejected">rejected</string>
-    <string name="receiving_image">Receiving image file (%1$d%%)</string>
     <string name="preparing_image">Preparing image for transmission</string>
     <string name="action_clear_history">Clear history</string>
     <string name="clear_conversation_history">Clear Conversation History</string>
@@ -89,7 +88,6 @@
     <string name="send_pgp_message">Send OpenPGP encrypted message</string>
     <string name="your_nick_has_been_changed">Your nickname has been changed</string>
     <string name="download_image">Download Image</string>
-    <string name="image_offered_for_download"><i>Image file offered for download</i></string>
     <string name="send_unencrypted">Send unencrypted</string>
     <string name="decryption_failed">Decryption failed. Maybe you don’t have the proper private key.</string>
     <string name="openkeychain_required">OpenKeychain</string>
@@ -103,8 +101,6 @@
     <string name="no_pgp_keys">No OpenPGP Keys found</string>
     <string name="contacts_have_no_pgp_keys">TXTR is unable to encrypt your messages because your contacts are not announcing their public key.\n\n<small>Please ask your contacts to setup OpenPGP.</small></string>
     <string name="encrypted_message_received"><i>Encrypted message received. Touch to view and decrypt.</i></string>
-    <string name="encrypted_image_received"><i>Encrypted image received. Touch to view and decrypt.</i></string>
-    <string name="image_file"><i>Image received. Touch to view</i></string>
     <string name="pref_general">General</string>
     <string name="pref_xmpp_resource">XMPP resource</string>
     <string name="pref_xmpp_resource_summary">The name this client identifies itself with</string>
@@ -279,8 +275,6 @@
     <string name="pref_force_encryption_summary">Always send messages encrypted (except for groups)</string>
     <string name="pref_dont_save_encrypted">Don’t save encrypted messages</string>
     <string name="pref_dont_save_encrypted_summary">Warning: This could lead to message loss</string>
-    <string name="pref_enable_legacy_ssl">Enable legacy SSL</string>
-    <string name="pref_enable_legacy_ssl_summary">Enables SSLv3 support for legacy servers. Warning: SSLv3 is considered insecure.</string>
     <string name="pref_expert_options">Expert options</string>
     <string name="pref_expert_options_summary">Please be careful with these</string>
     <string name="title_activity_about">About TXTR</string>
@@ -311,7 +305,7 @@
             \n\nhttps://github.com/zxing/zxing\n(Apache License, Version 2.0)
             \n\nhttps://github.com/vinc3m1/RoundedImageView\n(Apache License, Version 2.0)
             \n\nhttps://github.com/gabrielemariotti/cardslib\n(Apache License, Version 2.0)
-            \n\nhttps://github.com/google/material-design-icons\n(Creative Commons, Version 4.0)</string>
+            \n\nhttps://github.com/google/material-design-icons\n(CC BY, Version 4.0)</string>
     <string name="title_pref_quiet_hours">Quiet Hours</string>
     <string name="title_pref_quiet_hours_start_time">Start time</string>
     <string name="title_pref_quiet_hours_end_time">End time</string>
@@ -337,7 +331,6 @@
     <string name="check_image_filesize">Check image file size</string>
     <string name="message_options">Message options</string>
     <string name="copy_text">Copy text</string>
-    <string name="share_image">Share image</string>
     <string name="copy_original_url">Copy original URL</string>
     <string name="send_again">Send again</string>
     <string name="image_url">Image URL</string>
@@ -378,13 +371,13 @@
     <string name="pref_keep_foreground_service">Keep service in foreground</string>
     <string name="pref_keep_foreground_service_summary">Prevents the operating system from killing your connection</string>
     <string name="choose_file">Choose file</string>
-    <string name="receiving_file">Receiving %1$s file (%2$d%% completed)</string>
-    <string name="download_file">Download %s file</string>
-    <string name="open_file">Open %s file</string>
+    <string name="receiving_x_file">Receiving %1$s (%2$d%% completed)</string>
+    <string name="download_x_file">Download %s</string>
+    <string name="file">file</string>
+    <string name="open_x_file">Open %s</string>
     <string name="sending_file">sending (%1$d%% completed)</string>
     <string name="preparing_file">Preparing file for transmission</string>
-    <string name="file_offered_for_download">File offered for download</string>
-    <string name="file">%s file</string>
+    <string name="x_file_offered_for_download">%s offered for download</string>
     <string name="cancel_transmission">Cancel transmission</string>
     <string name="file_transmission_failed">file transmission failed</string>
     <string name="file_deleted">The file has been deleted</string>
@@ -488,5 +481,27 @@
     <string name="tutorial_step_5_button_new_account">New Account</string>
     <string name="tutorial_step_5_button_link_account">Link account</string>
     <string name="contact_add_to_phonebook">Add to phone book</string>
-
+	<string name="pref_display_enter_key">Show enter key</string>
+	<string name="pref_display_enter_key_summary">Change the emoticons key to an enter key</string>
+	<string name="audio">audio</string>
+	<string name="video">video</string>
+	<string name="image">image</string>
+	<string name="pdf_document">PDF document</string>
+	<string name="apk">Android App</string>
+	<string name="vcard">Contact</string>
+	<string name="received_x_file">Received %s</string>
+	<string name="disable_foreground_service">Disable foreground service</string>
+	<string name="touch_to_open_conversations">Touch to open Conversations</string>
+	<string name="avatar_has_been_published">Avatar has been published!</string>
+    <string name="sending_x_file">Sending %s</string>
+    <string name="offering_x_file">Offering %s</string>
+    <string name="hide_offline">Hide offline</string>
+    <string name="disable_account">Disable Account</string>
+    <string name="contact_is_typing">%s is typing...</string>
+    <string name="contact_has_stopped_typing">%s has stopped typing</string>
+    <string name="pref_chat_states">Typing notifications</string>
+    <string name="pref_chat_states_summary">Let your contact know when you are writing a new message</string>
+    <string name="send_location">Send location</string>
+    <string name="show_location">Show location</string>
+    <string name="no_application_found_to_display_location">No application found to display location</string>
 </resources>

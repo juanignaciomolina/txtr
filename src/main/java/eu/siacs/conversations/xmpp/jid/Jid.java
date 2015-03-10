@@ -1,5 +1,7 @@
 package eu.siacs.conversations.xmpp.jid;
 
+import android.util.LruCache;
+
 import net.java.otr4j.session.SessionID;
 
 import java.net.IDN;
@@ -12,6 +14,8 @@ import gnu.inet.encoding.StringprepException;
  * The `Jid' class provides an immutable representation of a JID.
  */
 public final class Jid {
+
+	private static LruCache<String,Jid> cache = new LruCache<>(1024);
 
 	private final String localpart;
 	private final String domainpart;
@@ -72,6 +76,17 @@ public final class Jid {
 	}
 
 	private Jid(final String jid) throws InvalidJidException {
+		if (jid == null) throw new InvalidJidException(InvalidJidException.IS_NULL);
+
+		Jid fromCache = Jid.cache.get(jid);
+		if (fromCache != null) {
+			displayjid = fromCache.displayjid;
+			localpart = fromCache.localpart;
+			domainpart = fromCache.domainpart;
+			resourcepart = fromCache.resourcepart;
+			return;
+		}
+
 		// Hackish Android way to count the number of chars in a string... should work everywhere.
 		final int atCount = jid.length() - jid.replace("@", "").length();
 		final int slashCount = jid.length() - jid.replace("/", "").length();
@@ -100,7 +115,7 @@ public final class Jid {
 		} else {
 			final String lp = jid.substring(0, atLoc);
 			try {
-				localpart = Stringprep.nodeprep(lp);
+				localpart = Config.DISABLE_STRING_PREP ? lp : Stringprep.nodeprep(lp);
 			} catch (final StringprepException e) {
 				throw new InvalidJidException(InvalidJidException.STRINGPREP_FAIL, e);
 			}
@@ -115,7 +130,7 @@ public final class Jid {
 		if (slashCount > 0) {
 			final String rp = jid.substring(slashLoc + 1, jid.length());
 			try {
-				resourcepart = Stringprep.resourceprep(rp);
+				resourcepart = Config.DISABLE_STRING_PREP ? rp : Stringprep.resourceprep(rp);
 			} catch (final StringprepException e) {
 				throw new InvalidJidException(InvalidJidException.STRINGPREP_FAIL, e);
 			}
@@ -150,6 +165,8 @@ public final class Jid {
 		if (domainpart.isEmpty() || domainpart.length() > 1023) {
 			throw new InvalidJidException(InvalidJidException.INVALID_PART_LENGTH);
 		}
+
+		Jid.cache.put(jid, this);
 
 		this.displayjid = finaljid;
 	}

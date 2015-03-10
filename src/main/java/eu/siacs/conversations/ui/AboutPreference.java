@@ -7,6 +7,7 @@ import android.preference.Preference;
 import android.util.AttributeSet;
 
 import eu.siacs.conversations.R;
+import eu.siacs.conversations.utils.PhoneHelper;
 
 public class AboutPreference extends Preference {
 	public AboutPreference(final Context context, final AttributeSet attrs, final int defStyle) {
@@ -27,17 +28,7 @@ public class AboutPreference extends Preference {
     }
 
     private void setSummary() {
-		if (getContext() != null && getContext().getPackageManager() != null) {
-			final String packageName = getContext().getPackageName();
-			final String versionName;
-			try {
-				versionName = getContext().getPackageManager().getPackageInfo(packageName, 0).versionName;
-				setSummary(getContext().getApplicationContext().getString(R.string.app_name_full) + " " + versionName);
-			} catch (final PackageManager.NameNotFoundException e) {
-				// Using try/catch as part of the logic is sort of like this:
-				// https://xkcd.com/292/
-			}
-		}
+		setSummary(getContext().getApplicationContext().getString(R.string.app_name_full) + " " + PhoneHelper.getVersionName(getContext()));
 	}
 }
 

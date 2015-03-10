@@ -6,7 +6,7 @@ buildscript {
 		mavenCentral()
 	}
 	dependencies {
-		classpath 'com.android.tools.build:gradle:1.0.0'
+		classpath 'com.android.tools.build:gradle:1.0.1'
 	}
 }
 
@@ -20,23 +20,20 @@ allprojects {
 apply plugin: 'com.android.application'
 
 repositories {
-	maven {
-		url "http://jitsi.github.com/otr4j/repository/"
-	}
 	jcenter()
 	mavenCentral()
 }
 
 dependencies {
-	compile project(':libs:minidns')
-	compile project(':libs:openpgp-api-lib')
-	compile project(':libs:MemorizingTrustManager')
-	compile 'com.android.support:support-v13:21.0.3'
-	compile 'org.bouncycastle:bcprov-jdk15on:1.50'
-	compile 'net.java:otr4j:0.21'
-	compile 'org.gnu.inet:libidn:1.15'
-	compile 'com.google.zxing:core:3.1.0'
-	compile 'com.google.zxing:android-integration:3.1.0'
+    compile project(':libs:openpgp-api-lib')
+    compile project(':libs:MemorizingTrustManager')
+    compile 'com.android.support:support-v13:21.0.3'
+    compile 'org.bouncycastle:bcprov-jdk15on:1.51'
+    compile 'org.jitsi:org.otr4j:0.22'
+    compile 'org.gnu.inet:libidn:1.15'
+    compile 'com.google.zxing:core:3.1.0'
+    compile 'com.google.zxing:android-integration:3.1.0'
+    compile 'de.measite.minidns:minidns:0.1.3'
     //TXTR CUSTOM DEPENDENCIES
     compile 'com.makeramen:roundedimageview:1.5.0'
     compile 'com.github.gabrielemariotti.cards:cardslib-core:2.0.1'
@@ -50,8 +47,8 @@ android {
 	defaultConfig {
 		minSdkVersion 14
 		targetSdkVersion 21
-		versionCode 41
-		versionName "0.10"
+		versionCode 53
+		versionName "1.1.0"
 	}
 
 	compileOptions {
@@ -98,7 +95,7 @@ android {
 	}
 
 	lintOptions {
-		disable 'MissingTranslation', 'InvalidPackage'
+		disable 'ExtraTranslation', 'MissingTranslation', 'InvalidPackage'
 	}
 
 	subprojects {

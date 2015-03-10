@@ -11,8 +11,8 @@ import android.view.View.OnLongClickListener;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-
 import com.makeramen.RoundedImageView;
+import android.widget.Toast;
 
 import eu.siacs.conversations.R;
 import eu.siacs.conversations.entities.Account;
@@ -35,13 +35,18 @@ public class PublishProfilePictureActivity extends XmppActivity {
 
 	private Uri avatarUri;
 	private Uri defaultUri;
+	private OnLongClickListener backToDefaultListener = new OnLongClickListener() {
 
+		@Override
+		public boolean onLongClick(View v) {
+			avatarUri = defaultUri;
+			loadImageIntoPreview(defaultUri);
+			return true;
+		}
+	};
 	private Account account;
-
 	private boolean support = false;
-
 	private boolean mInitialAccountSetup;
-
 	private UiCallback<Avatar> avatarPublication = new UiCallback<Avatar>() {
 
 		@Override
@@ -51,9 +56,14 @@ public class PublishProfilePictureActivity extends XmppActivity {
 				@Override
 				public void run() {
 					if (mInitialAccountSetup) {
-						startActivity(new Intent(getApplicationContext(),
-								StartConversationActivity.class));
+						Intent intent = new Intent(getApplicationContext(),
+								StartConversationActivity.class);
+						intent.putExtra("init",true);
+						startActivity(intent);
 					}
+					Toast.makeText(PublishProfilePictureActivity.this,
+							R.string.avatar_has_been_published,
+							Toast.LENGTH_SHORT).show();
 					finish();
 				}
 			});
@@ -76,16 +86,6 @@ public class PublishProfilePictureActivity extends XmppActivity {
 
 		@Override
 		public void userInputRequried(PendingIntent pi, Avatar object) {
-		}
-	};
-
-	private OnLongClickListener backToDefaultListener = new OnLongClickListener() {
-
-		@Override
-		public boolean onLongClick(View v) {
-			avatarUri = defaultUri;
-			loadImageIntoPreview(defaultUri);
-			return true;
 		}
 	};
 
@@ -119,8 +119,10 @@ public class PublishProfilePictureActivity extends XmppActivity {
 			@Override
 			public void onClick(View v) {
 				if (mInitialAccountSetup) {
-					startActivity(new Intent(getApplicationContext(),
-							StartConversationActivity.class));
+					Intent intent = new Intent(getApplicationContext(),
+							StartConversationActivity.class);
+					intent.putExtra("init",true);
+					startActivity(intent);
 				}
 				finish();
 			}

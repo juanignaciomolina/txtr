@@ -21,6 +21,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import eu.siacs.conversations.Config;
+import eu.siacs.conversations.xmpp.chatstate.ChatState;
 import eu.siacs.conversations.xmpp.jid.InvalidJidException;
 import eu.siacs.conversations.xmpp.jid.Jid;
 
@@ -77,6 +78,8 @@ public class Conversation extends AbstractEntity implements Blockable {
 	private Bookmark bookmark;
 
 	private boolean messagesLeftOnServer = true;
+	private ChatState mOutgoingChatState = Config.DEFAULT_CHATSTATE;
+	private ChatState mIncomingChatState = Config.DEFAULT_CHATSTATE;
 
 	public boolean hasMessagesLeftOnServer() {
 		return messagesLeftOnServer;
@@ -108,9 +111,9 @@ public class Conversation extends AbstractEntity implements Blockable {
 		}
 	}
 
-	public void findMessagesWithFiles(OnMessageFound onMessageFound) {
+	public void findMessagesWithFiles(final OnMessageFound onMessageFound) {
 		synchronized (this.messages) {
-			for (Message message : this.messages) {
+			for (final Message message : this.messages) {
 				if ((message.getType() == Message.TYPE_IMAGE || message.getType() == Message.TYPE_FILE)
 						&& message.getEncryption() != Message.ENCRYPTION_PGP) {
 					onMessageFound.onMessageFound(message);
@@ -119,14 +122,14 @@ public class Conversation extends AbstractEntity implements Blockable {
 		}
 	}
 
-	public Message findMessageWithFileAndUuid(String uuid) {
+	public Message findMessageWithFileAndUuid(final String uuid) {
 		synchronized (this.messages) {
-			for (Message message : this.messages) {
-				if (message.getType() == Message.TYPE_IMAGE
+			for (final Message message : this.messages) {
+				if ((message.getType() == Message.TYPE_IMAGE || message.getType() == Message.TYPE_FILE)
 						&& message.getEncryption() != Message.ENCRYPTION_PGP
 						&& message.getUuid().equals(uuid)) {
 					return message;
-						}
+				}
 			}
 		}
 		return null;
@@ -136,6 +139,34 @@ public class Conversation extends AbstractEntity implements Blockable {
 		synchronized (this.messages) {
 			this.messages.clear();
 		}
+	}
+
+	public boolean setIncomingChatState(ChatState state) {
+		if (this.mIncomingChatState == state) {
+			return false;
+		}
+		this.mIncomingChatState = state;
+		return true;
+	}
+
+	public ChatState getIncomingChatState() {
+		return this.mIncomingChatState;
+	}
+
+	public boolean setOutgoingChatState(ChatState state) {
+		if (mode == MODE_MULTI) {
+			return false;
+		}
+		if (this.mOutgoingChatState != state) {
+			this.mOutgoingChatState = state;
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	public ChatState getOutgoingChatState() {
+		return this.mOutgoingChatState;
 	}
 
 	public void trim() {
@@ -626,8 +657,7 @@ public class Conversation extends AbstractEntity implements Blockable {
 	}
 
 	public boolean isMuted() {
-		return SystemClock.elapsedRealtime() < this.getLongAttribute(
-				ATTRIBUTE_MUTED_TILL, 0);
+		return System.currentTimeMillis() < this.getLongAttribute(ATTRIBUTE_MUTED_TILL, 0);
 	}
 
 	public boolean setAttribute(String key, String value) {
@@ -703,6 +733,19 @@ public class Conversation extends AbstractEntity implements Blockable {
 			for(Message message : this.messages) {
 				message.untie();
 			}
+		}
+	}
+
+	public int unreadCount() {
+		synchronized (this.messages) {
+			int count = 0;
+			for(int i = this.messages.size() - 1; i >= 0; --i) {
+				if (this.messages.get(i).isRead()) {
+					return count;
+				}
+				++count;
+			}
+			return count;
 		}
 	}
 

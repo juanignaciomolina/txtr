@@ -102,6 +102,8 @@ public class EditAccountActivity extends XmppActivity implements OnAccountUpdate
 				} catch (final InvalidJidException ignored) {
 					return;
 				}
+				mAccountJid.setError(null);
+				mPasswordConfirm.setError(null);
 				mAccount.setPassword(password);
 				mAccount.setOption(Account.OPTION_REGISTER, registerNewAccount);
 				xmppConnectionService.updateAccount(mAccount);
@@ -221,6 +223,7 @@ public class EditAccountActivity extends XmppActivity implements OnAccountUpdate
 				if (avatar != null) {
 					intent = new Intent(getApplicationContext(),
 							StartConversationActivity.class);
+					intent.putExtra("init",true);
 				} else {
 					intent = new Intent(getApplicationContext(),
 							PublishProfilePictureActivity.class);
@@ -234,7 +237,7 @@ public class EditAccountActivity extends XmppActivity implements OnAccountUpdate
 	}
 
 	protected void updateSaveButton() {
-		if (mAccount != null && mAccount.getStatus() == Account.State.CONNECTING) {
+		if (mAccount != null && (mAccount.getStatus() == Account.State.CONNECTING || mFetchingAvatar)) {
 			this.mSaveButton.setEnabled(false);
 			this.mSaveButton.setTextColor(getSecondaryTextColor());
 			this.mSaveButton.setText(R.string.account_status_connecting);
@@ -329,17 +332,18 @@ public class EditAccountActivity extends XmppActivity implements OnAccountUpdate
 		final MenuItem showBlocklist = menu.findItem(R.id.action_show_block_list);
 		final MenuItem showMoreInfo = menu.findItem(R.id.action_server_info_show_more);
 		final MenuItem changePassword = menu.findItem(R.id.action_change_password_on_server);
-		if (mAccount == null) {
+		if (mAccount != null && mAccount.isOnlineAndConnected()) {
+			if (!mAccount.getXmppConnection().getFeatures().blocking()) {
+				showBlocklist.setVisible(false);
+			}
+			if (!mAccount.getXmppConnection().getFeatures().register()) {
+				changePassword.setVisible(false);
+			}
+		} else {
 			showQrCode.setVisible(false);
 			showBlocklist.setVisible(false);
 			showMoreInfo.setVisible(false);
 			changePassword.setVisible(false);
-		} else if (mAccount.getStatus() != Account.State.ONLINE) {
-			showBlocklist.setVisible(false);
-			showMoreInfo.setVisible(false);
-			changePassword.setVisible(false);
-		} else if (!mAccount.getXmppConnection().getFeatures().blocking()) {
-			showBlocklist.setVisible(false);
 		}
 		return true;
 	}
@@ -380,6 +384,7 @@ public class EditAccountActivity extends XmppActivity implements OnAccountUpdate
 			if (getActionBar() != null) {
 				getActionBar().setDisplayHomeAsUpEnabled(false);
 				getActionBar().setDisplayShowHomeEnabled(false);
+				getActionBar().setHomeButtonEnabled(false);
 			}
 			this.mCancelButton.setEnabled(false);
 			this.mCancelButton.setTextColor(getSecondaryTextColor());
@@ -494,6 +499,8 @@ public class EditAccountActivity extends XmppActivity implements OnAccountUpdate
 			if (this.mAccount.errorStatus()) {
 				this.mAccountJid.setError(getString(this.mAccount.getStatus().getReadableId()));
 				this.mAccountJid.requestFocus();
+			} else {
+				this.mAccountJid.setError(null);
 			}
 			this.mStats.setVisibility(View.GONE);
 		}

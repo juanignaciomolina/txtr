@@ -1,6 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='UTF-8'?>
 <resources>
-
     <string name="action_settings">Ajustes</string>
     <string name="action_add">Nueva conversación</string>
     <string name="action_accounts">Gestionar cuentas</string>
@@ -389,4 +388,50 @@
     <string name="member">Miembro</string>
     <string name="advanced_mode">Modo avanzado</string>
     <string name="contact_add_to_phonebook">Agregar al teléfono</string>
+    <string name="grant_membership">Convertir en miembro</string>
+    <string name="remove_membership">Revocar membresía</string>
+    <string name="grant_admin_privileges">Conceder privilegios de administrador</string>
+    <string name="remove_admin_privileges">Revocar privilegios de administrador</string>
+    <string name="remove_from_room">Expulsar de la conversación</string>
+    <string name="could_not_change_affiliation">No se puede cambiar la afiliación de %s</string>
+    <string name="ban_from_conference">Prohibir entrada en la conversación</string>
+    <string name="removing_from_public_conference">Estás intentando expulsar a %s de una conversación de acceso público. La única forma de hacer esto es prohibir su entrada para siempre.</string>
+    <string name="ban_now">Prohibir ahora</string>
+    <string name="could_not_change_role">No se puede cambiar el rol de %s</string>
+    <string name="public_conference">Conversación de acceso público</string>
+    <string name="private_conference">Conversación privada solo para miembros</string>
+    <string name="conference_options">Opciones de conversación</string>
+    <string name="members_only">Privada (solo miembros)</string>
+    <string name="non_anonymous">No anónima</string>
+    <string name="modified_conference_options">¡Modificadas las opciones de la conversación!</string>
+    <string name="could_not_modify_conference_options">No se pueden modificar las opciones de la conversación</string>
+    <string name="never">Nunca</string>
+    <string name="thirty_minutes">30 minutos</string>
+    <string name="one_hour">1 hora</string>
+    <string name="two_hours">2 horas</string>
+    <string name="eight_hours">8 horas</string>
+    <string name="until_further_notice">Hasta nuevo aviso</string>
+    <string name="pref_input_options">Opciones de entrada</string>
+    <string name="pref_enter_is_send">Intro para enviar</string>
+    <string name="pref_enter_is_send_summary">Usar la tecla intro para enviar el mensaje</string>
+    <string name="pref_display_enter_key">Mostrar tecla Intro</string>
+    <string name="pref_display_enter_key_summary">Cambia la tecla de emoticonos por la tecla Intro</string>
+    <string name="audio">audio</string>
+    <string name="video">vídeo</string>
+    <string name="image">imagen</string>
+    <string name="pdf_document">documento PDF</string>
+    <string name="apk">Android App</string>
+    <string name="vcard">Contacto</string>
+    <string name="received_x_file">Recibido %s</string>
+    <string name="disable_foreground_service">Deshabilitar servicio en primer plano</string>
+    <string name="touch_to_open_conversations">Pulsa para abrir Conversations</string>
+    <string name="avatar_has_been_published">¡La imagen de perfil ha sido publicada!</string>
+    <string name="sending_x_file">Enviando %s</string>
+    <string name="offering_x_file">Ofreciendo %s</string>
+    <string name="hide_offline">Ocultar desconectados</string>
+    <string name="disable_account">Deshabilitar Cuenta</string>
+    <string name="contact_is_typing">%s está escribiendo...</string>
+    <string name="contact_has_stopped_typing">%s ha dejado de escribir</string>
+    <string name="pref_chat_states">Notificación de escritura</string>
+    <string name="pref_chat_states_summary">Permite a tus contactos saber cuando estás escribiendo un nuevo mensaje</string>
 </resources>

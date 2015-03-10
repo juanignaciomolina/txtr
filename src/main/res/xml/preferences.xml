@@ -34,6 +34,12 @@
             android:key="indicate_received"
             android:summary="@string/pref_use_indicate_received_summary"
             android:title="@string/pref_use_indicate_received" />
+
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="chat_states"
+            android:summary="@string/pref_chat_states_summary"
+            android:title="@string/pref_chat_states" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/pref_notification_settings" >
         <CheckBoxPreference
@@ -122,11 +128,6 @@
                     android:key="dont_save_encrypted"
                     android:summary="@string/pref_dont_save_encrypted_summary"
                     android:title="@string/pref_dont_save_encrypted" />
-                <CheckBoxPreference
-                    android:defaultValue="false"
-                    android:key="enable_legacy_ssl"
-                    android:summary="@string/pref_enable_legacy_ssl_summary"
-                    android:title="@string/pref_enable_legacy_ssl" />
             </PreferenceCategory>
 	        <PreferenceCategory android:title="@string/pref_input_options">
 		        <CheckBoxPreference
@@ -134,6 +135,11 @@
 			        android:key="enter_is_send"
 			        android:title="@string/pref_enter_is_send"
 			        android:summary="@string/pref_enter_is_send_summary" />
+		        <CheckBoxPreference
+			        android:defaultValue="false"
+			        android:key="display_enter_key"
+			        android:title="@string/pref_display_enter_key"
+			        android:summary="@string/pref_display_enter_key_summary" />
 	        </PreferenceCategory>
             <PreferenceCategory android:title="@string/pref_expert_options_other" >
                 <CheckBoxPreference

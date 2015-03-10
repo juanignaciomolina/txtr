@@ -12,6 +12,7 @@ import eu.siacs.conversations.entities.Conversation;
 import eu.siacs.conversations.entities.Message;
 import eu.siacs.conversations.services.XmppConnectionService;
 import eu.siacs.conversations.xml.Element;
+import eu.siacs.conversations.xmpp.chatstate.ChatState;
 import eu.siacs.conversations.xmpp.jid.Jid;
 import eu.siacs.conversations.xmpp.stanzas.MessagePacket;
 
@@ -68,7 +69,7 @@ public class MessageGenerator extends AbstractGenerator {
 		packet.addChild("private", "urn:xmpp:carbons:2");
 		packet.addChild("no-copy", "urn:xmpp:hints");
 		try {
-			packet.setBody(otrSession.transformSending(message.getBody()));
+			packet.setBody(otrSession.transformSending(message.getBody())[0]);
 			return packet;
 		} catch (OtrException e) {
 			return null;
@@ -102,21 +103,12 @@ public class MessageGenerator extends AbstractGenerator {
 		return packet;
 	}
 
-	public MessagePacket generateNotAcceptable(MessagePacket origin) {
-		MessagePacket packet = generateError(origin);
-		Element error = packet.addChild("error");
-		error.setAttribute("type", "modify");
-		error.setAttribute("code", "406");
-		error.addChild("not-acceptable");
-		return packet;
-	}
-
-	private MessagePacket generateError(MessagePacket origin) {
+	public MessagePacket generateChatState(Conversation conversation) {
+		final Account account = conversation.getAccount();
 		MessagePacket packet = new MessagePacket();
-		packet.setId(origin.getId());
-		packet.setTo(origin.getFrom());
-		packet.setBody(origin.getBody());
-		packet.setType(MessagePacket.TYPE_ERROR);
+		packet.setTo(conversation.getJid().toBareJid());
+		packet.setFrom(account.getJid());
+		packet.addChild(ChatState.toElement(conversation.getOutgoingChatState()));
 		return packet;
 	}
 

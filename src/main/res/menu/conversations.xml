@@ -14,13 +14,13 @@
         android:title="@string/new_pin"/>
     <item
         android:id="@+id/action_security"
-        android:icon="@drawable/ic_action_not_secure"
+        android:icon="?attr/icon_not_secure"
         android:orderInCategory="20"
         android:showAsAction="always"
         android:title="@string/action_secure"/>
     <item
         android:id="@+id/action_attach_file"
-        android:icon="@drawable/ic_action_new_attachment"
+        android:icon="?attr/icon_new_attachment"
         android:orderInCategory="30"
         android:showAsAction="always"
         android:title="@string/attach_file"/>
@@ -31,7 +31,7 @@
         android:title="@string/action_contact_details"/>
     <item
         android:id="@+id/action_muc_details"
-        android:icon="@drawable/ic_action_group"
+        android:icon="?attr/icon_group"
         android:orderInCategory="40"
         android:showAsAction="ifRoom"
         android:title="@string/action_muc_details"/>
@@ -61,18 +61,6 @@
         android:orderInCategory="71"
         android:showAsAction="never"
         android:title="@string/enable_notifications"/>
-
-    <item
-        android:id="@+id/action_block"
-        android:orderInCategory="72"
-        android:showAsAction="never"
-        android:title="@string/action_block_contact"/>
-
-    <item
-        android:id="@+id/action_unblock"
-        android:orderInCategory="73"
-        android:showAsAction="never"
-        android:title="@string/action_unblock_contact"/>
 
     <item
         android:id="@+id/action_accounts"

@@ -1,4 +1,27 @@
 ###Changelog
+
+####Version 1.0.4
+* load avatars asynchronously on start up
+* support for XEP-0092: Software Version
+
+####Version 1.0.3
+* load messages asynchronously on start up
+* bug fixes
+
+####Version 1.0.2
+* skipped
+
+####Version 1.0.1
+* accept more ciphers
+
+####Version 1.0
+* MUC controls (Affiliaton changes)
+* Added download button to notification
+* Added check box to hide offline contacts
+* Use Material theme and icons on Android L
+* Improved security
+* bug fixes + code clean up
+
 ####Version 0.10
 * Support for Message Archive Management
 * Dynamically load message history

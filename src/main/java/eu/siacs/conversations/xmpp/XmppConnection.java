@@ -53,6 +53,7 @@ import eu.siacs.conversations.crypto.sasl.ScramSha1;
 import eu.siacs.conversations.entities.Account;
 import eu.siacs.conversations.generator.IqGenerator;
 import eu.siacs.conversations.services.XmppConnectionService;
+import eu.siacs.conversations.utils.CryptoHelper;
 import eu.siacs.conversations.utils.DNSHelper;
 import eu.siacs.conversations.utils.Xmlns;
 import eu.siacs.conversations.xml.Element;
@@ -228,6 +229,7 @@ public class XmppConnection implements Runnable {
 		} catch (final IOException | XmlPullParserException | NoSuchAlgorithmException e) {
 			Log.d(Config.LOGTAG, account.getJid().toBareJid().toString() + ": " + e.getMessage());
 			this.changeStatus(Account.State.OFFLINE);
+			this.attempt--; //don't count attempt when reconnecting instantly anyway
 		} finally {
 			if (wakeLock.isHeld()) {
 				try {
@@ -240,6 +242,13 @@ public class XmppConnection implements Runnable {
 
 	@Override
 	public void run() {
+		try {
+			if (socket != null) {
+				socket.close();
+			}
+		} catch (final IOException ignored) {
+
+		}
 		connect();
 	}
 
@@ -506,16 +515,19 @@ public class XmppConnection implements Runnable {
 			}
 
 			final String[] supportProtocols;
-			if (enableLegacySSL()) {
-				supportProtocols = sslSocket.getSupportedProtocols();
-			} else {
-				final Collection<String> supportedProtocols = new LinkedList<>(
-						Arrays.asList(sslSocket.getSupportedProtocols()));
-				supportedProtocols.remove("SSLv3");
-				supportProtocols = new String[supportedProtocols.size()];
-				supportedProtocols.toArray(supportProtocols);
-			}
+			final Collection<String> supportedProtocols = new LinkedList<>(
+					Arrays.asList(sslSocket.getSupportedProtocols()));
+			supportedProtocols.remove("SSLv3");
+			supportProtocols = supportedProtocols.toArray(new String[supportedProtocols.size()]);
+
 			sslSocket.setEnabledProtocols(supportProtocols);
+
+			final String[] cipherSuites = CryptoHelper.getOrderedCipherSuites(
+					sslSocket.getSupportedCipherSuites());
+			//Log.d(Config.LOGTAG, "Using ciphers: " + Arrays.toString(cipherSuites));
+			if (cipherSuites.length > 0) {
+				sslSocket.setEnabledCipherSuites(cipherSuites);
+			}
 
 			if (!verifier.verify(account.getServer().getDomainpart(),sslSocket.getSession())) {
 				Log.d(Config.LOGTAG,account.getJid().toBareJid()+": TLS certificate verification failed");
@@ -654,6 +666,12 @@ public class XmppConnection implements Runnable {
 	}
 
 	private void sendBindRequest() {
+		while(!mXmppConnectionService.areMessagesInitialized()) {
+			try {
+				Thread.sleep(500);
+			} catch (final InterruptedException ignored) {
+			}
+		}
 		final IqPacket iq = new IqPacket(IqPacket.TYPE.SET);
 		iq.addChild("bind", "urn:ietf:params:xml:ns:xmpp-bind")
 			.addChild("resource").setContent(account.getResource());
@@ -1021,6 +1039,11 @@ public class XmppConnection implements Runnable {
 
 	public void sendInactive() {
 		this.sendPacket(new InactivePacket());
+	}
+
+	public void resetAttemptCount() {
+		this.attempt = 0;
+		this.lastConnect = 0;
 	}
 
 	public class Features {

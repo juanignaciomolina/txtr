@@ -223,10 +223,13 @@ public class DatabaseBackend extends SQLiteOpenHelper {
 
 	public Conversation findConversation(final Account account, final Jid contactJid) {
 		SQLiteDatabase db = this.getReadableDatabase();
-		String[] selectionArgs = { account.getUuid(), contactJid.toBareJid().toString() + "%" };
+		String[] selectionArgs = { account.getUuid(),
+				contactJid.toBareJid().toString() + "/%",
+				contactJid.toBareJid().toString()
+				};
 		Cursor cursor = db.query(Conversation.TABLENAME, null,
-				Conversation.ACCOUNT + "=? AND " + Conversation.CONTACTJID
-						+ " like ?", selectionArgs, null, null, null);
+				Conversation.ACCOUNT + "=? AND (" + Conversation.CONTACTJID
+						+ " like ? OR "+Conversation.CONTACTJID+"=?)", selectionArgs, null, null, null);
 		if (cursor.getCount() == 0)
 			return null;
 		cursor.moveToFirst();
@@ -277,6 +280,8 @@ public class DatabaseBackend extends SQLiteOpenHelper {
 			cursor.close();
 			return (count > 0);
 		} catch (SQLiteCantOpenDatabaseException e) {
+			return true; // better safe than sorry
+		} catch (RuntimeException e) {
 			return true; // better safe than sorry
 		}
 	}
