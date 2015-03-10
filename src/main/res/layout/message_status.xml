@@ -13,45 +13,26 @@
         app:riv_corner_radius="16dip"
         app:riv_border_width="1dip"
         app:riv_border_color="@color/secondarybackground"
+        android:layout_alignParentLeft="true"
         android:id="@+id/message_photo"
         android:layout_width="32dp"
         android:layout_height="32dp"
-        android:layout_centerHorizontal="true"
         android:layout_alignParentTop="true"
         android:scaleType="fitXY"
         android:src="@drawable/ic_profile" />
 
-    <ImageView
+    <TextView
+        android:id="@+id/status_message"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/image_up_left"
         android:layout_centerVertical="true"
-        android:layout_marginRight="10dp"
-        android:layout_toLeftOf="@id/message_photo"
-        android:layout_toStartOf="@id/message_photo"
-        android:src="@drawable/ic_action_up" />
-
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/image_up_right"
-        android:src="@drawable/ic_action_up"
-        android:layout_marginLeft="10dp"
-        android:layout_centerVertical="true"
+        android:layout_marginLeft="8dp"
+        android:layout_toEndOf="@+id/message_photo"
         android:layout_toRightOf="@+id/message_photo"
-        android:layout_toEndOf="@+id/message_photo" />
-
-    <ImageView
-        android:layout_width="fill_parent"
-        android:layout_height="1dp"
-        android:id="@+id/image_bar_left"
-        android:background="@color/white"
-        android:alpha="0.50"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_centerVertical="true"
-        android:layout_toLeftOf="@+id/image_up_left"
-        android:layout_toStartOf="@+id/image_up_left" />
+        android:text="@string/contact_has_read_up_to_this_point"
+        android:textColor="@color/white"
+        android:textSize="?attr/TextSizeInfo"
+        android:textStyle="italic"/>
 
     <ImageView
         android:layout_width="fill_parent"
@@ -62,19 +43,7 @@
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:layout_centerVertical="true"
-        android:layout_toRightOf="@+id/image_up_right"
-        android:layout_toEndOf="@+id/image_up_right" />
-    <TextView
-        android:id="@+id/status_message"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_marginLeft="8dp"
-        android:layout_toEndOf="@+id/message_photo"
-        android:layout_toRightOf="@+id/message_photo"
-        android:text="@string/contact_has_read_up_to_this_point"
-        android:textColor="@color/secondarytext"
-        android:textSize="?attr/TextSizeInfo"
-        android:textStyle="italic"/>
+        android:layout_toRightOf="@+id/status_message" />
+
 
 </RelativeLayout>
